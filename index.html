@@ -1,0 +1,2507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>decision support system</title>
+    <style>
+:root {
+            --primary-color: #4CAF50;
+            --hover-color: #45a049;
+            --background-color: #f9f9f9;
+            --card-color: #fff;
+            --text-color: #333;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background-color: var(--background-color);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .question-card {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .question-text {
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .option-label:hover {
+            background-color: #f0f0f0;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #dff0d8;
+            color: #3c763d;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #f2dede;
+            color: #a94442;
+            display: block;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto;
+            padding: 12px 20px;
+            font-size: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .result-container {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .question-card {
+                padding: 15px;
+            }
+        }          .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            display: none;
+        }
+        .show-explanation-btn {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .show-explanation-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>decision support system</h1>
+        
+        <div class="score-display" id="currentScore">
+            Current Score: <span id="score">0</span>
+        </div>
+
+        <div id="quiz-container"></div>
+
+        <button class="submit-btn" onclick="calculateFinalScore()">Submit Quiz</button>
+
+        <div class="result-container" id="result">
+            <h2>Final Results</h2>
+            <p id="finalScore"></p>
+            <p id="percentage"></p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+        {
+        "id": "q1",
+        "text": "Selection of a model is based on",
+        "options": [
+            { "value": "a", "text": "Requirements" },
+            { "value": "b", "text": "Development team & Users" },
+            { "value": "c", "text": "Project type and associated risk" },
+            { "value": "d", "text": "All of the mentioned" }
+        ],
+        "correct": "d",
+        "explanation": "Each model has to have some requirements, a team of developers, users and the risk involved in developing a project."
+    },
+    {
+        "id": "q2",
+        "text": "Which two models doesn’t allow defining requirements early in the cycle?",
+        "options": [
+            { "value": "a", "text": "Waterfall & RAD" },
+            { "value": "b", "text": "Prototyping & Spiral" },
+            { "value": "c", "text": "Prototyping & RAD" },
+            { "value": "d", "text": "Waterfall & Spiral" }
+        ],
+        "correct": "b",
+        "explanation": "Prototyping Model starts with a requirements analysis phase including techniques like FAST, QFD, Brainstorming. In case of Spiral model, the first phase involves activities related to customer communication like determining objectives."
+    },
+    {
+        "id": "q3",
+        "text": "Which of the following life cycle model can be chosen if the development team has less experience on similar projects?",
+        "options": [
+            { "value": "a", "text": "Spiral" },
+            { "value": "b", "text": "Waterfall" },
+            { "value": "c", "text": "RAD" },
+            { "value": "d", "text": "Iterative Enhancement Model" }
+        ],
+        "correct": "a",
+        "explanation": "Relying on risk assessment/analysis provides more flexibility than required for many applications which overcomes the criteria of less experienced developers."
+    },
+    {
+        "id": "q4",
+        "text": "If you were a lead developer of a software company and you are asked to submit a project/product within a stipulated time-frame with no cost barriers, which model would you select?",
+        "options": [
+            { "value": "a", "text": "Waterfall" },
+            { "value": "b", "text": "Spiral" },
+            { "value": "c", "text": "RAD" },
+            { "value": "d", "text": "Incremental" }
+        ],
+        "correct": "c",
+        "explanation": "RAD model is inapplicable to develop cheaper products/software/projects as the cost of modeling, hiring highly skilled developers/designers and automated code generation is very high. But here the cost is not an issue, so one can select this model as it reduces development time."
+    },
+    {
+        "id": "q5",
+        "text": "Which two of the following models will not be able to give the desired outcome if user’s participation is not involved?",
+        "options": [
+            { "value": "a", "text": "Waterfall & Spiral" },
+            { "value": "b", "text": "RAD & Spiral" },
+            { "value": "c", "text": "RAD & Waterfall" },
+            { "value": "d", "text": "RAD & Prototyping" }
+        ],
+        "correct": "d",
+        "explanation": "Active Participation of user is involved in all the four phases of RAD model and in case of the Prototyping model, we need user’s presence/involvement every time a new prototype is built or designed."
+    },
+    {
+        "id": "q6",
+        "text": "A company is developing an advance version of their current software available in the market, what model approach would they prefer?",
+        "options": [
+            { "value": "a", "text": "RAD" },
+            { "value": "b", "text": "Iterative Enhancement" },
+            { "value": "c", "text": "Both RAD & Iterative Enhancement" },
+            { "value": "d", "text": "Spiral" }
+        ],
+        "correct": "c",
+        "explanation": "None."
+    },
+    {
+        "id": "q7",
+        "text": "One can choose Waterfall Model if the project development schedule is tight.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "b",
+        "explanation": "Real projects rarely follow the sequential flow and iterations in this model are handled indirectly. These changes can cause confusion as the project proceeds, thereby delaying the delivery date."
+    },
+    {
+        "id": "q8",
+        "text": "Choose the correct option from given below:",
+        "options": [
+            { "value": "a", "text": "Prototyping Model facilitates reusability of components" },
+            { "value": "b", "text": "RAD Model facilitates reusability of components" },
+            { "value": "c", "text": "Both RAD & Prototyping Model facilitates reusability of components" },
+            { "value": "d", "text": "None" }
+        ],
+        "correct": "c",
+        "explanation": "None."
+    },
+    {
+        "id": "q9",
+        "text": "Spiral Model has high reliability requirements.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "None."
+    },
+    {
+        "id": "q10",
+        "text": "RAD Model has high reliability requirements.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "b",
+        "explanation": "None."
+    },
+    {
+        "id": "q11",
+        "text": "A ___ is a set of information which processes the data transaction in database system that monitors transaction programs.",
+        "options": [
+            { "value": "a", "text": "Operating System" },
+            { "value": "b", "text": "Decision Support System" },
+            { "value": "c", "text": "Transaction Processing System" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "A transaction processing system is a set of information which processes the data transaction in database system that monitors transaction programs."
+    },
+    {
+        "id": "q12",
+        "text": "A Transaction Processing System is also known as real-time processing system.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "TPS is also known as transaction processing or real-time processing."
+    },
+    {
+        "id": "q13",
+        "text": "____ is a way of computing that divides work into individual, indivisible operations.",
+        "options": [
+            { "value": "a", "text": "Executive Support System" },
+            { "value": "b", "text": "Decision Support System" },
+            { "value": "c", "text": "Transaction Processing System" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "A TPS is a way of computing that divides work into individual, indivisible operations."
+    },
+    {
+        "id": "q14",
+        "text": "A TPS is a set of information which processes the ____ in database system.",
+        "options": [
+            { "value": "a", "text": "Information management" },
+            { "value": "b", "text": "Data transaction" },
+            { "value": "c", "text": "Scheduling" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "A Transaction Processing System (TPS) is a collection of data that handles data transactions in a database system and keeps track of transaction programs."
+    },
+    {
+        "id": "q15",
+        "text": "____ processes multiple transactions at the same time.",
+        "options": [
+            { "value": "a", "text": "Batch Processing" },
+            { "value": "b", "text": "Real-time Processing" },
+            { "value": "c", "text": "Distributed System" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Batch processing system processes several transactions at the same time. It is a technique in which a system collects the programs and data together in a batch and then processing starts."
+    },
+    {
+        "id": "q16",
+        "text": "In ___ the results of each transaction are not immediately available.",
+        "options": [
+            { "value": "a", "text": "Batch processing" },
+            { "value": "b", "text": "Real-time processing" },
+            { "value": "c", "text": "Transaction processing" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "In Batch processing the results of each transaction are not immediately available."
+    },
+    {
+        "id": "q17",
+        "text": "A transaction processing system helps user's to process data transactions within a ___ that tracks transaction programs.",
+        "options": [
+            { "value": "a", "text": "Transaction system" },
+            { "value": "b", "text": "Batch system" },
+            { "value": "c", "text": "Database system" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "A transaction processing system helps user's to process data transactions within a Database system that tracks transaction programs."
+    },
+    {
+        "id": "q18",
+        "text": "A ___ utilizes both software and hardware to manage thousands of business and user data.",
+        "options": [
+            { "value": "a", "text": "Decision Support System" },
+            { "value": "b", "text": "Transaction Processing System" },
+            { "value": "c", "text": "Executive Support System" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "A Transaction Processing System utilizes both software and hardware to manage thousands of business and user data."
+    },
+    {
+        "id": "q19",
+        "text": "Transaction Processing System components are ____.",
+        "options": [
+            { "value": "a", "text": "Processing system" },
+            { "value": "b", "text": "Storage device" },
+            { "value": "c", "text": "I/O" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "Transaction Processing System components are Processing system, Storage device and I/O devices."
+    },
+    {
+        "id": "q20",
+        "text": "In ___, all transactions are automatically processed.",
+        "options": [
+            { "value": "a", "text": "Real-Time Processing" },
+            { "value": "b", "text": "Executive Support System" },
+            { "value": "c", "text": "Decision Support System" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "In Real-Time Processing all transactions are automatically processed."
+    },
+    {
+        "id": "q21",
+        "text": "____ deal with one transaction at a time.",
+        "options": [
+            { "value": "a", "text": "Batch Processing System" },
+            { "value": "b", "text": "Real-time Processing System" },
+            { "value": "c", "text": "Distributed System" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "Real-time Processing System deal with one transaction at a time."
+    },
+    {
+        "id": "q22",
+        "text": "A ___ consists of a sequence of query and / or update statements.",
+        "options": [
+            { "value": "a", "text": "System" },
+            { "value": "b", "text": "Transaction" },
+            { "value": "c", "text": "Maintenance" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "A transaction consists of a sequence of query and / or update statements."
+    },
+    {
+        "id": "q23",
+        "text": "A transaction completes its execution is said to be,",
+        "options": [
+            { "value": "a", "text": "Commit" },
+            { "value": "b", "text": "Rollback" },
+            { "value": "c", "text": "Backup" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "A transaction completes its execution is said to be commit."
+    },
+    {
+        "id": "q24",
+        "text": "Information is a -",
+        "options": [
+            { "value": "a", "text": "Processed Data" },
+            { "value": "b", "text": "Data" },
+            { "value": "c", "text": "Input" },
+            { "value": "d", "text": "Output" }
+        ],
+        "correct": "a",
+        "explanation": "Information is a processed data."
+    },
+    {
+        "id": "q25",
+        "text": "Volume of strategic information is,",
+        "options": [
+            { "value": "a", "text": "Detailed" },
+            { "value": "b", "text": "Summarized" },
+            { "value": "c", "text": "Condensed" },
+            { "value": "d", "text": "Irrelevant" }
+        ],
+        "correct": "c",
+        "explanation": "Volume of strategic information is condensed."
+    },
+    {
+        "id": "q26",
+        "text": "Which of the following is not associated with Transaction Processing System?",
+        "options": [
+            { "value": "a", "text": "To produce detail, summary, reports" },
+            { "value": "b", "text": "To record a business transaction activity" },
+            { "value": "c", "text": "Triggering a response" },
+            { "value": "d", "text": "Maintaining data" }
+        ],
+        "correct": "c",
+        "explanation": "Triggering a response is not associated with Transaction Processing System."
+    },
+    {
+        "id": "q27",
+        "text": "A TPS generally,",
+        "options": [
+            { "value": "a", "text": "Processes a low volume of business transactions" },
+            { "value": "b", "text": "Supports single users in routine, everyday transactions." },
+            { "value": "c", "text": "Uses relatively simple procedures to control processing and to ensure accuracy" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "A TPS generally uses relatively simple procedures to control processing and to ensure accuracy."
+    },
+    {
+        "id": "q28",
+        "text": "Which of the following is a system used to present information to drill down to details for executives of the company?",
+        "options": [
+            { "value": "a", "text": "Decision Support System" },
+            { "value": "b", "text": "Executive Support System" },
+            { "value": "c", "text": "Expert System" },
+            { "value": "d", "text": "Transaction-Processing System" }
+        ],
+        "correct": "b",
+        "explanation": "Executive Support System is a system used to present information to drill down to details for executives of the company."
+    },
+    {
+        "id": "q29",
+        "text": "Strategic information is needed for ___ in the organizations.",
+        "options": [
+            { "value": "a", "text": "Long term planning" },
+            { "value": "b", "text": "Short term planning" },
+            { "value": "c", "text": "Regular / daily operations" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Strategic information is needed for Long term planning in the organizations."
+    },
+    {
+        "id": "q30",
+        "text": "Which of the following information systems allows people to work together as a group is called:",
+        "options": [
+            { "value": "a", "text": "Transaction Processing System" },
+            { "value": "b", "text": "Management Information System" },
+            { "value": "c", "text": "Group Support System" },
+            { "value": "d", "text": "Decision Support System" }
+        ],
+        "correct": "c",
+        "explanation": "Group Support System is information systems allows people to work together as a group."
+    },
+    {
+        "id": "q31",
+        "text": "The RAD framework was introduced in the year ___",
+        "options": [
+            { "value": "a", "text": "1990" },
+            { "value": "b", "text": "1991" },
+            { "value": "c", "text": "1992" },
+            { "value": "d", "text": "1993" }
+        ],
+        "correct": "b",
+        "explanation": "James Martin developed the RAD framework was introduced in the year 1991."
+    },
+    {
+        "id": "q32",
+        "text": "A major flaw in the ___ is that when a program is in the testing phase, then changes in the software’s core functions and features becomes difficult.",
+        "options": [
+            { "value": "a", "text": "Waterfall model" },
+            { "value": "b", "text": "Spiral model" },
+            { "value": "c", "text": "RAD model" },
+            { "value": "d", "text": "None of these" }
+        ],
+        "correct": "a",
+        "explanation": "A major flaw in the Waterfall model is that when a program is in the testing phase, then changes in the software’s core functions and features becomes difficult."
+    },
+    {
+        "id": "q33",
+        "text": "RAD is form of ___",
+        "options": [
+            { "value": "a", "text": "System Software Development Methodology" },
+            { "value": "b", "text": "Programming Languages" },
+            { "value": "c", "text": "Agile Software Development Methodology" },
+            { "value": "d", "text": "None of these" }
+        ],
+        "correct": "c",
+        "explanation": "RAD is form of agile software development methodology. It prioritizes product launches and iterations as quickly as possible. Over strict planning and criteria, Agile acknowledges that software projects are inherently changes and will almost certainly occur during the project."
+    },
+    {
+        "id": "q34",
+        "text": "Rapid application development (RAD) is ___ that focuses on developing applications.",
+        "options": [
+            { "value": "a", "text": "A process" },
+            { "value": "b", "text": "A methodology" },
+            { "value": "c", "text": "A system" },
+            { "value": "d", "text": "None of these" }
+        ],
+        "correct": "b",
+        "explanation": "Rapid application development (RAD) is a methodology that focuses on developing applications."
+    },
+    {
+        "id": "q35",
+        "text": "The key principle of the RAD process is ___ in planning to focus on a highly iterative design and construction process.",
+        "options": [
+            { "value": "a", "text": "A reduction" },
+            { "value": "b", "text": "A requirement" },
+            { "value": "c", "text": "A non reduction" },
+            { "value": "d", "text": "None of these" }
+        ],
+        "correct": "a",
+        "explanation": "The key principle of the RAD process is a reduction in planning to focus on a highly iterative design and construction process."
+    },
+    {
+        "id": "q36",
+        "text": "How many phases are involved in RAD?",
+        "options": [
+            { "value": "a", "text": "2" },
+            { "value": "b", "text": "3" },
+            { "value": "c", "text": "4" },
+            { "value": "d", "text": "5" }
+        ],
+        "correct": "d",
+        "explanation": "There are five fundamental phases involved in RAD. These are as follows – Business Modeling, Data Modeling, Process Modeling, Application generation, Testing and turnover."
+    },
+    {
+        "id": "q37",
+        "text": "Rapid application development sets itself apart from ___ software development models.",
+        "options": [
+            { "value": "a", "text": "Traditional" },
+            { "value": "b", "text": "Non- traditional" },
+            { "value": "c", "text": "Modern" },
+            { "value": "d", "text": "None of these" }
+        ],
+        "correct": "a",
+        "explanation": "Rapid application development sets itself apart from Traditional software development models."
+    },
+    {
+        "id": "q38",
+        "text": "___ create prototypes with different features and functions.",
+        "options": [
+            { "value": "a", "text": "Clients" },
+            { "value": "b", "text": "Developers" },
+            { "value": "c", "text": "Stockholders" },
+            { "value": "d", "text": "None of these" }
+        ],
+        "correct": "b",
+        "explanation": "System developers create prototypes with different features and functions."
+    },
+    {
+        "id": "q39",
+        "text": "Stability, ___ and maintainability is of paramount importance before delivering to the client.",
+        "options": [
+            { "value": "a", "text": "Usability" },
+            { "value": "b", "text": "Interface" },
+            { "value": "c", "text": "Functions" },
+            { "value": "d", "text": "All of these" }
+        ],
+        "correct": "a",
+        "explanation": "Stability, usability and maintainability is of paramount importance before delivering to the client."
+    },
+    {
+        "id": "q40",
+        "text": "___ is great for small teams and quick projects.",
+        "options": [
+            { "value": "a", "text": "System software" },
+            { "value": "b", "text": "RAD applications" },
+            { "value": "c", "text": "Mobile software" },
+            { "value": "d", "text": "All of these" }
+        ],
+        "correct": "b",
+        "explanation": "RAD applications are great for small teams and quick projects."
+    },
+    {
+        "id": "q41",
+        "text": "With reference to business modeling phase of RAD, business modeling is the transformation of knowledge between different roles within the enterprise.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "With reference to Rapid Application Development model a business modeling is the transformation of knowledge between different roles within the enterprise."
+    },
+    {
+        "id": "q42",
+        "text": "With reference to RAD model, Data Modeling denotes.",
+        "options": [
+            { "value": "a", "text": "Object's and its attributes are established and the relationship between the objects is defined." },
+            { "value": "b", "text": "System objectives are defined." },
+            { "value": "c", "text": "Process flow is defined." },
+            { "value": "d", "text": "None of the above mentioned" }
+        ],
+        "correct": "a",
+        "explanation": "With reference to RAD model, Data Modeling denotes objects and its attributes are established and the relationship between the objects is defined."
+    },
+    {
+        "id": "q43",
+        "text": "With reference to RAD model, amongst which of the following is / are the key function of Process Modeling.",
+        "options": [
+            { "value": "a", "text": "To enforce the business model" },
+            { "value": "b", "text": "Data objects identified in the data modeling process are modified to fulfill the information flow." },
+            { "value": "c", "text": "A process is created to add, modify, remove or retrieve a data object." },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "Process modeling enforces the business model; the data objects identified in the data modeling process are modified to fulfill the information flow. The definition of the process is created to add, modify, remove or retrieve a data object."
+    },
+    {
+        "id": "q44",
+        "text": "With reference to RAD model, Application Generation is,",
+        "options": [
+            { "value": "a", "text": "The actual framework is designed up during the application generation process." },
+            { "value": "b", "text": "An automated system is used to build the framework." },
+            { "value": "c", "text": "System development is not a necessary part" },
+            { "value": "d", "text": "Both A and B" }
+        ],
+        "correct": "d",
+        "explanation": "During Application Generation, the actual framework is designed up during the application generation process. The automated system is used to build the framework."
+    },
+    {
+        "id": "q45",
+        "text": "In RAD model phases, testing and turnover phase,",
+        "options": [
+            { "value": "a", "text": "The data flow between all the components and the C are thoroughly checked" },
+            { "value": "b", "text": "After each iteration, the designs are evaluated separately" },
+            { "value": "c", "text": "System interfaces evaluates thoroughly" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "In testing and turnover phase, after each iteration the designs are evaluated separately. The data flow between all the components and the interfaces are thoroughly checked."
+    },
+    {
+        "id": "q46",
+        "text": "Select the option that suits the Manifesto for Agile Software Development",
+        "options": [
+            { "value": "a", "text": "Individuals and interactions" },
+            { "value": "b", "text": "Working software" },
+            { "value": "c", "text": "Customer collaboration" },
+            { "value": "d", "text": "All of the mentioned" }
+        ],
+        "correct": "d",
+        "explanation": "None."
+    },
+    {
+        "id": "q47",
+        "text": "Agile Software Development is based on",
+        "options": [
+            { "value": "a", "text": "Incremental Development" },
+            { "value": "b", "text": "Iterative Development" },
+            { "value": "c", "text": "Linear Development" },
+            { "value": "d", "text": "Both Incremental and Iterative Development" }
+        ],
+        "correct": "d",
+        "explanation": "The software is developed in increments with the customer specifying the requirements to be included in each increment and the highest priority is to satisfy the customer through early and continuous delivery of valuable software. They are iterative because they work on one iteration followed by improvements in next iteration."
+    },
+    {
+        "id": "q48",
+        "text": "Which one of the following is not an agile method?",
+        "options": [
+            { "value": "a", "text": "XP" },
+            { "value": "b", "text": "4GT" },
+            { "value": "c", "text": "AUP" },
+            { "value": "d", "text": "All of the mentioned" }
+        ],
+        "correct": "b",
+        "explanation": "The 4GT approach does not incorporate iteration and the continuous feedback, which is the fundamental aspect of an agile method."
+    },
+    {
+        "id": "q49",
+        "text": "Agility is defined as the ability of a project team to respond rapidly to a change.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "The aim of agile methods is to reduce overheads in the software process and to be able to respond quickly to changing requirements without excessive rework."
+    },
+    {
+        "id": "q50",
+        "text": "How is plan driven development different from agile development?",
+        "options": [
+            { "value": "a", "text": "Outputs are decided through a process of negotiation during the software development process" },
+            { "value": "b", "text": "Specification, design, implementation and testing are interleaved" },
+            { "value": "c", "text": "Iteration occurs within activities" },
+            { "value": "d", "text": "All of the mentioned" }
+        ],
+        "correct": "c",
+        "explanation": "A plan-driven approach to software engineering is based around separate development stages with the outputs to be produced at each of these stages planned in advance."
+    },
+    {
+        "id": "q51",
+        "text": "How many phases are there in Scrum?",
+        "options": [
+            { "value": "a", "text": "Two" },
+            { "value": "b", "text": "Three" },
+            { "value": "c", "text": "Four" },
+            { "value": "d", "text": "Scrum is an agile method which means it does not have phases" }
+        ],
+        "correct": "b",
+        "explanation": "There are three phases in Scrum. The initial phase is an outline planning phase followed by a series of sprint cycles and project closure phase."
+    },
+    {
+        "id": "q52",
+        "text": "Agile methods seem to work best when team members have a relatively high skill level.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "None."
+    },
+    {
+        "id": "q53",
+        "text": "Which of the following does not apply to agility to a software process?",
+        "options": [
+            { "value": "a", "text": "Uses incremental product delivery strategy" },
+            { "value": "b", "text": "Only essential work products are produced" },
+            { "value": "c", "text": "Eliminate the use of project planning and testing" },
+            { "value": "d", "text": "All of the mentioned" }
+        ],
+        "correct": "c",
+        "explanation": "Testing is a major part of each software development process which can’t be avoided."
+    },
+    {
+        "id": "q54",
+        "text": "Which three framework activities are present in Adaptive Software Development (ASD)?",
+        "options": [
+            { "value": "a", "text": "analysis, design, coding" },
+            { "value": "b", "text": "requirements gathering, adaptive cycle planning, iterative development" },
+            { "value": "c", "text": "speculation, collaboration, learning" },
+            { "value": "d", "text": "all of the mentioned" }
+        ],
+        "correct": "c",
+        "explanation": "None."
+    },
+    {
+        "id": "q55",
+        "text": "In agile development it is more important to build software that meets the customers’ needs today than worry about features that might be needed in the future.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "None."
+    },
+    {
+        "id": "q56",
+        "text": "The Rapid Application Development (or RAD) model is based on ___ and ___ model with no or less planning.",
+        "options": [
+            { "value": "a", "text": "Waterfall, Prototyping" },
+            { "value": "b", "text": "Prototyping, Iterative" },
+            { "value": "c", "text": "Prototyping, Spiral" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "The Rapid Application Development (RAD) model is based on prototyping and iterative model with no (or less) specific planning."
+    },
+    {
+        "id": "q57",
+        "text": "In ___ model, there is less attention paid to the planning and more priority is given to the development tasks.",
+        "options": [
+            { "value": "a", "text": "Waterfall model" },
+            { "value": "b", "text": "Spiral model" },
+            { "value": "c", "text": "Rapid Application Development" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "In Rapid Application Development model, there is less attention paid to the planning and more priority is given to the development tasks. It targets at developing software in a short span of time."
+    },
+    {
+        "id": "q58",
+        "text": "In the RAD model, the functional modules are developed in parallel.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "In the RAD model, the functional modules are developed in parallel as prototypes and are integrated to make the complete product for faster product delivery."
+    },
+    {
+        "id": "q59",
+        "text": "Amongst which of the following is a correct sequence of development phases of RAD model,",
+        "options": [
+            { "value": "a", "text": "Data Modeling, Business Modeling, Process Modeling, Application Generation, Testing and Turnover" },
+            { "value": "b", "text": "Business Modeling, Data Modeling, Process Modeling, Application Generation, Testing and Turnover" },
+            { "value": "c", "text": "Data Modeling, Process Modeling, Application Generation, Business Modeling, Testing and Turnover" },
+            { "value": "d", "text": "Business Modeling, Data Modeling, Application Generation, Process Modeling, Testing and Turnover" }
+        ],
+        "correct": "b",
+        "explanation": "A correct sequence of the development phases of RAD model is as follows: Business Modeling, Data Modeling, Process Modeling, Application Generation, Testing and Turnover."
+    },
+    {
+        "id": "q60",
+        "text": "RAD model is useful when a project can be broken down into small ____.",
+        "options": [
+            { "value": "a", "text": "Modules" },
+            { "value": "b", "text": "Code" },
+            { "value": "c", "text": "System" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "RAD model is useful when a project can be broken down into small modules wherein each module can be assigned independently to individual development teams."
+    },
+    {
+        "id": "q61",
+        "text": "In RAD model, flow of ___ and distribution between various business channels, the product is designed.",
+        "options": [
+            { "value": "a", "text": "Data" },
+            { "value": "b", "text": "Information" },
+            { "value": "c", "text": "Process" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "In RAD model, flow of information and distribution between various business channels, the product is designed."
+    },
+    {
+        "id": "q62",
+        "text": "In RAD model, Data Modeling is based on the information collected from ___ is refined into a set of data objects that are significant for the business.",
+        "options": [
+            { "value": "a", "text": "Business Modeling" },
+            { "value": "b", "text": "Data Modeling" },
+            { "value": "c", "text": "Process Modeling" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "In RAD model, Data Modeling is based on the information collected from Business Modeling is refined into a set of data objects that are significant for the business."
+    },
+    {
+        "id": "q63",
+        "text": "Process Modeling refers to any changes or enhancements to the ___ sets are defined in this phase.",
+        "options": [
+            { "value": "a", "text": "Data Set" },
+            { "value": "b", "text": "Data object" },
+            { "value": "c", "text": "Data Diagram" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "Process Modeling refers to any changes or enhancements to the data object sets are defined in this phase. Process descriptions for adding, deleting, retrieving or modifying a data object are defined."
+    },
+    {
+        "id": "q64",
+        "text": "___ refers to the automated tools which are used for the construction of the software, to convert process and data models into prototypes.",
+        "options": [
+            { "value": "a", "text": "Application Generation" },
+            { "value": "b", "text": "Business Modeling" },
+            { "value": "c", "text": "Process Modeling" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Application Generation refers to the automated tools which are used for the construction of the software, to convert process and data models into prototypes."
+    },
+    {
+        "id": "q65",
+        "text": "____ refers as prototypes are individually tested during every iteration, the overall testing time is reduced in RAD.",
+        "options": [
+            { "value": "a", "text": "Business Modeling" },
+            { "value": "b", "text": "Process Modeling" },
+            { "value": "c", "text": "Testing and Turnover" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "Testing and Turnover refers as prototypes are individually tested during every iteration, the overall testing time is reduced in RAD."
+    },
+    {
+        "id": "q66",
+        "text": "Which one of the following is / are characteristic of RAD model?",
+        "options": [
+            { "value": "a", "text": "It produces a system in a short span of time" },
+            { "value": "b", "text": "Requirements are known" },
+            { "value": "c", "text": "A user will be involved all through the life cycle" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "A RAD model is useful when a system needs to be produced in a short span of time, requirements are known and the user will be involved all through the life cycle."
+    },
+    {
+        "id": "q67",
+        "text": "A RAD process enables a development team to create a fully functional system within a concise ___ period.",
+        "options": [
+            { "value": "a", "text": "Time" },
+            { "value": "b", "text": "Duration" },
+            { "value": "c", "text": "Frequency" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "A RAD process enables a development team to create a fully functional system within a concise time period."
+    },
+    {
+        "id": "q68",
+        "text": "Rapid construction takes the prototypes and beta systems from the design phase and converts them into the ____.",
+        "options": [
+            { "value": "a", "text": "Working process" },
+            { "value": "b", "text": "Working model" },
+            { "value": "c", "text": "Working style" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "Rapid construction takes the prototypes and beta systems from the design phase and converts them into the working model."
+    },
+    {
+        "id": "q69",
+        "text": "____ is used only when a system can be modularized to be delivered in an incremental manner.",
+        "options": [
+            { "value": "a", "text": "RAD" },
+            { "value": "b", "text": "Prototype" },
+            { "value": "c", "text": "Waterfall" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "RAD is used only when a system can be modularized to be delivered in an incremental manner."
+    },
+    {
+        "id": "q70",
+        "text": "User feedback is gathered with heavy emphasis on determining the system ____.",
+        "options": [
+            { "value": "a", "text": "Structure" },
+            { "value": "b", "text": "Architecture" },
+            { "value": "c", "text": "Model" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "User feedback is gathered with heavy emphasis on determining the system architecture."
+    },
+    {
+        "id": "q71",
+        "text": "A model that is the demo implementation of the system.",
+        "options": [
+            { "value": "a", "text": "waterfall" },
+            { "value": "b", "text": "prototype" },
+            { "value": "c", "text": "incremental" },
+            { "value": "d", "text": "agile" }
+        ],
+        "correct": "b",
+        "explanation": "Prototype is the demo implementation so that the customer gets a brief idea of his product. It is generally used when the customer requirements are not clear."
+    },
+    {
+        "id": "q72",
+        "text": "Maintenance is the final phase in waterfall model.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "The statement is true. This is the phase in which the completed software product is handed over to the client."
+    },
+    {
+        "id": "q73",
+        "text": "A stage in which individual components are integrated and ensured that they are error-free to meet customer requirements.",
+        "options": [
+            { "value": "a", "text": "Coding" },
+            { "value": "b", "text": "Testing" },
+            { "value": "c", "text": "Design" },
+            { "value": "d", "text": "Implementation" }
+        ],
+        "correct": "b",
+        "explanation": "Hardware and software components are tested individually. Testing stage in which individual components are integrated and ensured that they are error-free to meet customer requirements."
+    },
+    {
+        "id": "q74",
+        "text": "___________ is a step in which design is translated into machine-readable form.",
+        "options": [
+            { "value": "a", "text": "Design" },
+            { "value": "b", "text": "Conversion" },
+            { "value": "c", "text": "Debugging" },
+            { "value": "d", "text": "Coding" }
+        ],
+        "correct": "d",
+        "explanation": "Coding is the step in which design in translated into machine-readable form. If design is efficient, coding can be done effectively."
+    },
+    {
+        "id": "q75",
+        "text": "The customer requirements are broken down into logical modules for ease of _______________.",
+        "options": [
+            { "value": "a", "text": "inheritance" },
+            { "value": "b", "text": "design" },
+            { "value": "c", "text": "editing" },
+            { "value": "d", "text": "implementation" }
+        ],
+        "correct": "d",
+        "explanation": "The requirements are broken down for ease of implementation. Hardware and software requirements are identified and designed accordingly."
+    },
+    {
+        "id": "q76",
+        "text": "What do you call a technical person who is capable of understanding the basic requirements?",
+        "options": [
+            { "value": "a", "text": "team leader" },
+            { "value": "b", "text": "analyst" },
+            { "value": "c", "text": "engineer" },
+            { "value": "d", "text": "stakeholder" }
+        ],
+        "correct": "b",
+        "explanation": "The person is called an analyst. An analyst is a software engineering who is responsible for requirements gathering."
+    },
+    {
+        "id": "q77",
+        "text": "A step in waterfall model that involves a meeting with the customer to understand the requirements.",
+        "options": [
+            { "value": "a", "text": "Requirement Gathering" },
+            { "value": "b", "text": "SRS" },
+            { "value": "c", "text": "Implementation" },
+            { "value": "d", "text": "Customer review" }
+        ],
+        "correct": "a",
+        "explanation": "A waterfall model involves requirement gathering as its first step. This is the most important phase. It is important to understand the customer requirements."
+    },
+    {
+        "id": "q78",
+        "text": "Methodology in which project management processes were step-by step.",
+        "options": [
+            { "value": "a", "text": "Incremental" },
+            { "value": "b", "text": "Waterfall" },
+            { "value": "c", "text": "Spiral" },
+            { "value": "d", "text": "Prototyping" }
+        ],
+        "correct": "b",
+        "explanation": "Waterfall model is based on step-by step completion of the project. Every step is done individually."
+    },
+    {
+        "id": "q79",
+        "text": "An individual who plans and directs the work.",
+        "options": [
+            { "value": "a", "text": "Stakeholder" },
+            { "value": "b", "text": "Project manager" },
+            { "value": "c", "text": "Team leader" },
+            { "value": "d", "text": "Programmer" }
+        ],
+        "correct": "b",
+        "explanation": "Project Manager is the one who plans and designs the project. Team leader is the one who provides guidance, instruction, direction and leadership to a group of individuals."
+    },
+    {
+        "id": "q80",
+        "text": "A planned program if work that requires a definitive amount of time, effort and planning to complete.",
+        "options": [
+            { "value": "a", "text": "Problem" },
+            { "value": "b", "text": "Project" },
+            { "value": "c", "text": "Process" },
+            { "value": "d", "text": "Program" }
+        ],
+        "correct": "b",
+        "explanation": "The answer is Project. A project is a program which is something which is planned and needs effort and time to complete."
+    },
+    {
+        "id": "q81",
+        "text": "Spiral model provides support for ____.",
+        "options": [
+            { "value": "a", "text": "Issues diagnosis" },
+            { "value": "b", "text": "Risk handling" },
+            { "value": "c", "text": "Problem Identification" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "The spiral model is a risk-driven software development process model. In its diagrammatic representation, it looks like a spiral with many loops. A loop of the spiral is called a Phase of the software development process."
+    },
+    {
+        "id": "q82",
+        "text": "Spiral model was first introduced by,",
+        "options": [
+            { "value": "a", "text": "Barry Boehm in 1986" },
+            { "value": "b", "text": "Henary Killey in 1986" },
+            { "value": "c", "text": "Christopher in 1976" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Spiral model was first introduced by Barry Boehm in 1986."
+    },
+    {
+        "id": "q83",
+        "text": "A stage in which individual components are integrated and ensured that they are error-free to meet customer requirements.",
+        "options": [
+            { "value": "a", "text": "Coding" },
+            { "value": "b", "text": "Testing" },
+            { "value": "c", "text": "Design" },
+            { "value": "d", "text": "Implementation" }
+        ],
+        "correct": "b",
+        "explanation": "Hardware and software components are tested individually. Testing stage in which individual components are integrated and ensured that they are error-free to meet customer requirements."
+    },
+    {
+        "id": "q84",
+        "text": "___________ is a step in which design is translated into machine-readable form.",
+        "options": [
+            { "value": "a", "text": "Design" },
+            { "value": "b", "text": "Conversion" },
+            { "value": "c", "text": "Debugging" },
+            { "value": "d", "text": "Coding" }
+        ],
+        "correct": "d",
+        "explanation": "Coding is the step in which design in translated into machine-readable form. If design is efficient, coding can be done effectively."
+    },
+    {
+        "id": "q85",
+        "text": "The customer requirements are broken down into logical modules for ease of _______________.",
+        "options": [
+            { "value": "a", "text": "inheritance" },
+            { "value": "b", "text": "design" },
+            { "value": "c", "text": "editing" },
+            { "value": "d", "text": "implementation" }
+        ],
+        "correct": "d",
+        "explanation": "The requirements are broken down for ease of implementation. Hardware and software requirements are identified and designed accordingly."
+    },
+    {
+        "id": "q86",
+        "text": "What do you call a technical person who is capable of understanding the basic requirements?",
+        "options": [
+            { "value": "a", "text": "team leader" },
+            { "value": "b", "text": "analyst" },
+            { "value": "c", "text": "engineer" },
+            { "value": "d", "text": "stakeholder" }
+        ],
+        "correct": "b",
+        "explanation": "The person is called an analyst. An analyst is a software engineering who is responsible for requirements gathering."
+    },
+    {
+        "id": "q87",
+        "text": "A step in waterfall model that involves a meeting with the customer to understand the requirements.",
+        "options": [
+            { "value": "a", "text": "Requirement Gathering" },
+            { "value": "b", "text": "SRS" },
+            { "value": "c", "text": "Implementation" },
+            { "value": "d", "text": "Customer review" }
+        ],
+        "correct": "a",
+        "explanation": "A waterfall model involves requirement gathering as its first step. This is the most important phase. It is important to understand the customer requirements."
+    },
+    {
+        "id": "q88",
+        "text": "Methodology in which project management processes were step-by step.",
+        "options": [
+            { "value": "a", "text": "Incremental" },
+            { "value": "b", "text": "Waterfall" },
+            { "value": "c", "text": "Spiral" },
+            { "value": "d", "text": "Prototyping" }
+        ],
+        "correct": "b",
+        "explanation": "Waterfall model is based on step-by step completion of the project. Every step is done individually."
+    },
+    {
+        "id": "q89",
+        "text": "An individual who plans and directs the work.",
+        "options": [
+            { "value": "a", "text": "Stakeholder" },
+            { "value": "b", "text": "Project manager" },
+            { "value": "c", "text": "Team leader" },
+            { "value": "d", "text": "Programmer" }
+        ],
+        "correct": "b",
+        "explanation": "Project Manager is the one who plans and designs the project. Team leader is the one who provides guidance, instruction, direction and leadership to a group of individuals."
+    },
+    {
+        "id": "q90",
+        "text": "A planned program if work that requires a definitive amount of time, effort and planning to complete.",
+        "options": [
+            { "value": "a", "text": "Problem" },
+            { "value": "b", "text": "Project" },
+            { "value": "c", "text": "Process" },
+            { "value": "d", "text": "Program" }
+        ],
+        "correct": "b",
+        "explanation": "The answer is Project. A project is a program which is something which is planned and needs effort and time to complete."
+    },
+    {
+        "id": "q91",
+        "text": "Spiral model provides support for ____.",
+        "options": [
+            { "value": "a", "text": "Issues diagnosis" },
+            { "value": "b", "text": "Risk handling" },
+            { "value": "c", "text": "Problem Identification" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "The spiral model is a risk-driven software development process model. In its diagrammatic representation, it looks like a spiral with many loops. A loop of the spiral is called a Phase of the software development process."
+    },
+    {
+        "id": "q92",
+        "text": "Spiral model was first introduced by,",
+        "options": [
+            { "value": "a", "text": "Barry Boehm in 1986" },
+            { "value": "b", "text": "Henary Killey in 1986" },
+            { "value": "c", "text": "Christopher in 1976" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Spiral model was first introduced by Barry Boehm in 1986."
+    },
+    {
+        "id": "q93",
+        "text": "In the spiral model a risk analysis is performed at,",
+        "options": [
+            { "value": "a", "text": "First loop in the model" },
+            { "value": "b", "text": "Second loop in the model" },
+            { "value": "c", "text": "Every loop in the model" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "In the spiral model a risk analysis is performed at every loop in the model."
+    },
+    {
+        "id": "q94",
+        "text": "Generally, a Spiral model is a combination of ___ model and linear sequential development model.",
+        "options": [
+            { "value": "a", "text": "Iterative model" },
+            { "value": "b", "text": "V shaped model" },
+            { "value": "c", "text": "Agile model" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Generally, a Spiral model is a combination of Iterative model and linear sequential development model."
+    },
+    {
+        "id": "q95",
+        "text": "Number of development phases needed to develop a product can be varied by the project manager depending upon the ____.",
+        "options": [
+            { "value": "a", "text": "Project risks" },
+            { "value": "b", "text": "Project development" },
+            { "value": "c", "text": "Project review" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Number of development phases needed to develop a product can be varied by the project manager depending upon the Project risks."
+    },
+    {
+        "id": "q96",
+        "text": "The development team ___ functionality for the additional requirement in every-increasing spirals.",
+        "options": [
+            { "value": "a", "text": "Adds" },
+            { "value": "b", "text": "Deletes" },
+            { "value": "c", "text": "Modifies" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Until the program is ready for production, the software engineering team adds features for the additional requirement in ever-increasing spirals."
+    },
+    {
+        "id": "q97",
+        "text": "The Design phase begins with the ___ in the baseline spiral.",
+        "options": [
+            { "value": "a", "text": "Conceptual design" },
+            { "value": "b", "text": "Physical design" },
+            { "value": "c", "text": "Abstract view" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "The design process begins with the baseline spiral's conceptual design and progresses through architectural design, logical module design, physical product design, and final design in subsequent spirals."
+    },
+    {
+        "id": "q98",
+        "text": "A spiral model has two dimensions namely ___ and ___.",
+        "options": [
+            { "value": "a", "text": "Radial, angular" },
+            { "value": "b", "text": "Radial, perpendicular" },
+            { "value": "c", "text": "Diagonal, angular" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "A spiral model has two dimensions namely radial and angular."
+    },
+    {
+        "id": "q99",
+        "text": "In Spiral model, during the identify and resolve Risks phase, all the possible solutions are evaluated to select the best possible ____.",
+        "options": [
+            { "value": "a", "text": "Identification" },
+            { "value": "b", "text": "Solution" },
+            { "value": "c", "text": "Combination" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "In Spiral model, during the identify and resolve Risks phase, all the possible solutions are evaluated to select the best possible solution. The risks associated with the approach are known, and the risks are mitigated as best as possible."
+    },
+    {
+        "id": "q100",
+        "text": "During the Review and plan Phase of a Spiral model, a customer evaluate the developed version of the ____.",
+        "options": [
+            { "value": "a", "text": "Developer" },
+            { "value": "b", "text": "Team" },
+            { "value": "c", "text": "System" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "Customers assess the software that has been developed so far. Finally, the preparation for the next step begins."
+    },
+    {
+        "id": "q101",
+        "text": "Planning includes, estimating cost, schedule and resources for the iteration.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "Planning includes estimating the cost, schedule and resources for the iteration. It also involves understanding the system requirements for continuous communication between the system analyst and the customer."
+    },
+    {
+        "id": "q102",
+        "text": "____ of a potential risk is done while risk mitigation strategy is planned and finalized.",
+        "options": [
+            { "value": "a", "text": "Risk Consideration" },
+            { "value": "b", "text": "Risk Analysis Identification" },
+            { "value": "c", "text": "Potential Analysis" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "Risk Analysis Identification of a potential risk is done while risk mitigation strategy is planned and finalized."
+    },
+    {
+        "id": "q103",
+        "text": "Spiral Model is useful when,",
+        "options": [
+            { "value": "a", "text": "Project is large" },
+            { "value": "b", "text": "Releases are required to be frequent" },
+            { "value": "c", "text": "Requirements are unclear and complex" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "Spiral Model is useful when Project is large or medium sized, releases are required to be frequent and requirements are unclear and complex."
+    },
+    {
+        "id": "q104",
+        "text": "Amongst which of the following is / are the limitations of Spiral model,",
+        "options": [
+            { "value": "a", "text": "Best for large projects only" },
+            { "value": "b", "text": "Protocol needs to be followed strictly" },
+            { "value": "c", "text": "Documentation is more" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "Limitations of Spiral model are, it is best for large projects only, Protocol needs to be followed strictly and more documentation is required."
+    },
+    {
+        "id": "q105",
+        "text": "Spiral system development is not advisable for smaller project, it might cost them a lot,",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "Spiral system development is not advisable for smaller project; it might cost them a lot."
+    },
+    {
+        "id": "q106",
+        "text": "The spiral model is an evolutionary system process model.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "The spiral model is an evolutionary system process model that combines prototyping iterative nature with the linear sequential model's regulated and systematic aspects."
+    },
+    {
+        "id": "q107",
+        "text": "Using the spiral model, the system is developed in a series of ___ releases.",
+        "options": [
+            { "value": "a", "text": "Incremental" },
+            { "value": "b", "text": "Decremented" },
+            { "value": "c", "text": "Enhanced" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "The software is built in a series of gradual releases using the spiral model. The additional release a prototype during the early iterations. Later iterations produce increasingly complete versions of the engineered framework."
+    },
+    {
+        "id": "q108",
+        "text": "Each cycle in the spiral starts with the ___ of purpose for that cycle.",
+        "options": [
+            { "value": "a", "text": "Identification" },
+            { "value": "b", "text": "Analysis" },
+            { "value": "c", "text": "Design" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Each cycle in the spiral starts with the identification of purpose for that cycle, the various alternatives that are possible for achieving the targets, and the constraints that exists."
+    },
+    {
+        "id": "q109",
+        "text": "Development and validation refers,",
+        "options": [
+            { "value": "a", "text": "To develop strategies" },
+            { "value": "b", "text": "Resolve uncertainties and risks" },
+            { "value": "c", "text": "The process may include activities such as benchmarking, simulation, and prototyping." },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "Development and validation refer to develop strategies, resolve uncertainties and risks and the process may include activities such as benchmarking, simulation, and prototyping."
+    },
+    {
+        "id": "q110",
+        "text": "The spiral model enables gradual releases and refinement of a product through each phase of the spiral,",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "The spiral model facilitates gradual releases and revised a product through each phase of the Spiral. The most imperative feature of the model is its capability to manage uncovers risks after the project has commenced; creating a prototype makes this feasible."
+    },
+    {
+        "id": "q111",
+        "text": "Which one of the following is not an Evolutionary Process Model?",
+        "options": [
+            { "value": "a", "text": "WINWIN Spiral Model" },
+            { "value": "b", "text": "Incremental Model" },
+            { "value": "c", "text": "Concurrent Development Model" },
+            { "value": "d", "text": "All of the mentioned" }
+        ],
+        "correct": "d",
+        "explanation": "None."
+    },
+    {
+        "id": "q112",
+        "text": "The Incremental Model is a result of combination of elements of which two models?",
+        "options": [
+            { "value": "a", "text": "Build & FIX Model & Waterfall Model" },
+            { "value": "b", "text": "Linear Model & RAD Model" },
+            { "value": "c", "text": "Linear Model & Prototyping Model" },
+            { "value": "d", "text": "Waterfall Model & RAD Model" }
+        ],
+        "correct": "c",
+        "explanation": "Each linear sequence produces a deliverable 'increment' of the software and particularly when we have to quickly deliver a limited functionality system."
+    },
+    {
+        "id": "q113",
+        "text": "What is the major advantage of using Incremental Model?",
+        "options": [
+            { "value": "a", "text": "Customer can respond to each increment" },
+            { "value": "b", "text": "Easier to test and debug" },
+            { "value": "c", "text": "It is used when there is a need to get a product to the market early" },
+            { "value": "d", "text": "Easier to test and debug & It is used when there is a need to get a product to the market early" }
+        ],
+        "correct": "d",
+        "explanation": "Incremental Model is generally easier to test and debug than other methods of software development because relatively smaller changes are made during each iteration and is popular particularly when we have to quickly deliver a limited functionality system. However, option 'a' can be seen in other models as well like RAD model, hence option 'd' answers the question."
+    },
+    {
+        "id": "q114",
+        "text": "The spiral model was originally proposed by",
+        "options": [
+            { "value": "a", "text": "IBM" },
+            { "value": "b", "text": "Barry Boehm" },
+            { "value": "c", "text": "Pressman" },
+            { "value": "d", "text": "Royce" }
+        ],
+        "correct": "b",
+        "explanation": "None."
+    },
+    {
+        "id": "q115",
+        "text": "The spiral model has two dimensions namely _____________ and ____________",
+        "options": [
+            { "value": "a", "text": "diagonal, angular" },
+            { "value": "b", "text": "radial, perpendicular" },
+            { "value": "c", "text": "radial, angular" },
+            { "value": "d", "text": "diagonal, perpendicular" }
+        ],
+        "correct": "c",
+        "explanation": "The radial dimension of the model represents the cumulative costs and the angular dimension represents the progress made in completing each cycle. Each loop of the spiral from X-axis clockwise through 360° represents one phase."
+    },
+    {
+        "id": "q116",
+        "text": "How is WINWIN Spiral Model different from Spiral Model?",
+        "options": [
+            { "value": "a", "text": "It defines tasks required to define resources, timelines, and other project related information" },
+            { "value": "b", "text": "It defines a set of negotiation activities at the beginning of each pass around the spiral" },
+            { "value": "c", "text": "It defines tasks required to assess both technical and management risks" },
+            { "value": "d", "text": "It defines tasks required to construct, test, install, and provide user support" }
+        ],
+        "correct": "b",
+        "explanation": "Except option 'b' all other tasks/activities are present in Spiral Model as well."
+    },
+    {
+        "id": "q117",
+        "text": "Identify the disadvantage of Spiral Model.",
+        "options": [
+            { "value": "a", "text": "Doesn’t work well for smaller projects" },
+            { "value": "b", "text": "High amount of risk analysis" },
+            { "value": "c", "text": "Strong approval and documentation control" },
+            { "value": "d", "text": "Additional Functionality can be added at a later date" }
+        ],
+        "correct": "a",
+        "explanation": "All other options are the advantages of Spiral Model."
+    },
+    {
+        "id": "q118",
+        "text": "Spiral Model has user involvement in all its phases.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "b",
+        "explanation": "None."
+    },
+    {
+        "id": "q119",
+        "text": "How is Incremental Model different from Spiral Model?",
+        "options": [
+            { "value": "a", "text": "Progress can be measured for Incremental Model" },
+            { "value": "b", "text": "Changing requirements can be accommodated in Incremental Model" },
+            { "value": "c", "text": "Users can see the system early in Incremental Model" },
+            { "value": "d", "text": "All of the mentioned" }
+        ],
+        "correct": "a",
+        "explanation": "None."
+    },
+    {
+        "id": "q120",
+        "text": "If you were to create client/server applications, which model would you go for?",
+        "options": [
+            { "value": "a", "text": "WINWIN Spiral Model" },
+            { "value": "b", "text": "Spiral Model" },
+            { "value": "c", "text": "Concurrent Model" },
+            { "value": "d", "text": "Incremental Model" }
+        ],
+        "correct": "c",
+        "explanation": "When applied to client/server applications, the concurrent process model defines activities in two dimensions: a system dimension and a component dimension. Thus Concurrency is achieved by system and component activities occurring simultaneously and can be modeled using the state-oriented approach."
+    },
+    {
+        "id": "q121",
+        "text": "Selection of a model is based on",
+        "options": [
+            { "value": "a", "text": "Requirements" },
+            { "value": "b", "text": "Development team & Users" },
+            { "value": "c", "text": "Project type and associated risk" },
+            { "value": "d", "text": "All of the mentioned" }
+        ],
+        "correct": "d",
+        "explanation": "Each model has to have some requirements, a team of developers, users and the risk involved in developing a project."
+    },
+    {
+        "id": "q122",
+        "text": "Which two models doesn’t allow defining requirements early in the cycle?",
+        "options": [
+            { "value": "a", "text": "Waterfall & RAD" },
+            { "value": "b", "text": "Prototyping & Spiral" },
+            { "value": "c", "text": "Prototyping & RAD" },
+            { "value": "d", "text": "Waterfall & Spiral" }
+        ],
+        "correct": "b",
+        "explanation": "Prototyping Model starts with a requirements analysis phase including techniques like FAST, QFD, Brainstorming. In case of Spiral model the first phase involves activities related to customer communication like determining objectives."
+    },
+    {
+        "id": "q123",
+        "text": "Which of the following life cycle model can be chosen if the development team has less experience on similar projects?",
+        "options": [
+            { "value": "a", "text": "Spiral" },
+            { "value": "b", "text": "Waterfall" },
+            { "value": "c", "text": "RAD" },
+            { "value": "d", "text": "Iterative Enhancement Model" }
+        ],
+        "correct": "a",
+        "explanation": "Relying on risk assessment/analysis provides more flexibility than required for many applications which overcomes the criteria of less experienced developers."
+    },
+    {
+        "id": "q124",
+        "text": "If you were a lead developer of a software company and you are asked to submit a project/product within a stipulated time-frame with no cost barriers, which model would you select?",
+        "options": [
+            { "value": "a", "text": "Waterfall" },
+            { "value": "b", "text": "Spiral" },
+            { "value": "c", "text": "RAD" },
+            { "value": "d", "text": "Incremental" }
+        ],
+        "correct": "c",
+        "explanation": "RAD model is inapplicable to develop cheaper products/software/projects as the cost of modeling, hiring highly skilled developers/designers and automated code generation is very high. But here the cost is not an issue, so one can select this model as it reduces development time."
+    },
+    {
+        "id": "q125",
+        "text": "Which two of the following models will not be able to give the desired outcome if user’s participation is not involved?",
+        "options": [
+            { "value": "a", "text": "Waterfall & Spiral" },
+            { "value": "b", "text": "RAD & Spiral" },
+            { "value": "c", "text": "RAD & Waterfall" },
+            { "value": "d", "text": "RAD & Prototyping" }
+        ],
+        "correct": "d",
+        "explanation": "Active Participation of user is involved in all the four phases of RAD model and in case of the Prototyping model we need user’s presence/involvement every time a new prototype is build or designed."
+    },
+    {
+        "id": "q126",
+        "text": "A company is developing an advance version of their current software available in the market, what model approach would they prefer?",
+        "options": [
+            { "value": "a", "text": "RAD" },
+            { "value": "b", "text": "Iterative Enhancement" },
+            { "value": "c", "text": "Both RAD & Iterative Enhancement" },
+            { "value": "d", "text": "Spiral" }
+        ],
+        "correct": "c",
+        "explanation": "None."
+    },
+    {
+        "id": "q127",
+        "text": "One can choose Waterfall Model if the project development schedule is tight.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "b",
+        "explanation": "Real projects rarely follow the sequential flow and iterations in this model are handled indirectly. This changes can cause confusion as the project proceeds thereby delaying the delivery date."
+    },
+    {
+        "id": "q128",
+        "text": "Choose the correct option from given below:",
+        "options": [
+            { "value": "a", "text": "Prototyping Model facilitates reusability of components" },
+            { "value": "b", "text": "RAD Model facilitates reusability of components" },
+            { "value": "c", "text": "Both RAD & Prototyping Model facilitates reusability of components" },
+            { "value": "d", "text": "None" }
+        ],
+        "correct": "c",
+        "explanation": "None."
+    },
+    {
+        "id": "q129",
+        "text": "Spiral Model has high reliability requirements.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "None."
+    },
+    {
+        "id": "q130",
+        "text": "RAD Model has high reliability requirements.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "b",
+        "explanation": "None."
+    },
+    {
+        "id": "q131",
+        "text": "Spiral model provides support for ____.",
+        "options": [
+            { "value": "a", "text": "Issues diagnosis" },
+            { "value": "b", "text": "Risk handling" },
+            { "value": "c", "text": "Problem Identification" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "The spiral model is a risk-driven software development process model. In its diagrammatic representation, it looks like a spiral with many loops. A loop of the spiral is called a Phase of the software development process."
+    },
+    {
+        "id": "q132",
+        "text": "Spiral model was first introduced by,",
+        "options": [
+            { "value": "a", "text": "Barry Boehm in 1986" },
+            { "value": "b", "text": "Henary Killey in 1986" },
+            { "value": "c", "text": "Christopher in 1976" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Spiral model was first introduced by Barry Boehm in 1986."
+    },
+    {
+        "id": "q133",
+        "text": "In the spiral model a risk analysis is performed at,",
+        "options": [
+            { "value": "a", "text": "First loop in the model" },
+            { "value": "b", "text": "Second loop in the model" },
+            { "value": "c", "text": "Every loop in the model" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "In the spiral model a risk analysis is performed at every loop in the model."
+    },
+    {
+        "id": "q134",
+        "text": "Generally, a Spiral model is a combination of ___ model and linear sequential development model.",
+        "options": [
+            { "value": "a", "text": "Iterative model" },
+            { "value": "b", "text": "V shaped model" },
+            { "value": "c", "text": "Agile model" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Generally, a Spiral model is a combination of Iterative model and linear sequential development model."
+    },
+    {
+        "id": "q135",
+        "text": "Number of development phases needed to develop a product can be varied by the project manager depending upon the ____.",
+        "options": [
+            { "value": "a", "text": "Project risks" },
+            { "value": "b", "text": "Project development" },
+            { "value": "c", "text": "Project review" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Number of development phases needed to develop a product can be varied by the project manager depending upon the Project risks."
+    },
+    {
+        "id": "q136",
+        "text": "The development team ___ functionality for the additional requirement in every-increasing spirals.",
+        "options": [
+            { "value": "a", "text": "Adds" },
+            { "value": "b", "text": "Deletes" },
+            { "value": "c", "text": "Modifies" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Until the program is ready for production, the software engineering team adds features for the additional requirement in ever-increasing spirals."
+    },
+    {
+        "id": "q137",
+        "text": "The Design phase begins with the ___ in the baseline spiral.",
+        "options": [
+            { "value": "a", "text": "Conceptual design" },
+            { "value": "b", "text": "Physical design" },
+            { "value": "c", "text": "Abstract view" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "The design process begins with the baseline spiral's conceptual design and progresses through architectural design, logical module design, physical product design, and final design in subsequent spirals."
+    },
+    {
+        "id": "q138",
+        "text": "A spiral model has two dimensions namely ___ and ___.",
+        "options": [
+            { "value": "a", "text": "Radial, angular" },
+            { "value": "b", "text": "Radial, perpendicular" },
+            { "value": "c", "text": "Diagonal, angular" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "A spiral model has two dimensions namely radial and angular."
+    },
+    {
+        "id": "q139",
+        "text": "In Spiral model, during the identify and resolve Risks phase, all the possible solutions are evaluated to select the best possible ____.",
+        "options": [
+            { "value": "a", "text": "Identification" },
+            { "value": "b", "text": "Solution" },
+            { "value": "c", "text": "Combination" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "In Spiral model, during the identify and resolve Risks phase, all the possible solutions are evaluated to select the best possible solution. The risks associated with the approach are known, and the risks are mitigated as best as possible."
+    },
+    {
+        "id": "q140",
+        "text": "During the Review and plan Phase of a Spiral model, a customer evaluate the developed version of the ____.",
+        "options": [
+            { "value": "a", "text": "Developer" },
+            { "value": "b", "text": "Team" },
+            { "value": "c", "text": "System" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "Customers assess the software that has been developed so far. Finally, the preparation for the next step begins."
+    },
+    {
+        "id": "q141",
+        "text": "Planning includes, estimating cost, schedule and resources for the iteration.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "Planning includes estimating the cost, schedule and resources for the iteration. It also involves understanding the system requirements for continuous communication between the system analyst and the customer."
+    },
+    {
+        "id": "q142",
+        "text": "____ of a potential risk is done while risk mitigation strategy is planned and finalized.",
+        "options": [
+            { "value": "a", "text": "Risk Consideration" },
+            { "value": "b", "text": "Risk Analysis Identification" },
+            { "value": "c", "text": "Potential Analysis" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "Risk Analysis Identification of a potential risk is done while risk mitigation strategy is planned and finalized."
+    },
+    {
+        "id": "q143",
+        "text": "Spiral Model is useful when,",
+        "options": [
+            { "value": "a", "text": "Project is large" },
+            { "value": "b", "text": "Releases are required to be frequent" },
+            { "value": "c", "text": "Requirements are unclear and complex" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "Spiral Model is useful when Project is large or medium sized, releases are required to be frequent and requirements are unclear and complex."
+    },
+    {
+        "id": "q144",
+        "text": "Amongst which of the following is / are the limitations of Spiral model,",
+        "options": [
+            { "value": "a", "text": "Best for large projects only" },
+            { "value": "b", "text": "Protocol needs to be followed strictly" },
+            { "value": "c", "text": "Documentation is more" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "Limitations of Spiral model are, it is best for large projects only, Protocol needs to be followed strictly and more documentation is required."
+    },
+    {
+        "id": "q145",
+        "text": "Spiral system development is not advisable for smaller project, it might cost them a lot,",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "Spiral system development is not advisable for smaller project; it might cost them a lot."
+    },
+    {
+        "id": "q146",
+        "text": "The spiral model is an evolutionary system process model.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "The spiral model is an evolutionary system process model that combines prototyping iterative nature with the linear sequential model's regulated and systematic aspects."
+    },
+    {
+        "id": "q147",
+        "text": "Using the spiral model, the system is developed in a series of ___ releases.",
+        "options": [
+            { "value": "a", "text": "Incremental" },
+            { "value": "b", "text": "Decremented" },
+            { "value": "c", "text": "Enhanced" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "The software is built in a series of gradual releases using the spiral model. The additional release a prototype during the early iterations. Later iterations produce increasingly complete versions of the engineered framework."
+    },
+    {
+        "id": "q148",
+        "text": "Each cycle in the spiral starts with the ___ of purpose for that cycle.",
+        "options": [
+            { "value": "a", "text": "Identification" },
+            { "value": "b", "text": "Analysis" },
+            { "value": "c", "text": "Design" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Each cycle in the spiral starts with the identification of purpose for that cycle, the various alternatives that are possible for achieving the targets, and the constraints that exists."
+    },
+    {
+        "id": "q149",
+        "text": "Development and validation refers,",
+        "options": [
+            { "value": "a", "text": "To develop strategies" },
+            { "value": "b", "text": "Resolve uncertainties and risks" },
+            { "value": "c", "text": "The process may include activities such as benchmarking, simulation, and prototyping." },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "Development and validation refer to develop strategies, resolve uncertainties and risks and the process may include activities such as benchmarking, simulation, and prototyping."
+    },
+    {
+        "id": "q150",
+        "text": "The spiral model enables gradual releases and refinement of a product through each phase of the spiral,",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "The spiral model facilitates gradual releases and revised a product through each phase of the Spiral. The most imperative feature of the model is its capability to manage uncovers risks after the project has commenced; creating a prototype makes this feasible."
+    },
+    {
+        "id": "q151",
+        "text": "A waterfall model is also known as ____.",
+        "options": [
+            { "value": "a", "text": "Prototype model" },
+            { "value": "b", "text": "Linear sequential model" },
+            { "value": "c", "text": "Iterative Model" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "A waterfall model is also known as linear sequential model. This model gives a systematic, sequential approach to system development that begins at a systematic level and progresses through communication, planning, analysis, modeling, testing, deployment and maintenance."
+    },
+    {
+        "id": "q152",
+        "text": "A waterfall model is a model of ____.",
+        "options": [
+            { "value": "a", "text": "System Development Life Cycle" },
+            { "value": "b", "text": "System Enhancement" },
+            { "value": "c", "text": "System Prototype" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "A waterfall model is a model of system development life cycle. It's often beneficial to keep the development process as quick as possible. In order to accommodate all of the changes that occurs during the development of the program."
+    },
+    {
+        "id": "q153",
+        "text": "A waterfall model is most suitable model for smaller projects.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "A waterfall model is most suitable model for smaller projects."
+    },
+    {
+        "id": "q154",
+        "text": "Amongst which of the following model is the oldest model of system development life cycle?",
+        "options": [
+            { "value": "a", "text": "Spiral model" },
+            { "value": "b", "text": "Prototype model" },
+            { "value": "c", "text": "Waterfall model" },
+            { "value": "d", "text": "Iterative model" }
+        ],
+        "correct": "c",
+        "explanation": "Waterfall model is the oldest model of system development. The Waterfall Model was the first process model to be introduced."
+    },
+    {
+        "id": "q155",
+        "text": "With reference to waterfall model, each phase must be completed before the ___ can begin and there is no overlapping in the phases.",
+        "options": [
+            { "value": "a", "text": "Previous phase" },
+            { "value": "b", "text": "Next phase" },
+            { "value": "c", "text": "Both A and B" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "With reference to waterfall model, each phase must be completed before the next phase can begin and there is no overlapping in the phases."
+    },
+    {
+        "id": "q156",
+        "text": "The Waterfall model approach for the system development divides the whole process of system development into separate phases.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "The Waterfall model approach for the system development divides the whole process of system development into separate phases."
+    },
+    {
+        "id": "q157",
+        "text": "Problem identification is the ___ and initial phase of the waterfall model.",
+        "options": [
+            { "value": "a", "text": "First" },
+            { "value": "b", "text": "Second" },
+            { "value": "c", "text": "Third" },
+            { "value": "d", "text": "Fourth" }
+        ],
+        "correct": "a",
+        "explanation": "Problem identification is the first and initial phase of the waterfall model. This phase is used to identify the problem."
+    },
+    {
+        "id": "q158",
+        "text": "In the requirement analysis phase, the experts gather ___ and thinks about the solution of a problem.",
+        "options": [
+            { "value": "a", "text": "Analysis" },
+            { "value": "b", "text": "Requirement" },
+            { "value": "c", "text": "Both A and B" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "In the requirement analysis phase, the experts gather requirement and thinks about the solution of a problem."
+    },
+    {
+        "id": "q159",
+        "text": "System design is a ___ of the solution. The process follows the steps i.e. first creates logical design and physical design.",
+        "options": [
+            { "value": "a", "text": "Fundamental" },
+            { "value": "b", "text": "Blueprint" },
+            { "value": "c", "text": "Process" },
+            { "value": "d", "text": "Maintenance" }
+        ],
+        "correct": "b",
+        "explanation": "System design is a blueprint of the solution. The process follows the steps i.e., first creates logical design and physical design."
+    },
+    {
+        "id": "q160",
+        "text": "With reference to waterfall model, implementation shows the final ___ of the system.",
+        "options": [
+            { "value": "a", "text": "Enhancement" },
+            { "value": "b", "text": "Development" },
+            { "value": "c", "text": "Integration" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "Implementation shows the final integration of the system. In this phase, all the developed components are integrated with one another in a proper manner so that system can fulfill all the objectives for which it has designed."
+    },
+    {
+        "id": "q161",
+        "text": "Testing is a process to ___ the objective of the system through various steps. It is a mechanism that makes sure that the system is working properly or not.",
+        "options": [
+            { "value": "a", "text": "Development" },
+            { "value": "b", "text": "Validate" },
+            { "value": "c", "text": "Enhancement" },
+            { "value": "d", "text": "Verification" }
+        ],
+        "correct": "b",
+        "explanation": "Testing is a process to validate the objective of the system through various steps. It is a mechanism that makes sure that the system is working properly or not."
+    },
+    {
+        "id": "q162",
+        "text": "____ begins after successful testing of the developed system.",
+        "options": [
+            { "value": "a", "text": "System Design" },
+            { "value": "b", "text": "Requirement Analysis" },
+            { "value": "c", "text": "Deployment" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "Deployment begins after successful testing of the developed system; it is deployed to an individual company for which it has designed."
+    },
+    {
+        "id": "q163",
+        "text": "After a successful deployment of the system at customers end, it is compulsory to ___ it from time to time, so that system can successfully run to a long period.",
+        "options": [
+            { "value": "a", "text": "Testing" },
+            { "value": "b", "text": "Maintain" },
+            { "value": "c", "text": "Development" },
+            { "value": "d", "text": "Design" }
+        ],
+        "correct": "b",
+        "explanation": "After a successful deployment of the system at customers end, it is compulsory to maintain it from time to time, so that system can successfully run to a long period."
+    },
+    {
+        "id": "q164",
+        "text": "The waterfall model is the most suitable model when the ___ are crystal clear and don't change frequently.",
+        "options": [
+            { "value": "a", "text": "Testing" },
+            { "value": "b", "text": "Analysis" },
+            { "value": "c", "text": "Requirements" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "The waterfall model is the most suitable model when the requirements are crystal clear and don't change frequently."
+    },
+    {
+        "id": "q165",
+        "text": "The waterfall model explores a ___ of development phases during the development of a system.",
+        "options": [
+            { "value": "a", "text": "Physical progression" },
+            { "value": "b", "text": "Logical progression" },
+            { "value": "c", "text": "Both A and B" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "The waterfall model explores a logical progression of development phases during the development of a system. A waterfall model describes the process of system development in a linear sequential manner; here every phase in the cycle of development only starts when the previous phase is complete."
+    },
+    {
+        "id": "q166",
+        "text": "Amongst which of the following is/are the characteristics of Waterfall Model -",
+        "options": [
+            { "value": "a", "text": "Simplest model" },
+            { "value": "b", "text": "Good to small / medium-sized projects where requirements are specified and do not frequently changed" },
+            { "value": "c", "text": "Development phases executes sequentially" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "A Waterfall Model is a simplest model, Good to small / medium-sized projects where requirements are specified and do not frequently changed and development phases executes sequentially."
+    },
+    {
+        "id": "q167",
+        "text": "A development phase in waterfall model in which a meeting with the client’s schedules to understand the requirements.",
+        "options": [
+            { "value": "a", "text": "System Requirement Specification" },
+            { "value": "b", "text": "Requirement Gathering" },
+            { "value": "c", "text": "Implementation" },
+            { "value": "d", "text": "Testing" }
+        ],
+        "correct": "b",
+        "explanation": "Requirement Gathering is a development phase in waterfall model in which a meeting with the client’s schedules to understand the requirements."
+    },
+    {
+        "id": "q168",
+        "text": "In waterfall model, output of one phase is input to next phase.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "In waterfall model, output of one phase is input to next phase."
+    },
+    {
+        "id": "q169",
+        "text": "A selection of a particular model for system development is based on -",
+        "options": [
+            { "value": "a", "text": "Technical knowledge of development team" },
+            { "value": "b", "text": "Requirements" },
+            { "value": "c", "text": "Project types and associated risks" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "A selection of a particular model for system development is based on technical knowledge of development team, Requirements and Project types and associated risks."
+    },
+    {
+        "id": "q170",
+        "text": "Amongst which one is a correct order of the waterfall model,",
+        "options": [
+            { "value": "a", "text": "design, analysis, problem identification, testing, deployment, maintenance, and implementation" },
+            { "value": "b", "text": "analysis, problem identification, design, testing, deployment, maintenance, and implementation" },
+            { "value": "c", "text": "maintenance, analysis, problem identification, testing, deployment, design, and implementation" },
+            { "value": "d", "text": "problem identification, analysis, design, implementation, testing, deployment, and implementation" }
+        ],
+        "correct": "d",
+        "explanation": "A correct order of the waterfall model phases are problem identification, analysis, design, implementation, testing, deployment, and implementation."
+    },
+    {
+        "id": "q171",
+        "text": "A V-model is a SDLC model and called as V-model because of its,",
+        "options": [
+            { "value": "a", "text": "Shape" },
+            { "value": "b", "text": "Size" },
+            { "value": "c", "text": "Model" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "A V-model is a SDLC model and called as V-model because it is designed and developed as V alphabet shape."
+    },
+    {
+        "id": "q172",
+        "text": "The execution processes in V-model happens in a ____.",
+        "options": [
+            { "value": "a", "text": "Iterative in manner" },
+            { "value": "b", "text": "Sequential manner" },
+            { "value": "c", "text": "Spiral in manner" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "The execution processes in V-model happens in a Sequential manner. It is also known as Verification and Validation model."
+    },
+    {
+        "id": "q173",
+        "text": "The V model is also known as,",
+        "options": [
+            { "value": "a", "text": "Verification and Validation model" },
+            { "value": "b", "text": "Iterative Model" },
+            { "value": "c", "text": "Spiral Model" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "The V-model is also known as Verification and Validation model."
+    },
+    {
+        "id": "q174",
+        "text": "In V-model, each and every development phase is associated with,",
+        "options": [
+            { "value": "a", "text": "Development phase" },
+            { "value": "b", "text": "Testing phase" },
+            { "value": "c", "text": "Design phase" },
+            { "value": "d", "text": "Implantation phase" }
+        ],
+        "correct": "b",
+        "explanation": "In V-model, each and every development phase is associated with testing phase."
+    },
+    {
+        "id": "q175",
+        "text": "In V model, Verification refers a process of evaluating a product development phase to find out whether specified requirements are meet or not.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "Verification is a process of evaluating a product development phase to find out whether specified requirements are meet or not."
+    },
+    {
+        "id": "q176",
+        "text": "In V model, Functional and Non-functional techniques are the part of,",
+        "options": [
+            { "value": "a", "text": "Verification" },
+            { "value": "b", "text": "Validation" },
+            { "value": "c", "text": "Both A and B" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "Functional and Non-functional techniques are the part of Validation."
+    },
+    {
+        "id": "q177",
+        "text": "In V model, Validation refers a process of evaluating a system after successfully completion to find out whether ___ and ___ are meet or not.",
+        "options": [
+            { "value": "a", "text": "Customer expectations, Requirements" },
+            { "value": "b", "text": "System development, Testing" },
+            { "value": "c", "text": "Analysis, design" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "Validation refers a process to evaluate the system after the completion of the development phase to determine whether system meets the customer expectations and requirements."
+    },
+    {
+        "id": "q178",
+        "text": "The V model is an extension of the ____.",
+        "options": [
+            { "value": "a", "text": "Iteration model" },
+            { "value": "b", "text": "Spiral model" },
+            { "value": "c", "text": "Waterfall model" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "The V model is an extension of the Waterfall model. This model is based on the association of a testing phase for each corresponding development stage."
+    },
+    {
+        "id": "q179",
+        "text": "In V model, Requirement analysis refers to detailed communication with the customer to understand their ____.",
+        "options": [
+            { "value": "a", "text": "Analysis and design" },
+            { "value": "b", "text": "Requirements and expectations" },
+            { "value": "c", "text": "Testing and implementation" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "b",
+        "explanation": "In V model, Requirement analysis refers to detailed communication with the customer to understand their requirements and expectations."
+    },
+    {
+        "id": "q180",
+        "text": "Amongst which of the following is a suitable option for system design phase ____.",
+        "options": [
+            { "value": "a", "text": "Physical and logical design" },
+            { "value": "b", "text": "Intermediate design" },
+            { "value": "c", "text": "Module design" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "A system design phase contains physical and logical design. It completes hardware and communication setup for developing product."
+    },
+    {
+        "id": "q181",
+        "text": "Architectural Design refers to break down it further into modules,",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "Architectural Design is a baseline in selecting the architecture. It refers to break down it further into modules. The data transformation process and communication process between the internal modules are defined well."
+    },
+    {
+        "id": "q182",
+        "text": "The Module Design refers ___ for all the system modules are specified.",
+        "options": [
+            { "value": "a", "text": "Internal design" },
+            { "value": "b", "text": "External design" },
+            { "value": "c", "text": "Both A and B" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "a",
+        "explanation": "The Module Design refers internal design for all the system modules are specified. It is also known as Low Level Design (LLD). This has designed in such a way so that the design may compatible with the other modules in the system architecture and the other external systems."
+    },
+    {
+        "id": "q183",
+        "text": "Testing Phase of V-model includes,",
+        "options": [
+            { "value": "a", "text": "Unit Testing, Integration testing" },
+            { "value": "b", "text": "System Testing, User Acceptance Testing" },
+            { "value": "c", "text": "Both A and B" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "Testing Phase of V-model includes Unit Testing, Integration testing, System Testing, User Acceptance Testing."
+    },
+    {
+        "id": "q184",
+        "text": "The functions of Unit testing are,",
+        "options": [
+            { "value": "a", "text": "Executed to eliminate errors at code level" },
+            { "value": "b", "text": "It is a smallest entity which exists as a program module" },
+            { "value": "c", "text": "Unit testing verifies the codes/ units" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "The functions of Unit testing are to execute to eliminate errors at code level; it is a smallest entity which exists as a program module and Unit testing verifies the codes/ units."
+    },
+    {
+        "id": "q185",
+        "text": "In integration testing, all the modules of a system are integrated and the system is tested,",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "In integration testing, all the modules of a system are integrated and the system is tested. It is performed during Architecture design phase. This test verifies the communication of modules among themselves."
+    },
+    {
+        "id": "q186",
+        "text": "System test makes sure that expectations from a system developer are met.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "System testing test the complete application with its functionality. It evaluates the built application's functional and non-functional requirements."
+    },
+    {
+        "id": "q187",
+        "text": "User Acceptance Testing tests whether the product is capable enough to launch in the market or ready to work in the real world.",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "User Acceptance Testing determines whether the product is ready to go to market or is ready to function in the real world. This type of testing is carried out in front of a user in a user environment."
+    },
+    {
+        "id": "q188",
+        "text": "With reference to V-Model, testing is done in a hierarchical manner,",
+        "options": [
+            { "value": "a", "text": "True" },
+            { "value": "b", "text": "False" }
+        ],
+        "correct": "a",
+        "explanation": "In a V-Model, testing is done in a hierarchical manner. A system’s test strategy is devised. The test strategy is focused to make sure that the functionality defined in the specifications gathering is met."
+    },
+    {
+        "id": "q189",
+        "text": "Amongst which of the following shows the significance of a V-Model,",
+        "options": [
+            { "value": "a", "text": "Each phase of V-Model has specific deliverables and a review process" },
+            { "value": "b", "text": "Defects are found at early stage" },
+            { "value": "c", "text": "It is easy to manage" },
+            { "value": "d", "text": "All of the mentioned above" }
+        ],
+        "correct": "d",
+        "explanation": "A V-Model is significant because it is easy to manage and each phase of V-Model has specific deliverables and a review process, defects are found at early stage."
+    },
+    {
+        "id": "q190",
+        "text": "In what circumstances, a V-Model must be use?",
+        "options": [
+            { "value": "a", "text": "When requirements are clearly defined" },
+            { "value": "b", "text": "When sufficient technical resources are available with technical expertise" },
+            { "value": "c", "text": "Both A and B" },
+            { "value": "d", "text": "None of the mentioned above" }
+        ],
+        "correct": "c",
+        "explanation": "A V-Model must be use when requirements are clearly defined and fixed and ample technical resources are available with technical expertise."
+    }
+    
+      ];
+
+      let currentScore = 0;
+const scoreDisplay = document.getElementById('score');
+
+// Function to shuffle an array using Fisher-Yates algorithm
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function createQuiz() {
+    const container = document.getElementById('quiz-container');
+    
+    /*
+    // Shuffle the questions array
+    const shuffledQuestions = shuffleArray([...questions]); // تم تعليق خلط الأسئلة
+    */
+    
+    // استخدام الأسئلة الأصلية بدون خلط
+    questions.forEach((question, index) => {
+        const questionCard = document.createElement('div');
+        questionCard.className = 'question-card';
+        
+        /*
+        // Shuffle the options for each question
+        const shuffledOptions = shuffleArray([...question.options]); // تم تعليق خلط الخيارات
+        */
+        
+        // استخدام الخيارات الأصلية بدون خلط
+        questionCard.innerHTML = `
+            <p class="question-text">${index + 1}. ${question.text}
+                <button class="show-explanation-btn" onclick="toggleExplanation('${question.id}')">Show Explanation</button>
+            </p>
+            <div class="options-container">
+                ${question.options.map(option => `
+                    <label class="option-label">
+                        <input type="radio" name="${question.id}" value="${option.value}" 
+                               onchange="checkAnswer('${question.id}', '${option.value}', '${question.correct}')">
+                        ${option.text}
+                    </label>
+                `).join('')}
+            </div>
+            <div class="feedback" id="feedback-${question.id}"></div>
+            <div class="explanation" id="explanation-${question.id}">
+                <strong>Explanation:</strong> ${question.explanation}
+            </div>
+        `;
+        
+        container.appendChild(questionCard);
+    });
+}
+
+function toggleExplanation(questionId) {
+    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+    const explanationElement = document.getElementById(`explanation-${questionId}`);
+    
+    if (!selectedOption) {
+        alert('Please select an answer before viewing the explanation.');
+        return;
+    }
+
+    if (explanationElement.style.display === 'none' || !explanationElement.style.display) {
+        explanationElement.style.display = 'block';
+    } else {
+        explanationElement.style.display = 'none';
+    }
+}
+
+function checkAnswer(questionId, selected, correct) {
+    const feedbackElement = document.getElementById(`feedback-${questionId}`);
+    const previousFeedback = feedbackElement.className.includes('correct');
+    const isCorrect = selected === correct;
+    
+    if (isCorrect) {
+        feedbackElement.textContent = 'Correct!';
+        feedbackElement.className = 'feedback correct';
+        if (!previousFeedback) currentScore++;
+    } else {
+        feedbackElement.textContent = 'Incorrect!';
+        feedbackElement.className = 'feedback incorrect';
+        if (previousFeedback) currentScore--;
+    }
+    
+    scoreDisplay.textContent = currentScore;
+
+    /*
+    // Disable all radio buttons for this question after an answer is selected
+    const options = document.querySelectorAll(`input[name="${questionId}"]`);
+    options.forEach(option => {
+        option.disabled = true;
+    });
+    */
+}
+
+// Initialize the quiz when the page loads
+window.onload = createQuiz;
+    </script>
+</body>
+</html>
