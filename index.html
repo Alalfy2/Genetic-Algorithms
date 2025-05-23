@@ -184,197 +184,482 @@
     <script>
         const questions = [
          {
-        "id": "q1",
-        "text": "What distinguishes a profession from a mere occupation?",
-        "options": [
-            { "value": "a", "text": "Higher income" },
-            { "value": "b", "text": "Physical labor" },
-            { "value": "c", "text": "Formal education and adherence to standards" },
-            { "value": "d", "text": "Freelance flexibility" }
-        ],
-        "correct": "c",
-        "explanation": "A profession is defined by specialized education, training, and adherence to standards."
+    "id": "q1",
+    "text": "What distinguishes a profession from a mere occupation?",
+    "options": [
+      { "value": "a", "text": "Higher income" },
+      { "value": "b", "text": "Physical labor" },
+      { "value": "c", "text": "Formal education and adherence to standards" },
+      { "value": "d", "text": "Freelance flexibility" }
+    ],
+    "correct": "c",
+    "explanation": "A profession is defined by specialized education, training, and adherence to standards."
+  },
+  {
+    "id": "q2",
+    "text": "Which of the following is NOT typically a core element of professionalism?",
+    "options": [
+      { "value": "a", "text": "Ethical behavior" },
+      { "value": "b", "text": "Personal ambition" },
+      { "value": "c", "text": "Dedication to high standards" },
+      { "value": "d", "text": "Responsibility" }
+    ],
+    "correct": "b",
+    "explanation": "While personal ambition may drive individuals, it's not a core element of professionalism itself."
+  },
+  {
+    "id": "q3",
+    "text": "Which skill is essential for lifelong learning in IT professions?",
+    "options": [
+      { "value": "a", "text": "Memorization" },
+      { "value": "b", "text": "Technical rigidity" },
+      { "value": "c", "text": "Self-directed learning" },
+      { "value": "d", "text": "Dependence on institutions" }
+    ],
+    "correct": "c",
+    "explanation": "IT fields evolve rapidly, requiring professionals to independently seek new knowledge."
+  },
+  {
+    "id": "q4",
+    "text": "A competent software engineer must master:",
+    "options": [
+      { "value": "a", "text": "Client acquisition strategies" },
+      { "value": "b", "text": "Legal analysis" },
+      { "value": "c", "text": "Software development life cycles" },
+      { "value": "d", "text": "Manual testing only" }
+    ],
+    "correct": "c",
+    "explanation": "Understanding SDLC is fundamental to software engineering practice."
+  },
+  {
+    "id": "q5",
+    "text": "An IT support specialist troubleshooting network failure primarily requires:",
+    "options": [
+      { "value": "a", "text": "Strong public speaking" },
+      { "value": "b", "text": "Data entry speed" },
+      { "value": "c", "text": "Analytical problem-solving skills" },
+      { "value": "d", "text": "Marketing tactics" }
+    ],
+    "correct": "c",
+    "explanation": "Troubleshooting technical issues fundamentally requires systematic problem-solving."
+  },
+  {
+    "id": "q6",
+    "text": "Which component is LEAST likely to be part of professional competency in computing?",
+    "options": [
+      { "value": "a", "text": "Cybersecurity awareness" },
+      { "value": "b", "text": "Adaptability to new tools" },
+      { "value": "c", "text": "Ignorance of ethical concerns" },
+      { "value": "d", "text": "Communication skills" }
+    ],
+    "correct": "c",
+    "explanation": "Ethical awareness is essential in computing professions."
+  },
+  {
+    "id": "q7",
+    "text": "Ethical awareness in computing means:",
+    "options": [
+      { "value": "a", "text": "Applying only legal standards" },
+      { "value": "b", "text": "Avoiding discussions about privacy" },
+      { "value": "c", "text": "Recognizing the impact of biased algorithms" },
+      { "value": "d", "text": "Using outdated methodologies" }
+    ],
+    "correct": "c",
+    "explanation": "Ethical computing requires understanding broader societal impacts like algorithmic bias."
+  },
+  {
+    "id": "q8",
+    "text": "Which of the following platforms is NOT typically used for continuous IT learning?",
+    "options": [
+      { "value": "a", "text": "Udemy" },
+      { "value": "b", "text": "IEEE" },
+      { "value": "c", "text": "Instagram" },
+      { "value": "d", "text": "Coursera" }
+    ],
+    "correct": "c",
+    "explanation": "Instagram is primarily a social media platform, not focused on structured IT learning."
+  },
+  {
+    "id": "q9",
+    "text": "Which action aligns with professional responsibility?",
+    "options": [
+      { "value": "a", "text": "Ignoring security warnings" },
+      { "value": "b", "text": "Delaying patches" },
+      { "value": "c", "text": "Addressing software vulnerabilities" },
+      { "value": "d", "text": "Sharing customer data for research" }
+    ],
+    "correct": "c",
+    "explanation": "Responsible professionals prioritize system security and vulnerability management."
+  },
+  {
+    "id": "q10",
+    "text": "The act of participating in open-source projects helps develop:",
+    "options": [
+      { "value": "a", "text": "Competitive secrecy" },
+      { "value": "b", "text": "Individualism" },
+      { "value": "c", "text": "Collaborative skills" },
+      { "value": "d", "text": "Product marketing" }
+    ],
+    "correct": "c",
+    "explanation": "Open-source projects emphasize teamwork and community collaboration."
+  },
+  {
+    "id": "q11",
+    "text": "What is the primary concern with 'black box' AI systems?",
+    "options": [
+      { "value": "a", "text": "Processing power" },
+      { "value": "b", "text": "Transparency and explainability" },
+      { "value": "c", "text": "Marketability" },
+      { "value": "d", "text": "Licensing" }
+    ],
+    "correct": "b",
+    "explanation": "Black box systems lack interpretability, making decisions difficult to understand or audit."
+  },
+  {
+    "id": "q12",
+    "text": "Which ethical principle emphasizes minimizing harm?",
+    "options": [
+      { "value": "a", "text": "Justice" },
+      { "value": "b", "text": "Beneficence" },
+      { "value": "c", "text": "Non-maleficence" },
+      { "value": "d", "text": "Autonomy" }
+    ],
+    "correct": "c",
+    "explanation": "Non-maleficence specifically focuses on avoiding harm to others."
+  },
+  {
+    "id": "q13",
+    "text": "GDPR is mainly concerned with:",
+    "options": [
+      { "value": "a", "text": "Profit generation" },
+      { "value": "b", "text": "Transparency in finances" },
+      { "value": "c", "text": "Data protection and privacy" },
+      { "value": "d", "text": "Patent law" }
+    ],
+    "correct": "c",
+    "explanation": "The General Data Protection Regulation (GDPR) is a EU law on data privacy and security."
+  },
+  {
+    "id": "q14",
+    "text": "One solution to reduce AI bias is:",
+    "options": [
+      { "value": "a", "text": "Use smaller datasets" },
+      { "value": "b", "text": "Avoid using data" },
+      { "value": "c", "text": "Apply fairness audits and bias detection" },
+      { "value": "d", "text": "Use only numeric data" }
+    ],
+    "correct": "c",
+    "explanation": "Proactive auditing helps identify and mitigate biases in AI systems."
+  },
+  {
+    "id": "q15",
+    "text": "Which is NOT a recommended practice for ethical AI?",
+    "options": [
+      { "value": "a", "text": "Algorithmic opacity" },
+      { "value": "b", "text": "Stakeholder collaboration" },
+      { "value": "c", "text": "Explainable AI" },
+      { "value": "d", "text": "Regular audits" }
+    ],
+    "correct": "a",
+    "explanation": "Transparency is key for ethical AI, making opacity problematic."
+  },
+  {
+    "id": "q16",
+    "text": "In the COMPAS case study, the ethical failure was due to:",
+    "options": [
+      { "value": "a", "text": "Software piracy" },
+      { "value": "b", "text": "Lack of transparency" },
+      { "value": "c", "text": "Racial bias" },
+      { "value": "d", "text": "Intellectual theft" }
+    ],
+    "correct": "c",
+    "explanation": "COMPAS demonstrated racial bias in risk assessment algorithms."
+  },
+  {
+    "id": "q17",
+    "text": "Deepfakes are primarily an example of:",
+    "options": [
+      { "value": "a", "text": "Beneficial AI" },
+      { "value": "b", "text": "Transparency" },
+      { "value": "c", "text": "Misuse and malicious applications" },
+      { "value": "d", "text": "Anonymized data" }
+    ],
+    "correct": "c",
+    "explanation": "Deepfakes often involve deceptive manipulation of media content."
+  },
+  {
+    "id": "q18",
+    "text": "A hiring algorithm that favors certain demographics violates:",
+    "options": [
+      { "value": "a", "text": "Non-maleficence" },
+      { "value": "b", "text": "Sustainability" },
+      { "value": "c", "text": "Fairness and justice" },
+      { "value": "d", "text": "Open-source policy" }
+    ],
+    "correct": "c",
+    "explanation": "Discriminatory algorithms contradict principles of equal opportunity."
+  },
+  {
+    "id": "q19",
+    "text": "UNESCO AI Ethics Recommendations focus on:",
+    "options": [
+      { "value": "a", "text": "Marketing strategies" },
+      { "value": "b", "text": "Multinational profits" },
+      { "value": "c", "text": "Human-centric and sustainable AI" },
+      { "value": "d", "text": "Military automation" }
+    ],
+    "correct": "c",
+    "explanation": "UNESCO emphasizes AI that benefits humanity and sustainable development."
+  },
+  {
+    "id": "q20",
+    "text": "AI accountability is best addressed through:",
+    "options": [
+      { "value": "a", "text": "Data minimization" },
+      { "value": "b", "text": "Source code obfuscation" },
+      { "value": "c", "text": "Clear stakeholder responsibilities and audit trails" },
+      { "value": "d", "text": "Predictive modeling" }
+    ],
+    "correct": "c",
+    "explanation": "Accountability requires defined roles and verifiable decision records."
+  },
+  {
+    "id": "q21",
+    "text": "The main goal of practice management is to ensure:",
+    "options": [
+      { "value": "a", "text": "Artistic freedom" },
+      { "value": "b", "text": "Legal victory" },
+      { "value": "c", "text": "Efficiency, ethics, and sustainability" },
+      { "value": "d", "text": "Social media popularity" }
+    ],
+    "correct": "c",
+    "explanation": "Effective practice management balances operational, ethical and long-term goals."
+  },
+  {
+    "id": "q22",
+    "text": "Who typically oversees legal, financial, and operational standards in a firm?",
+    "options": [
+      { "value": "a", "text": "Principal Architect" },
+      { "value": "b", "text": "Practice Manager" },
+      { "value": "c", "text": "Marketing Lead" },
+      { "value": "d", "text": "Creative Director" }
+    ],
+    "correct": "b",
+    "explanation": "Practice managers handle cross-functional oversight of firm operations."
+  },
+  {
+    "id": "q23",
+    "text": "Effective cash flow management helps:",
+    "options": [
+      { "value": "a", "text": "Increase employee turnover" },
+      { "value": "b", "text": "Reduce taxes" },
+      { "value": "c", "text": "Ensure liquidity and stability" },
+      { "value": "d", "text": "Avoid quality control" }
+    ],
+    "correct": "c",
+    "explanation": "Cash flow management maintains financial health for ongoing operations."
+  },
+  {
+    "id": "q24",
+    "text": "Project integration in management refers to:",
+    "options": [
+      { "value": "a", "text": "Hiring freelance designers" },
+      { "value": "b", "text": "Aligning management with project goals" },
+      { "value": "c", "text": "Isolating finance from design" },
+      { "value": "d", "text": "Prioritizing aesthetics" }
+    ],
+    "correct": "b",
+    "explanation": "Integration ensures all management aspects support project objectives."
+  },
+  {
+    "id": "q25",
+    "text": "A major risk in speculative projects is:",
+    "options": [
+      { "value": "a", "text": "Increased salaries" },
+      { "value": "b", "text": "Reputation gain" },
+      { "value": "c", "text": "Financial overextension" },
+      { "value": "d", "text": "Skill development" }
+    ],
+    "correct": "c",
+    "explanation": "Speculative projects may lack guaranteed returns, risking budget issues."
+  },
+  {
+    "id": "q26",
+    "text": "A practice manager can increase staff retention by:",
+    "options": [
+      { "value": "a", "text": "Ignoring feedback" },
+      { "value": "b", "text": "Offering competitive salaries and training" },
+      { "value": "c", "text": "Assigning overtime constantly" },
+      { "value": "d", "text": "Eliminating performance reviews" }
+    ],
+    "correct": "b",
+    "explanation": "Investment in employee growth and fair compensation boosts retention."
+  },
+  {
+    "id": "q27",
+    "text": "Diversifying services in a practice helps mitigate:",
+    "options": [
+      { "value": "a", "text": "Inflation" },
+      { "value": "b", "text": "Economic uncertainty" },
+      { "value": "c", "text": "Legal requirements" },
+      { "value": "d", "text": "Stakeholder pressure" }
+    ],
+    "correct": "b",
+    "explanation": "Service diversification reduces reliance on any single market segment."
+  },
+  {
+    "id": "q28",
+    "text": "Gantt charts are used for:",
+    "options": [
+      { "value": "a", "text": "Staff motivation" },
+      { "value": "b", "text": "Cost projection" },
+      { "value": "c", "text": "Project scheduling" },
+      { "value": "d", "text": "Legal compliance" }
+    ],
+    "correct": "c",
+    "explanation": "Gantt charts visually map project timelines and task dependencies."
+  },
+  {
+    "id": "q29",
+    "text": "A finance manager in an architectural firm primarily handles:",
+    "options": [
+      { "value": "a", "text": "Blueprint design" },
+      { "value": "b", "text": "Structural modeling" },
+      { "value": "c", "text": "Budgeting and financial forecasting" },
+      { "value": "d", "text": "Staff recruitment" }
+    ],
+    "correct": "c",
+    "explanation": "Financial planning and analysis are core responsibilities."
+  },
+  {
+    "id": "q30",
+    "text": "Stakeholder management primarily focuses on:",
+    "options": [
+      { "value": "a", "text": "Public relations" },
+      { "value": "b", "text": "Legal documentation" },
+      { "value": "c", "text": "Effective and clear communication" },
+      { "value": "d", "text": "Logo design" }
+    ],
+    "correct": "c",
+    "explanation": "Stakeholder engagement requires transparent, tailored communication."
+  },
+  {
+    "id": "q31",
+    "text": "What is a major risk of relying heavily on legacy systems?",
+    "options": [
+      { "value": "a", "text": "Enhanced scalability" },
+      { "value": "b", "text": "Improved security" },
+      { "value": "c", "text": "Obsolescence and incompatibility" },
+      { "value": "d", "text": "Lower maintenance" }
+    ],
+    "correct": "c",
+    "explanation": "Legacy systems often lack support and integration with modern technologies."
+  },
+  {
+    "id": "q32",
+    "text": "An example of soft lifting is:",
+    "options": [
+      { "value": "a", "text": "Renting software hourly" },
+      { "value": "b", "text": "Installing licensed software on unauthorized multiple devices" },
+      { "value": "c", "text": "Selling open-source software" },
+      { "value": "d", "text": "Editing video illegally" }
+    ],
+    "correct": "b",
+    "explanation": "Soft lifting involves unauthorized sharing/installation beyond license terms."
+  },
+  {
+    "id": "q33",
+    "text": "What distinguishes piracy from plagiarism?",
+    "options": [
+      { "value": "a", "text": "Piracy is always legal" },
+      { "value": "b", "text": "Piracy involves data analytics" },
+      { "value": "c", "text": "Piracy is the illegal use of copyrighted software" },
+      { "value": "d", "text": "Plagiarism is worse" }
+    ],
+    "correct": "c",
+    "explanation": "Piracy specifically violates copyright laws through unauthorized copying."
+  },
+  {
+    "id": "q34",
+    "text": "Data manipulation often leads to:",
+    "options": [
+      { "value": "a", "text": "Improved reports" },
+      { "value": "b", "text": "Greater transparency" },
+      { "value": "c", "text": "Fraudulent outcomes" },
+      { "value": "d", "text": "Simplified tasks" }
+    ],
+    "correct": "c",
+    "explanation": "Intentional data manipulation typically aims to deceive or misrepresent."
+  },
+  {
+    "id": "q35",
+    "text": "Social engineering relies on:",
+    "options": [
+      { "value": "a", "text": "Complex code" },
+      { "value": "b", "text": "Human psychology to deceive" },
+      { "value": "c", "text": "Hardware backdoors" },
+      { "value": "d", "text": "Encryption tools" }
+    ],
+    "correct": "b",
+    "explanation": "Social engineering exploits human trust and behavioral tendencies."
+  },
+  {
+    "id": "q36",
+    "text": "Which of the following is NOT a legitimate software use category?",
+    "options": [
+      { "value": "a", "text": "Education" },
+      { "value": "b", "text": "Productivity" },
+      { "value": "c", "text": "Malware creation" },
+      { "value": "d", "text": "Communication" }
+    ],
+    "correct": "c",
+    "explanation": "Malware creation is inherently harmful and illegal."
+  },
+  {
+    "id": "q37",
+    "text": "Unauthorized surveillance is a form of:",
+    "options": [
+      { "value": "a", "text": "User engagement" },
+      { "value": "b", "text": "Innovation" },
+      { "value": "c", "text": "Privacy invasion" },
+      { "value": "d", "text": "Backup strategy" }
+    ],
+    "correct": "c",
+    "explanation": "Surveillance without consent violates personal privacy rights."
+  },
+  {
+    "id": "q38",
+    "text": "What is a core principle of privacy?",
+    "options": [
+      { "value": "a", "text": "Public data usage" },
+      { "value": "b", "text": "Unlimited data retention" },
+      { "value": "c", "text": "Informed consent" },
+      { "value": "d", "text": "Algorithm secrecy" }
+    ],
+    "correct": "c",
+    "explanation": "Privacy requires individuals' knowledge and agreement to data usage."
+  },
+  {
+    "id": "q39",
+    "text": "Which pricing model allows indefinite use after one payment?",
+    "options": [
+      { "value": "a", "text": "Subscription" },
+      { "value": "b", "text": "Freemium" },
+      { "value": "c", "text": "Perpetual license" },
+      { "value": "d", "text": "Ad-supported" }
+    ],
+    "correct": "c",
+    "explanation": "Perpetual licenses grant ongoing rights without recurring fees."
+  },
+  {
+    "id": "q40",
+    "text": "Ethical software development requires:",
+    "options": [
+      { "value": "a", "text": "Obfuscating source code" },
+      { "value": "b", "text": "Disregarding social effects" },
+      { "value": "c", "text": "Respecting user autonomy and fairness" },
+      { "value": "d", "text": "Preventing user feedback" }
     },
-    {
-        "id": "q2",
-        "text": "Which skill is essential for lifelong learning in IT professions?",
-        "options": [
-            { "value": "a", "text": "Memorization" },
-            { "value": "b", "text": "Technical rigidity" },
-            { "value": "c", "text": "Self-directed learning" },
-            { "value": "d", "text": "Dependence on institutions" }
-        ],
-        "correct": "c",
-        "explanation": "Lifelong learning in IT requires continuous self-motivated learning."
-    },
-    {
-        "id": "q3",
-        "text": "Which of the following is NOT typically a core element of professionalism?",
-        "options": [
-            { "value": "a", "text": "Ethical behavior" },
-            { "value": "b", "text": "Personal ambition" },
-            { "value": "c", "text": "Dedication to high standards" },
-            { "value": "d", "text": "Responsibility" }
-        ],
-        "correct": "b",
-        "explanation": "Professionalism emphasizes ethical behavior and dedication to high standards, not personal ambition."
-    },
-    {
-        "id": "q4",
-        "text": "A competent software engineer must master:",
-        "options": [
-            { "value": "a", "text": "Client acquisition strategies" },
-            { "value": "b", "text": "Legal analysis" },
-            { "value": "c", "text": "Software development life cycles" },
-            { "value": "d", "text": "Manual testing only" }
-        ],
-        "correct": "c",
-        "explanation": "Mastery of the software development life cycle is essential for a competent software engineer."
-    },
-    {
-        "id": "q5",
-        "text": "Which action aligns with professional responsibility?",
-        "options": [
-            { "value": "a", "text": "Ignoring security warnings" },
-            { "value": "b", "text": "Delaying patches" },
-            { "value": "c", "text": "Addressing software vulnerabilities" },
-            { "value": "d", "text": "Sharing customer data for research" }
-        ],
-        "correct": "c",
-        "explanation": "A professional is responsible for addressing and mitigating vulnerabilities in software."
-    },
-    {
-        "id": "q6",
-        "text": "What is the primary concern with 'black box' AI systems?",
-        "options": [
-            { "value": "a", "text": "Processing power" },
-            { "value": "b", "text": "Transparency and explainability" },
-            { "value": "c", "text": "Marketability" },
-            { "value": "d", "text": "Licensing" }
-        ],
-        "correct": "b",
-        "explanation": "Black box AI systems are problematic because their decisions lack transparency and are difficult to explain."
-    },
-    {
-        "id": "q7",
-        "text": "Which ethical principle emphasizes minimizing harm?",
-        "options": [
-            { "value": "a", "text": "Justice" },
-            { "value": "b", "text": "Beneficence" },
-            { "value": "c", "text": "Non-maleficence" },
-            { "value": "d", "text": "Autonomy" }
-        ],
-        "correct": "c",
-        "explanation": "Non-maleficence is the principle of avoiding harm or damage in AI systems."
-    },
-    {
-        "id": "q8",
-        "text": "What is a core strategy to reduce bias in AI systems?",
-        "options": [
-            { "value": "a", "text": "Use smaller datasets" },
-            { "value": "b", "text": "Avoid using data" },
-            { "value": "c", "text": "Apply fairness audits and bias detection" },
-            { "value": "d", "text": "Use only numeric data" }
-        ],
-        "correct": "c",
-        "explanation": "Applying fairness audits and bias detection is essential to reduce bias in AI systems."
-    },
-    {
-        "id": "q9",
-        "text": "Which is NOT a recommended practice for ethical AI?",
-        "options": [
-            { "value": "a", "text": "Algorithmic opacity" },
-            { "value": "b", "text": "Stakeholder collaboration" },
-            { "value": "c", "text": "Explainable AI" },
-            { "value": "d", "text": "Regular audits" }
-        ],
-        "correct": "a",
-        "explanation": "Ethical AI practices emphasize transparency and explainability, not algorithmic opacity."
-    },
-    {
-        "id": "q10",
-        "text": "What distinguishes piracy from plagiarism?",
-        "options": [
-            { "value": "a", "text": "Piracy is always legal" },
-            { "value": "b", "text": "Piracy involves data analytics" },
-            { "value": "c", "text": "Piracy is the illegal use of copyrighted software" },
-            { "value": "d", "text": "Plagiarism is worse" }
-        ],
-        "correct": "c",
-        "explanation": "Piracy refers to the illegal use, reproduction, or distribution of copyrighted software."
-    },
-    {
-        "id": "q11",
-        "text": "Data manipulation often leads to:",
-        "options": [
-            { "value": "a", "text": "Improved reports" },
-            { "value": "b", "text": "Greater transparency" },
-            { "value": "c", "text": "Fraudulent outcomes" },
-            { "value": "d", "text": "Simplified tasks" }
-        ],
-        "correct": "c",
-        "explanation": "Data manipulation leads to fraudulent outcomes and undermines trust in data."
-    },
-    {
-        "id": "q12",
-        "text": "Who typically oversees legal, financial, and operational standards in a firm?",
-        "options": [
-            { "value": "a", "text": "Principal Architect" },
-            { "value": "b", "text": "Practice Manager" },
-            { "value": "c", "text": "Marketing Lead" },
-            { "value": "d", "text": "Creative Director" }
-        ],
-        "correct": "b",
-        "explanation": "The Practice Manager is responsible for overseeing legal, financial, and operational standards."
-    },
-    {
-        "id": "q13",
-        "text": "Which of the following is an example of an ethical AI failure?",
-        "options": [
-            { "value": "a", "text": "AI for disaster relief" },
-            { "value": "b", "text": "COMPAS tool with racial bias" },
-            { "value": "c", "text": "AI used for climate change prediction" },
-            { "value": "d", "text": "AI for resource distribution" }
-        ],
-        "correct": "b",
-        "explanation": "The COMPAS recidivism tool was criticized for racial bias in predicting criminal behavior."
-    },
-    {
-        "id": "q14",
-        "text": "Ethical AI should prioritize which principle?",
-        "options": [
-            { "value": "a", "text": "User manipulation" },
-            { "value": "b", "text": "Public exploitation" },
-            { "value": "c", "text": "Transparency and fairness" },
-            { "value": "d", "text": "Profit maximization" }
-        ],
-        "correct": "c",
-        "explanation": "Transparency and fairness are essential in creating ethical AI systems."
-    },
-    {
-        "id": "q15",
-        "text": "In AI ethics, which of the following is critical for building trust with users?",
-        "options": [
-            { "value": "a", "text": "Openness" },
-            { "value": "b", "text": "User deception" },
-            { "value": "c", "text": "Minimizing transparency" },
-            { "value": "d", "text": "Exploiting data" }
-        ],
-        "correct": "a",
-        "explanation": "Openness in AI design and operation is essential for building user trust."
-    },
-    {
-        "id": "q16",
-        "text": "The main goal of practice management is to ensure:",
-        "options": [
-            { "value": "a", "text": "Artistic freedom" },
-            { "value": "b", "text": "Legal victory" },
-            { "value": "c", "text": "Efficiency, ethics, and sustainability" },
-            { "value": "d", "text": "Social media popularity" }
-        ],
-        "correct": "c",
-        "explanation": "The primary goal of practice management is ensuring ethical, efficient, and sustainable practices."
-    }
     
       ];
 
