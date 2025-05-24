@@ -1,833 +1,713 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Practice in Artificial Systems Books</title>
-    <style>
-:root {
-            --primary-color: #4CAF50;
-            --hover-color: #45a049;
-            --background-color: #f9f9f9;
-            --card-color: #fff;
-            --text-color: #333;
-            --border-radius: 8px;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
-            background-color: var(--background-color);
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--text-color);
-            margin-bottom: 30px;
-            font-size: 2rem;
-        }
-
-        .question-card {
-            background-color: var(--card-color);
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            padding: 20px;
-            transition: transform 0.2s ease;
-        }
-
-        .question-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .question-text {
-            font-weight: bold;
-            color: var(--text-color);
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .option-label {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .option-label:hover {
-            background-color: #f0f0f0;
-        }
-
-        .feedback {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: var(--border-radius);
-            font-weight: bold;
-            display: none;
-        }
-
-        .feedback.correct {
-            background-color: #dff0d8;
-            color: #3c763d;
-            display: block;
-        }
-
-        .feedback.incorrect {
-            background-color: #f2dede;
-            color: #a94442;
-            display: block;
-        }
-
-        .score-display {
-            text-align: center;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: var(--text-color);
-        }
-
-        .submit-btn {
-            display: block;
-            width: 100%;
-            max-width: 200px;
-            margin: 20px auto;
-            padding: 12px 20px;
-            font-size: 1rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .submit-btn:hover {
-            background-color: var(--hover-color);
-        }
-
-        .result-container {
-            background-color: #e3f2fd;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            text-align: center;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .result-container.show {
-            display: block;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .question-card {
-                padding: 15px;
-            }
-        }          .explanation {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #e3f2fd;
-            border-radius: 8px;
-            display: none;
-        }
-        .show-explanation-btn {
-            margin-left: 10px;
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .show-explanation-btn:hover {
-            background-color: #45a049;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Professional Practice Quiz</title>
+  <style>
+    :root {
+      --primary: #00796b;
+      --primary-dark: #004d40;
+      --background: #f1f8f9;
+      --card: #ffffff;
+      --correct: #c8e6c9;
+      --incorrect: #ffcdd2;
+      --selected: #e0f7fa;
+      --text: #333;
+      --radius: 10px;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--background);
+      color: var(--text);
+    }
+    h1 {
+      text-align: center;
+      color: var(--primary-dark);
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .question-card {
+      background-color: var(--card);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      margin-bottom: 20px;
+    }
+    .question-text {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .option-label {
+      display: block;
+      background-color: #f9f9f9;
+      border: 2px solid transparent;
+      padding: 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background 0.2s, border 0.2s, color 0.2s;
+      user-select: none;
+      color: var(--text);
+    }
+    .option-label:hover {
+      background-color: #e0f2f1;
+    }
+    .option-label.selected {
+      border-color: var(--primary);
+    }
+    /* خيارات صحيحة */
+    .option-label.correct {
+      background-color: var(--correct);
+      border-color: var(--primary-dark);
+      color: var(--primary-dark);
+    }
+    /* خيارات خاطئة مختارة */
+    .option-label.incorrect {
+      background-color: var(--incorrect);
+      border-color: #b71c1c;
+      color: #b71c1c;
+    }
+    .feedback {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: var(--radius);
+      font-weight: bold;
+      display: none;
+    }
+    .feedback.correct {
+      display: block;
+      background-color: var(--correct);
+      color: var(--primary-dark);
+    }
+    .feedback.incorrect {
+      display: block;
+      background-color: var(--incorrect);
+      color: #b71c1c;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Professional Practice in Artificial Systems Books</h1>
-        
-        <div class="score-display" id="currentScore">
-            Current Score: <span id="score">0</span>
-        </div>
+  <div class="container">
+    <h1>Professional Practice Quiz</h1>
+    <div id="quiz-container"></div>
+  </div>
 
-        <div id="quiz-container"></div>
+  <script>
+    // أسئلة اختبار مثال مع نوعين (ضع أسئلتك الحقيقية هنا)
+    const originalQuestions = [
+     {
+    type: "multiple",
+    question: "1. According to the sources, what is the definition of a \"Professional\"?",
+    options: [
+      "A field of work requiring formal education.",
+      "A person engaged in a profession, displaying competence, skill, and ethical behavior in their field of expertise.",
+      "The conduct, aims, and qualities that characterize a professional.",
+      "The process of using computers."
+    ],
+    correctAnswer: 1
+  },
+  {
+    type: "multiple",
+    question: "2. Professionalism, in a business context, is described as the way business people interact with whom?",
+    options: [
+      "Regulatory bodies only.",
+      "Technology platforms.",
+      "Colleagues, clients and customers.",
+      "Financial markets."
+    ],
+    correctAnswer: 2
+  },
+  {
+    type: "multiple",
+    question: "3. Which discipline applies engineering principles to the design, development, maintenance, testing, and evaluation of software?",
+    options: [
+      "Computing",
+      "Computer Science",
+      "Information Technology (IT)",
+      "Software Engineering"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "4. Which professional society is known for advancing computing as a science and profession, organizing conferences, and publishing research journals?",
+    options: [
+      "IEEE",
+      "BCS",
+      "IACAP",
+      "ACM"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "5. In Professional Ethics in Computing, which principle involves being honest in work and avoiding deception in communication and reporting?",
+    options: [
+      "Confidentiality",
+      "Accountability",
+      "Respect for Intellectual Property",
+      "Integrity"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "6. According to the sources, what does \"Confidentiality\" in Professional Ethics in Computing primarily involve?",
+    options: [
+      "Ensuring software works without errors.",
+      "Respecting the privacy and confidentiality of information, especially sensitive data.",
+      "Taking responsibility for the impact of your work.",
+      "Citing sources appropriately."
+    ],
+    correctAnswer: 1
+  },
+  {
+    type: "multiple",
+    question: "7. Which component of Professional Competency in Computing involves communication, teamwork, and interpersonal skills crucial for collaboration?",
+    options: [
+      "Technical Skills",
+      "Problem-Solving Abilities",
+      "Ethical Awareness",
+      "Soft Skills"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "8. Why is Life-Long Learning essential in the rapidly evolving field of computing, according to the sources?",
+    options: [
+      "To meet legal requirements.",
+      "To reduce financial risks.",
+      "For maintaining professional competency.",
+      "To avoid regulatory changes."
+    ],
+    correctAnswer: 2
+  },
+  {
+    type: "multiple",
+    question: "9. What type of software misuse involves the unauthorized copying, distribution, or use of software?",
+    options: [
+      "Malware Creation",
+      "Invasion of Privacy",
+      "Data Manipulation",
+      "Piracy"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "10. What is defined as the unauthorized access, use, or disclosure of an individual's personal information without their consent?",
+    options: [
+      "Piracy",
+      "Plagiarism",
+      "Invasion of Privacy",
+      "Data Manipulation"
+    ],
+    correctAnswer: 2
+  },
+  {
+    type: "multiple",
+    question: "11. Which key component of Information Security ensures that sensitive information is accessed only by authorized individuals or systems?",
+    options: [
+      "Integrity",
+      "Availability",
+      "Authentication",
+      "Confidentiality"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "12. What does the principle of \"Purpose Limitation\" in Privacy mean, according to the sources?",
+    options: [
+      "Individuals should have the right to informed consent.",
+      "Organizations should collect only necessary data.",
+      "Organizations must be clear about data practices.",
+      "Data should only be used for the purposes stated at the time of collection and not repurposed without consent."
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "13. In the comparison table, what is listed as the Key Concern for \"Piracy\"?",
+    options: [
+      "Protecting individual’s data from unauthorized access or misuse.",
+      "Infringement of copyright laws by unauthorized use or sale of intellectual property.",
+      "Ethical and intellectual dishonesty by not acknowledging the original creator.",
+      "Misrepresentation of authorship or originality."
+    ],
+    correctAnswer: 1
+  },
+  {
+    type: "multiple",
+    question: "14. Which software business model involves providing basic features for free, while requiring payment for premium features?",
+    options: [
+      "Proprietary Software",
+      "Open Source Software (OSS)",
+      "Software as a Service (SaaS)",
+      "Freemium"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "15. What economic concept in software development refers to the low cost of distributing software once it has been developed?",
+    options: [
+      "Network Effects",
+      "Economies of Scale",
+      "Software Licensing",
+      "Marginal Cost of Software"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "16. What is the definition of \"Practice Management\" according to the sources?",
+    options: [
+      "The study of financial markets.",
+      "Applying engineering principles to design.",
+      "The processes, strategies, and actions involved in running a professional practice, ensuring it is efficient, profitable, and ethically responsible.",
+      "The technical implementation of projects."
+    ],
+    correctAnswer: 2
+  },
+  {
+    type: "multiple",
+    question: "17. What is the primary goal of \"Sustainability\" as a benefit of Practice Management?",
+    options: [
+      "Increase client satisfaction.",
+      "Ensure ethical and legal compliance.",
+      "Promote professional growth.",
+      "Maintain the long-term viability of a practice and help it weather economic downturns."
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "18. Which role in Practice Management is responsible for coordinating daily operations and ensuring adherence to legal, ethical, and financial standards?",
+    options: [
+      "Principal Architect/Director",
+      "Finance Manager",
+      "Project Manager",
+      "Practice Manager"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "19. In Ethical Practices in AI, what does the principle of \"Fairness\" aim to avoid?",
+    options: [
+      "Lack of Transparency",
+      "Accountability Gaps",
+      "Safety Risks",
+      "Bias and discrimination."
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "20. Why is Ethical Practices important in Artificial Systems, according to the sources?",
+    options: [
+      "Only to prevent legal compliance issues.",
+      "To make systems less complex.",
+      "To build trust, prevent harm, ensure legal compliance, promote responsible innovation, and safeguard human rights.",
+      "To speed up development time."
+    ],
+    correctAnswer: 2
+  },
+  {
+    type: "multiple",
+    question: "21. What is described as a key ethical issue in AI where systems trained on biased data may perpetuate or amplify existing inequalities?",
+    options: [
+      "Lack of Transparency",
+      "Privacy Concerns",
+      "Accountability Gaps",
+      "Bias and Discrimination"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "22. What does Financial Management in practice primarily involve?",
+    options: [
+      "Only managing day-to-day expenses.",
+      "Focusing solely on short-term gains.",
+      "Applying financial principles to real-world business scenarios, including budgeting, risk management, and ensuring sustainability.",
+      "Strictly adhering to one specific accounting standard (e.g., GAAP)."
+    ],
+    correctAnswer: 2
+  },
+  {
+    type: "multiple",
+    question: "23. Which financial ratio measures a company's ability to meet its short-term obligations?",
+    options: [
+      "Profitability Ratios",
+      "Solvency Ratios",
+      "Efficiency Ratios",
+      "Liquidity Ratios"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "24. In financial risk management, which type of risk arises from changes in market conditions like stock prices or exchange rates?",
+    options: [
+      "Credit Risk",
+      "Liquidity Risk",
+      "Operational Risk",
+      "Market Risk"
+    ],
+    correctAnswer: 3
+  },
+  {
+    type: "multiple",
+    question: "25. What strategy in financial risk management involves spreading investments across different assets to reduce risk?",
+    options: [
+      "Hedging",
+      "Insurance",
+      "Diversification",
+      "Internal Controls"
+    ],
+    correctAnswer: 2
+  },
+  {
+    type: "multiple",
+    question: "26. What is a Gantt chart used for in project management?",
+    options: [
+      "To display financial ratios.",
+      "To manage software versions.",
+      "To illustrate project schedules showing tasks against time.",
+      "To analyze customer satisfaction."
+    ],
+    correctAnswer: 2
+  },
+  {
+    type: "multiple",
+    question: "27. In legal requirements management, what is the primary purpose of compliance?",
+    options: [
+      "Increasing sales.",
+      "Meeting customer demands.",
+      "Ensuring that a company meets laws, regulations, and standards relevant to its business activities.",
+      "Improving employee productivity."
+    ],
+    correctAnswer: 2
+  },
+  {
+    type: "multiple",
+    question: "28. What does a project risk register typically include?",
+    options: [
+      "A list of team members.",
+      "A log of identified risks, their severity, probability, mitigation strategies, and owners.",
+      "Company financial statements.",
+      "Project milestones."
+    ],
+    correctAnswer: 1
+  },
+  {
+    type: "multiple",
+    question: "29. Which of the following is an example of a non-functional requirement in software development?",
+    options: [
+      "The software shall calculate taxes correctly.",
+      "The system shall respond to user requests within 2 seconds.",
+      "The software shall have a user login feature.",
+      "The system shall provide monthly reports."
+    ],
+    correctAnswer: 1
+  },
+  {
+    type: "multiple",
+    question: "30. What is the primary focus of Software Quality Assurance (SQA)?",
+    options: [
+      "To write code faster.",
+      "To ensure the software meets defined quality standards and is defect-free.",
+      "To design user interfaces.",
+      "To manage project schedules."
+    ],
+    correctAnswer: 1
+  },
 
-        <button class="submit-btn" onclick="calculateFinalScore()">Submit Quiz</button>
+  // True/False Questions 31-60
+  {
+    type: "truefalse",
+    question: "31. A \"Profession\" requires formal education, training, and expertise.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "32. Professionalism only concerns technical competence and does not include ethical behavior.",
+    correctAnswer: false
+  },
+  {
+    type: "truefalse",
+    question: "33. Software Engineering is a discipline that applies engineering principles to software development.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "34. ACM is a professional society focused on computing science and organizing related conferences.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "35. Confidentiality means sharing sensitive data freely to promote transparency.",
+    correctAnswer: false
+  },
+  {
+    type: "truefalse",
+    question: "36. Integrity in Professional Ethics means being honest and avoiding deception.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "37. Soft skills such as communication and teamwork are not important for computing professionals.",
+    correctAnswer: false
+  },
+  {
+    type: "truefalse",
+    question: "38. Life-Long Learning helps professionals keep up with technological changes.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "39. Software piracy refers to authorized distribution of software.",
+    correctAnswer: false
+  },
+  {
+    type: "truefalse",
+    question: "40. Invasion of privacy means unauthorized use or disclosure of personal information.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "41. Confidentiality in Information Security means limiting access to authorized users only.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "42. Purpose Limitation means data can be used for any purpose after collection.",
+    correctAnswer: false
+  },
+  {
+    type: "truefalse",
+    question: "43. Piracy is an infringement of copyright laws by unauthorized use or sale of intellectual property.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "44. Freemium is a software business model where basic features are free and premium features require payment.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "45. Marginal cost of software is high because software must be physically distributed each time.",
+    correctAnswer: false
+  },
+  {
+    type: "truefalse",
+    question: "46. Practice Management involves running a professional practice efficiently, ethically, and profitably.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "47. Sustainability in practice management aims to maintain long-term viability of the practice.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "48. The Project Manager ensures legal, ethical, and financial standards are met daily.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "49. Fairness in AI ethics aims to promote bias and discrimination.",
+    correctAnswer: false
+  },
+  {
+    type: "truefalse",
+    question: "50. Ethical practices in AI help build trust and safeguard human rights.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "51. AI bias occurs when systems trained on biased data perpetuate inequalities.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "52. Financial management focuses only on short-term gains.",
+    correctAnswer: false
+  },
+  {
+    type: "truefalse",
+    question: "53. Liquidity ratios measure a company's ability to meet short-term obligations.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "54. Market risk arises from changes in market conditions like stock prices or exchange rates.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "55. Diversification spreads investments across assets to reduce risk.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "56. Gantt charts are used to display project schedules.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "57. Compliance means ensuring a company meets laws and regulations relevant to its business.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "58. A project risk register logs identified risks, their severity, mitigation strategies, and owners.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "59. Non-functional requirements define system behaviors like performance and response times.",
+    correctAnswer: true
+  },
+  {
+    type: "truefalse",
+    question: "60. Software Quality Assurance focuses on ensuring software quality and defect-free products.",
+    correctAnswer: true
+  }
+    ];
 
-        <div class="result-container" id="result">
-            <h2>Final Results</h2>
-            <p id="finalScore"></p>
-            <p id="percentage"></p>
-        </div>
-    </div>
-
-    <script>
-        const questions = [
-        {
-  "questions": [
-    {
-      "id": "q1",
-      "text": "According to the sources, what is the definition of a \"Professional\"?",
-      "options": [
-        { "value": "a", "text": "A field of work requiring formal education." },
-        { "value": "b", "text": "A person engaged in a profession, displaying competence, skill, and ethical behavior in their field of expertise." },
-        { "value": "c", "text": "The conduct, aims, and qualities that characterize a professional." },
-        { "value": "d", "text": "The process of using computers." }
-      ],
-      "correct": "b",
-      "explanation": "A professional is defined as a person engaged in a profession who demonstrates competence, skill and ethical behavior."
-    },
-    {
-      "id": "q2",
-      "text": "Professionalism, in a business context, is described as the way business people interact with whom?",
-      "options": [
-        { "value": "a", "text": "Regulatory bodies only." },
-        { "value": "b", "text": "Technology platforms." },
-        { "value": "c", "text": "Colleagues, clients and customers." },
-        { "value": "d", "text": "Financial markets." }
-      ],
-      "correct": "c",
-      "explanation": "Professionalism involves appropriate interactions with colleagues, clients and customers."
-    },
-    {
-      "id": "q3",
-      "text": "Which discipline applies engineering principles to the design, development, maintenance, testing, and evaluation of software?",
-      "options": [
-        { "value": "a", "text": "Computing" },
-        { "value": "b", "text": "Computer Science" },
-        { "value": "c", "text": "Information Technology (IT)" },
-        { "value": "d", "text": "Software Engineering" }
-      ],
-      "correct": "d",
-      "explanation": "Software Engineering specifically applies engineering principles to all phases of software development."
-    },
-    {
-      "id": "q4",
-      "text": "Which professional society is known for advancing computing as a science and profession, organizing conferences, and publishing research journals?",
-      "options": [
-        { "value": "a", "text": "IEEE" },
-        { "value": "b", "text": "BCS" },
-        { "value": "c", "text": "IACAP" },
-        { "value": "d", "text": "ACM" }
-      ],
-      "correct": "d",
-      "explanation": "ACM (Association for Computing Machinery) is the leading professional organization for computing research and education."
-    },
-    {
-      "id": "q5",
-      "text": "In Professional Ethics in Computing, which principle involves being honest in work and avoiding deception in communication and reporting?",
-      "options": [
-        { "value": "a", "text": "Confidentiality" },
-        { "value": "b", "text": "Accountability" },
-        { "value": "c", "text": "Respect for Intellectual Property" },
-        { "value": "d", "text": "Integrity" }
-      ],
-      "correct": "d",
-      "explanation": "Integrity requires honesty and avoidance of deception in all professional communications."
-    },
-    {
-      "id": "q6",
-      "text": "According to the sources, what does \"Confidentiality\" in Professional Ethics in Computing primarily involve?",
-      "options": [
-        { "value": "a", "text": "Ensuring software works without errors." },
-        { "value": "b", "text": "Respecting the privacy and confidentiality of information, especially sensitive data." },
-        { "value": "c", "text": "Taking responsibility for the impact of your work." },
-        { "value": "d", "text": "Citing sources appropriately." }
-      ],
-      "correct": "b",
-      "explanation": "Confidentiality involves protecting sensitive information from unauthorized access or disclosure."
-    },
-    {
-      "id": "q7",
-      "text": "Which component of Professional Competency in Computing involves communication, teamwork, and interpersonal skills crucial for collaboration?",
-      "options": [
-        { "value": "a", "text": "Technical Skills" },
-        { "value": "b", "text": "Problem-Solving Abilities" },
-        { "value": "c", "text": "Ethical Awareness" },
-        { "value": "d", "text": "Soft Skills" }
-      ],
-      "correct": "d",
-      "explanation": "Soft skills encompass interpersonal abilities needed for effective teamwork and communication."
-    },
-    {
-      "id": "q8",
-      "text": "Why is Life-Long Learning essential in the rapidly evolving field of computing, according to the sources?",
-      "options": [
-        { "value": "a", "text": "To meet legal requirements." },
-        { "value": "b", "text": "To reduce financial risks." },
-        { "value": "c", "text": "For maintaining professional competency." },
-        { "value": "d", "text": "To avoid regulatory changes." }
-      ],
-      "correct": "c",
-      "explanation": "Continuous learning is necessary to maintain competency in the fast-changing computing field."
-    },
-    {
-      "id": "q9",
-      "text": "What type of software misuse involves the unauthorized copying, distribution, or use of software?",
-      "options": [
-        { "value": "a", "text": "Malware Creation" },
-        { "value": "b", "text": "Invasion of Privacy" },
-        { "value": "c", "text": "Data Manipulation" },
-        { "value": "d", "text": "Piracy" }
-      ],
-      "correct": "d",
-      "explanation": "Software piracy refers to unauthorized reproduction or distribution of copyrighted software."
-    },
-    {
-      "id": "q10",
-      "text": "What is defined as the unauthorized access, use, or disclosure of an individual's personal information without their consent?",
-      "options": [
-        { "value": "a", "text": "Piracy" },
-        { "value": "b", "text": "Plagiarism" },
-        { "value": "c", "text": "Invasion of Privacy" },
-        { "value": "d", "text": "Data Manipulation" }
-      ],
-      "correct": "c",
-      "explanation": "Invasion of privacy involves unauthorized handling of personal information."
-    },
-    {
-      "id": "q11",
-      "text": "Which key component of Information Security ensures that sensitive information is accessed only by authorized individuals or systems?",
-      "options": [
-        { "value": "a", "text": "Integrity" },
-        { "value": "b", "text": "Availability" },
-        { "value": "c", "text": "Authentication" },
-        { "value": "d", "text": "Confidentiality" }
-      ],
-      "correct": "d",
-      "explanation": "Confidentiality ensures only authorized access to sensitive information."
-    },
-    {
-      "id": "q12",
-      "text": "What does the principle of \"Purpose Limitation\" in Privacy mean, according to the sources?",
-      "options": [
-        { "value": "a", "text": "Individuals should have the right to informed consent." },
-        { "value": "b", "text": "Organizations should collect only necessary data." },
-        { "value": "c", "text": "Organizations must be clear about data practices." },
-        { "value": "d", "text": "Data should only be used for the purposes stated at the time of collection and not repurposed without consent." }
-      ],
-      "correct": "d",
-      "explanation": "Purpose limitation restricts data usage to only the originally specified purposes."
-    },
-    {
-      "id": "q13",
-      "text": "In the comparison table, what is listed as the Key Concern for \"Piracy\"?",
-      "options": [
-        { "value": "a", "text": "Protecting individual's data from unauthorized access or misuse." },
-        { "value": "b", "text": "Infringement of copyright laws by unauthorized use or sale of intellectual property." },
-        { "value": "c", "text": "Ethical and intellectual dishonesty by not acknowledging the original creator." },
-        { "value": "d", "text": "Misrepresentation of authorship or originality." }
-      ],
-      "correct": "b",
-      "explanation": "Piracy primarily concerns copyright infringement through unauthorized use of IP."
-    },
-    {
-      "id": "q14",
-      "text": "Which software business model involves providing basic features for free, while requiring payment for premium features?",
-      "options": [
-        { "value": "a", "text": "Proprietary Software" },
-        { "value": "b", "text": "Open Source Software (OSS)" },
-        { "value": "c", "text": "Software as a Service (SaaS)" },
-        { "value": "d", "text": "Freemium" }
-      ],
-      "correct": "d",
-      "explanation": "The freemium model offers basic functionality free with paid upgrades."
-    },
-    {
-      "id": "q15",
-      "text": "What economic concept in software development refers to the low cost of distributing software once it has been developed?",
-      "options": [
-        { "value": "a", "text": "Network Effects" },
-        { "value": "b", "text": "Economies of Scale" },
-        { "value": "c", "text": "Software Licensing" },
-        { "value": "d", "text": "Marginal Cost of Software" }
-      ],
-      "correct": "d",
-      "explanation": "Marginal cost refers to the minimal cost of distributing additional copies of software."
-    },
-    {
-      "id": "q16",
-      "text": "What is the definition of \"Practice Management\" according to the sources?",
-      "options": [
-        { "value": "a", "text": "The study of financial markets." },
-        { "value": "b", "text": "Applying engineering principles to design." },
-        { "value": "c", "text": "The processes, strategies, and actions involved in running a professional practice, ensuring it is efficient, profitable, and ethically responsible." },
-        { "value": "d", "text": "The technical implementation of projects." }
-      ],
-      "correct": "c",
-      "explanation": "Practice management encompasses all operational aspects of running a professional practice."
-    },
-    {
-      "id": "q17",
-      "text": "What is the primary goal of \"Sustainability\" as a benefit of Practice Management?",
-      "options": [
-        { "value": "a", "text": "Increase client satisfaction." },
-        { "value": "b", "text": "Ensure ethical and legal compliance." },
-        { "value": "c", "text": "Promote professional growth." },
-        { "value": "d", "text": "Maintain the long-term viability of a practice and help it weather economic downturns." }
-      ],
-      "correct": "d",
-      "explanation": "Sustainability focuses on ensuring the practice's long-term survival and stability."
-    },
-    {
-      "id": "q18",
-      "text": "Which role in Practice Management is responsible for coordinating daily operations and ensuring adherence to legal, ethical, and financial standards?",
-      "options": [
-        { "value": "a", "text": "Principal Architect/Director" },
-        { "value": "b", "text": "Finance Manager" },
-        { "value": "c", "text": "Project Manager" },
-        { "value": "d", "text": "Practice Manager" }
-      ],
-      "correct": "d",
-      "explanation": "The Practice Manager oversees daily operations and compliance."
-    },
-    {
-      "id": "q19",
-      "text": "In Ethical Practices in AI, what does the principle of \"Fairness\" aim to avoid?",
-      "options": [
-        { "value": "a", "text": "Lack of Transparency" },
-        { "value": "b", "text": "Accountability Gaps" },
-        { "value": "c", "text": "Safety Risks" },
-        { "value": "d", "text": "Bias and discrimination." }
-      ],
-      "correct": "d",
-      "explanation": "Fairness in AI focuses on preventing biased or discriminatory outcomes."
-    },
-    {
-      "id": "q20",
-      "text": "Why is Ethical Practices important in Artificial Systems, according to the sources?",
-      "options": [
-        { "value": "a", "text": "Only to prevent legal compliance issues." },
-        { "value": "b", "text": "To make systems less complex." },
-        { "value": "c", "text": "To build trust, prevent harm, ensure legal compliance, promote responsible innovation, and safeguard human rights." },
-        { "value": "d", "text": "To speed up development time." }
-      ],
-      "correct": "c",
-      "explanation": "Ethical practices serve multiple important purposes in AI system development."
-    },
-    {
-      "id": "q21",
-      "text": "What is described as a key ethical issue in AI where systems trained on biased data may perpetuate or amplify existing inequalities?",
-      "options": [
-        { "value": "a", "text": "Lack of Transparency" },
-        { "value": "b", "text": "Privacy Concerns" },
-        { "value": "c", "text": "Accountability Gaps" },
-        { "value": "d", "text": "Bias and Discrimination" }
-      ],
-      "correct": "d",
-      "explanation": "Bias in training data can lead to discriminatory AI outcomes."
-    },
-    {
-      "id": "q22",
-      "text": "What does Financial Management in practice primarily involve?",
-      "options": [
-        { "value": "a", "text": "Only managing day-to-day expenses." },
-        { "value": "b", "text": "Focusing solely on short-term gains." },
-        { "value": "c", "text": "Applying financial principles to real-world business scenarios, including budgeting, risk management, and ensuring sustainability." },
-        { "value": "d", "text": "Strictly adhering to one specific accounting standard (e.g., GAAP)." }
-      ],
-      "correct": "c",
-      "explanation": "Financial management encompasses comprehensive financial planning and oversight."
-    },
-    {
-      "id": "q23",
-      "text": "Which financial ratio measures a company's ability to meet its short-term obligations?",
-      "options": [
-        { "value": "a", "text": "Profitability Ratios" },
-        { "value": "b", "text": "Solvency Ratios" },
-        { "value": "c", "text": "Efficiency Ratios" },
-        { "value": "d", "text": "Liquidity Ratios" }
-      ],
-      "correct": "d",
-      "explanation": "Liquidity ratios assess short-term financial health."
-    },
-    {
-      "id": "q24",
-      "text": "In financial risk management, which type of risk arises from changes in market conditions like stock prices or exchange rates?",
-      "options": [
-        { "value": "a", "text": "Credit Risk" },
-        { "value": "b", "text": "Liquidity Risk" },
-        { "value": "c", "text": "Operational Risk" },
-        { "value": "d", "text": "Market Risk" }
-      ],
-      "correct": "d",
-      "explanation": "Market risk stems from fluctuations in financial markets."
-    },
-    {
-      "id": "q25",
-      "text": "What strategy in financial risk management involves spreading investments across different assets to reduce risk?",
-      "options": [
-        { "value": "a", "text": "Hedging" },
-        { "value": "b", "text": "Insurance" },
-        { "value": "c", "text": "Diversification" },
-        { "value": "d", "text": "Internal Controls" }
-      ],
-      "correct": "c",
-      "explanation": "Diversification spreads risk across multiple investments."
-    },
-    {
-      "id": "q26",
-      "text": "Which US law mentioned requires companies to maintain financial transparency and internal controls?",
-      "options": [
-        { "value": "a", "text": "Companies Act" },
-        { "value": "b", "text": "Securities and Exchange Laws" },
-        { "value": "c", "text": "Sarbanes-Oxley Act (SOX)" },
-        { "value": "d", "text": "USA PATRIOT Act" }
-      ],
-      "correct": "c",
-      "explanation": "SOX mandates financial transparency and internal controls."
-    },
-    {
-      "id": "q27",
-      "text": "What does the \"Initiation Phase\" of the Project Lifecycle focus on?",
-      "options": [
-        { "value": "a", "text": "Building a comprehensive roadmap." },
-        { "value": "b", "text": "Implementing the project plan." },
-        { "value": "c", "text": "Ensuring the project is on time and within budget." },
-        { "value": "d", "text": "Establishing the need, feasibility, and strategic alignment of the project." }
-      ],
-      "correct": "d",
-      "explanation": "Initiation phase focuses on project justification and alignment."
-    },
-    {
-      "id": "q28",
-      "text": "Which phase of the Project Lifecycle involves activities like team formation, procurement, vendor management, and deliverable creation?",
-      "options": [
-        { "value": "a", "text": "Initiation Phase" },
-        { "value": "b", "text": "Planning Phase" },
-        { "value": "c", "text": "Monitoring and Controlling Phase" },
-        { "value": "d", "text": "Execution Phase" }
-      ],
-      "correct": "d",
-      "explanation": "Execution phase involves the actual project implementation work."
-    },
-    {
-      "id": "q29",
-      "text": "What is the purpose of the \"Monitoring and Controlling Phase\" in the Project Lifecycle?",
-      "options": [
-        { "value": "a", "text": "To formally complete and evaluate the project." },
-        { "value": "b", "text": "To build a comprehensive roadmap." },
-        { "value": "c", "text": "To ensure the project is on time, within scope, and within budget, and identify variances." },
-        { "value": "d", "text": "To establish the project's feasibility." }
-      ],
-      "correct": "c",
-      "explanation": "Monitoring and controlling ensures project stays on track."
-    },
-    {
-      "id": "q30",
-      "text": "Which role in the Project Lifecycle is primarily responsible for overall coordination and decision-making?",
-      "options": [
-        { "value": "a", "text": "Team Members" },
-        { "value": "b", "text": "Financial Officer" },
-        { "value": "c", "text": "Stakeholders" },
-        { "value": "d", "text": "Project Manager" }
-      ],
-      "correct": "d",
-      "explanation": "The Project Manager has overall responsibility for project coordination."
-    },
-      {
-  "questions": [
-    {
-      "id": "q31",
-      "text": "A \"Profession\" requires formal education, training, and expertise.",
-      "correct": true,
-      "explanation": "Professions are distinguished by their requirement for specialized education and training."
-    },
-    {
-      "id": "q32",
-      "text": "\"Professionalism\" refers to the processes involved in running a professional practice, ensuring it is efficient and profitable.",
-      "correct": false,
-      "explanation": "This describes Practice Management. Professionalism is the conduct, aims, and qualities that characterize a professional."
-    },
-    {
-      "id": "q33",
-      "text": "Computing encompasses various activities involving the use of hardware and software to manipulate data.",
-      "correct": true,
-      "explanation": "Computing broadly includes all activities using computational systems."
-    },
-    {
-      "id": "q34",
-      "text": "Software Engineering is a discipline that applies engineering principles solely to the testing phase of software development.",
-      "correct": false,
-      "explanation": "Software Engineering applies to all phases including design, development, maintenance, testing, and evaluation."
-    },
-    {
-      "id": "t35",
-      "text": "Information Technology (IT) primarily involves the study of algorithms and data structures.",
-      "correct": false,
-      "explanation": "This describes Computer Science. IT focuses on using technology to store, retrieve, transmit and manipulate data."
-    },
-    {
-      "id": "q36",
-      "text": "Network Administration is an example of a professional activity within Computer Science.",
-      "correct": false,
-      "explanation": "Network Administration falls under Information Technology, not Computer Science."
-    },
-    {
-      "id": "q37",
-      "text": "The IEEE Computer Society is a part of IEEE and provides resources specifically for computing professionals.",
-      "correct": true,
-      "explanation": "IEEE Computer Society is the computing-focused branch of IEEE."
-    },
-    {
-      "id": "q38",
-      "text": "One of the key principles of Professional Ethics in Computing is to avoid taking responsibility for the impact of your work.",
-      "correct": false,
-      "explanation": "Accountability means taking responsibility for actions and their impact."
-    },
-    {
-      "id": "q39",
-      "text": "Respecting the intellectual property rights of others is fundamental in Professional Ethics in Computing.",
-      "correct": true,
-      "explanation": "Respect for IP is a core principle of computing ethics."
-    },
-    {
-      "id": "q40",
-      "text": "Professional Competence requires continuously improving one's skills and knowledge to provide high-quality work.",
-      "correct": true,
-      "explanation": "Continuous improvement is essential for maintaining professional competence."
-    },
-    {
-      "id": "q41",
-      "text": "Designing software that is accessible to people with disabilities aligns with the principle of Social Responsibility in Professional Ethics in Computing.",
-      "correct": true,
-      "explanation": "Accessibility is an important aspect of social responsibility."
-    },
-    {
-      "id": "q42",
-      "text": "Staying updated with industry trends is a key aspect of Life-Long Learning in computing.",
-      "correct": true,
-      "explanation": "Continuous learning includes keeping current with industry developments."
-    },
-    {
-      "id": "q43",
-      "text": "Soft skills, such as communication and teamwork, are considered crucial for professional competency in computing.",
-      "correct": true,
-      "explanation": "Soft skills complement technical skills for full professional competency."
-    },
-    {
-      "id": "q44",
-      "text": "Malware Creation is listed as a Use of Software.",
-      "correct": false,
-      "explanation": "Malware creation is a misuse of software, not a proper use."
-    },
-    {
-      "id": "q45",
-      "text": "Piracy refers only to the unauthorized use of software, not its distribution.",
-      "correct": false,
-      "explanation": "Piracy includes unauthorized reproduction, distribution and use."
-    },
-    {
-      "id": "q46",
-      "text": "Softlifting is a type of software piracy where a single licensed copy is installed and used on multiple computers without authorization.",
-      "correct": true,
-      "explanation": "Softlifting involves unauthorized multi-installation from one license."
-    },
-    {
-      "id": "q47",
-      "text": "According to the sources, Plagiarism is defined as the unauthorized use, reproduction, distribution, or sale of copyrighted material.",
-      "correct": false,
-      "explanation": "This describes Piracy. Plagiarism is using someone else's work without credit."
-    },
-    {
-      "id": "q48",
-      "text": "The Availability component of Information Security ensures that data is accurate and unaltered.",
-      "correct": false,
-      "explanation": "This describes Integrity. Availability ensures information is accessible when needed."
-    },
-    {
-      "id": "q49",
-      "text": "Privacy refers to an individual's right to control their personal information.",
-      "correct": true,
-      "explanation": "Privacy involves control over personal data collection and use."
-    },
-    {
-      "id": "q50",
-      "text": "One key principle of Privacy is that organizations should collect excessive personal data for future potential uses.",
-      "correct": false,
-      "explanation": "Data Minimization means collecting only necessary data."
-    },
-    {
-      "id": "q51",
-      "text": "Proprietary Software is publicly available for use and modification.",
-      "correct": false,
-      "explanation": "This describes Open Source Software. Proprietary software requires purchasing licenses."
-    },
-    {
-      "id": "q52",
-      "text": "The SaaS business model is based on a one-time payment for indefinite use.",
-      "correct": false,
-      "explanation": "SaaS is subscription-based. Perpetual License is one-time payment."
-    },
-    {
-      "id": "q53",
-      "text": "Diversifying services and maintaining financial reserves are strategies to mitigate challenges like economic uncertainty in Practice Management.",
-      "correct": true,
-      "explanation": "These are valid strategies for practice sustainability."
-    },
-    {
-      "id": "q54",
-      "text": "Client satisfaction is listed as one of the main benefits of effective Practice Management.",
-      "correct": true,
-      "explanation": "Good practice management leads to improved client satisfaction."
-    },
-    {
-      "id": "q55",
-      "text": "In Ethical Practices in AI, \"Transparency\" means providing clear and understandable explanations of AI decisions.",
-      "correct": true,
-      "explanation": "Transparency involves explainability of AI systems."
-    },
-    {
-      "id": "q56",
-      "text": "Bias mitigation in AI can involve using diverse training datasets and conducting regular audits.",
-      "correct": true,
-      "explanation": "These are common approaches to reducing AI bias."
-    },
-    {
-      "id": "q57",
-      "text": "Profit maximization and wealth maximization are listed as goals of Financial Management in practice.",
-      "correct": true,
-      "explanation": "These are primary financial management objectives."
-    },
-    {
-      "id": "q58",
-      "text": "The Balance Sheet shows revenues, expenses, and profits over a period.",
-      "correct": false,
-      "explanation": "This describes the Income Statement. The Balance Sheet shows assets, liabilities and equity at a point in time."
-    },
-    {
-      "id": "q59",
-      "text": "The Payback Period measures the time needed to recover the initial investment in a project.",
-      "correct": true,
-      "explanation": "Payback Period calculates investment recovery time."
-    },
-    {
-      "id": "q60",
-      "text": "The Planning Phase of the Project Lifecycle primarily focuses on identifying the need and feasibility of the project.",
-      "correct": false,
-      "explanation": "This describes the Initiation Phase. The Planning Phase builds the comprehensive roadmap."
-    },
-    
-      ];
-
-      let currentScore = 0;
-const scoreDisplay = document.getElementById('score');
-
-// Function to shuffle an array using Fisher-Yates algorithm
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
+      }
     }
-    return array;
-}
 
-function createQuiz() {
-    const container = document.getElementById('quiz-container');
-    
-    /*
-    // Shuffle the questions array
-    const shuffledQuestions = shuffleArray([...questions]); // تم تعليق خلط الأسئلة
-    */
-    
-    // استخدام الأسئلة الأصلية بدون خلط
-    questions.forEach((question, index) => {
-        const questionCard = document.createElement('div');
-        questionCard.className = 'question-card';
-        
-        /*
-        // Shuffle the options for each question
-        const shuffledOptions = shuffleArray([...question.options]); // تم تعليق خلط الخيارات
-        */
-        
-        // استخدام الخيارات الأصلية بدون خلط
-        questionCard.innerHTML = `
-            <p class="question-text">${index + 1}. ${question.text}
-                <button class="show-explanation-btn" onclick="toggleExplanation('${question.id}')">Show Explanation</button>
-            </p>
-            <div class="options-container">
-                ${question.options.map(option => `
-                    <label class="option-label">
-                        <input type="radio" name="${question.id}" value="${option.value}" 
-                               onchange="checkAnswer('${question.id}', '${option.value}', '${question.correct}')">
-                        ${option.text}
-                    </label>
-                `).join('')}
-            </div>
-            <div class="feedback" id="feedback-${question.id}"></div>
-            <div class="explanation" id="explanation-${question.id}">
-                <strong>Explanation:</strong> ${question.explanation}
-            </div>
-        `;
-        
-        container.appendChild(questionCard);
+    const questions = JSON.parse(JSON.stringify(originalQuestions)); // deep copy
+    shuffleArray(questions);
+
+    const container = document.getElementById("quiz-container");
+
+    questions.forEach((q, index) => {
+      const card = document.createElement("div");
+      card.className = "question-card";
+
+      const questionText = document.createElement("div");
+      questionText.className = "question-text";
+      questionText.textContent = `${index + 1}. ${q.question}`;
+      card.appendChild(questionText);
+
+      const feedback = document.createElement("div");
+      feedback.className = "feedback";
+      card.appendChild(feedback);
+
+      if (q.type === "multiple") {
+        // تحضير الخيارات مع العلامة الصحيحة
+        const optionPairs = q.options.map((text, idx) => ({ text, isCorrect: idx === q.correctAnswer }));
+        shuffleArray(optionPairs);
+
+        optionPairs.forEach(({ text, isCorrect }) => {
+          const label = document.createElement("label");
+          label.className = "option-label";
+          label.textContent = text;
+
+          label.onclick = () => {
+            // إزالة التحديد والتلوين من جميع الخيارات أولاً
+            const allLabels = card.querySelectorAll(".option-label");
+            allLabels.forEach(l => {
+              l.classList.remove("selected", "correct", "incorrect");
+            });
+
+            // إضافة تحديد للخيار المختار
+            label.classList.add("selected");
+
+            // تلوين الخيارات حسب الصحة والخطأ
+            allLabels.forEach(l => {
+              if (l === label) {
+                // الخيار المختار
+                if (isCorrect) {
+                  l.classList.add("correct");
+                } else {
+                  l.classList.add("incorrect");
+                }
+              } else {
+                // خيارات أخرى، نميز الصحيحة منها فقط
+                if (l.textContent === optionPairs.find(op => op.isCorrect && op.text === l.textContent)?.text) {
+                  l.classList.add("correct");
+                }
+              }
+            });
+
+            // تحديث التعليق
+            if (isCorrect) {
+              feedback.textContent = "Correct!";
+              feedback.className = "feedback correct";
+            } else {
+              feedback.textContent = "Incorrect.";
+              feedback.className = "feedback incorrect";
+            }
+          };
+
+          card.appendChild(label);
+        });
+
+      } else if (q.type === "truefalse") {
+        ["True", "False"].forEach(optionText => {
+          const label = document.createElement("label");
+          label.className = "option-label";
+          label.textContent = optionText;
+
+          label.onclick = () => {
+            // إزالة التحديد والتلوين من جميع الخيارات
+            const allLabels = card.querySelectorAll(".option-label");
+            allLabels.forEach(l => {
+              l.classList.remove("selected", "correct", "incorrect");
+            });
+
+            label.classList.add("selected");
+
+            const userAnswer = optionText === "True";
+            if (userAnswer === q.correctAnswer) {
+              label.classList.add("correct");
+            } else {
+              label.classList.add("incorrect");
+            }
+
+            // تلوين الخيار الصحيح (حتى لو لم يُختار)
+            allLabels.forEach(l => {
+              if ((l.textContent === "True" && q.correctAnswer === true) ||
+                  (l.textContent === "False" && q.correctAnswer === false)) {
+                l.classList.add("correct");
+              }
+            });
+
+            // تحديث التعليق
+            if (userAnswer === q.correctAnswer) {
+              feedback.textContent = "Correct!";
+              feedback.className = "feedback correct";
+            } else {
+              feedback.textContent = "Incorrect.";
+              feedback.className = "feedback incorrect";
+            }
+          };
+
+          card.appendChild(label);
+        });
+      }
+
+      container.appendChild(card);
     });
-}
-
-function toggleExplanation(questionId) {
-    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
-    const explanationElement = document.getElementById(`explanation-${questionId}`);
-    
-    if (!selectedOption) {
-        alert('Please select an answer before viewing the explanation.');
-        return;
-    }
-
-    if (explanationElement.style.display === 'none' || !explanationElement.style.display) {
-        explanationElement.style.display = 'block';
-    } else {
-        explanationElement.style.display = 'none';
-    }
-}
-
-function checkAnswer(questionId, selected, correct) {
-    const feedbackElement = document.getElementById(`feedback-${questionId}`);
-    const previousFeedback = feedbackElement.className.includes('correct');
-    const isCorrect = selected === correct;
-    
-    if (isCorrect) {
-        feedbackElement.textContent = 'Correct!';
-        feedbackElement.className = 'feedback correct';
-        if (!previousFeedback) currentScore++;
-    } else {
-        feedbackElement.textContent = 'Incorrect!';
-        feedbackElement.className = 'feedback incorrect';
-        if (previousFeedback) currentScore--;
-    }
-    
-    scoreDisplay.textContent = currentScore;
-
-    /*
-    // Disable all radio buttons for this question after an answer is selected
-    const options = document.querySelectorAll(`input[name="${questionId}"]`);
-    options.forEach(option => {
-        option.disabled = true;
-    });
-    */
-}
-
-// Initialize the quiz when the page loads
-window.onload = createQuiz;
-    </script>
+  </script>
 </body>
 </html>
