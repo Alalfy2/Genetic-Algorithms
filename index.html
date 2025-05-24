@@ -63,13 +63,11 @@
     .option-label.selected {
       border-color: var(--primary);
     }
-    /* خيارات صحيحة */
     .option-label.correct {
       background-color: var(--correct);
       border-color: var(--primary-dark);
       color: var(--primary-dark);
     }
-    /* خيارات خاطئة مختارة */
     .option-label.incorrect {
       background-color: var(--incorrect);
       border-color: #b71c1c;
@@ -92,624 +90,2994 @@
       background-color: var(--incorrect);
       color: #b71c1c;
     }
+
+    /* أزرار المحاضرات */
+    #lecture-buttons {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+    }
+    #lecture-buttons button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+    }
+    #lecture-buttons button:hover {
+      background-color: var(--primary-dark);
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Professional Practice Quiz</h1>
-    <div id="quiz-container"></div>
-  </div>
+  <h1>Professional Practice Quiz</h1>
+  <div class="container" id="quiz-container"></div>
+
+  <div id="lecture-buttons"></div>
 
   <script>
-    // أسئلة اختبار مثال مع نوعين (ضع أسئلتك الحقيقية هنا)
     const originalQuestions = [
-     {
-    type: "multiple",
-    question: "1. According to the sources, what is the definition of a \"Professional\"?",
-    options: [
+    {
+    "id": 1,
+    "type": "multiple",
+    "question": "1. According to the sources, what is the definition of a \"Professional\"?",
+    "options": [
       "A field of work requiring formal education.",
       "A person engaged in a profession, displaying competence, skill, and ethical behavior in their field of expertise.",
       "The conduct, aims, and qualities that characterize a professional.",
       "The process of using computers."
     ],
-    correctAnswer: 1
+    "correctAnswer": 1
   },
   {
-    type: "multiple",
-    question: "2. Professionalism, in a business context, is described as the way business people interact with whom?",
-    options: [
+    "id": 2,
+    "type": "multiple",
+    "question": "2. Professionalism, in a business context, is described as the way business people interact with whom?",
+    "options": [
       "Regulatory bodies only.",
       "Technology platforms.",
       "Colleagues, clients and customers.",
       "Financial markets."
     ],
-    correctAnswer: 2
+    "correctAnswer": 2
   },
   {
-    type: "multiple",
-    question: "3. Which discipline applies engineering principles to the design, development, maintenance, testing, and evaluation of software?",
-    options: [
+    "id": 3,
+    "type": "multiple",
+    "question": "3. Which discipline applies engineering principles to the design, development, maintenance, testing, and evaluation of software?",
+    "options": [
       "Computing",
       "Computer Science",
       "Information Technology (IT)",
       "Software Engineering"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "4. Which professional society is known for advancing computing as a science and profession, organizing conferences, and publishing research journals?",
-    options: [
+    "id": 4,
+    "type": "multiple",
+    "question": "4. Which professional society is known for advancing computing as a science and profession, organizing conferences, and publishing research journals?",
+    "options": [
       "IEEE",
       "BCS",
       "IACAP",
       "ACM"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "5. In Professional Ethics in Computing, which principle involves being honest in work and avoiding deception in communication and reporting?",
-    options: [
+    "id": 5,
+    "type": "multiple",
+    "question": "5. In Professional Ethics in Computing, which principle involves being honest in work and avoiding deception in communication and reporting?",
+    "options": [
       "Confidentiality",
       "Accountability",
       "Respect for Intellectual Property",
       "Integrity"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "6. According to the sources, what does \"Confidentiality\" in Professional Ethics in Computing primarily involve?",
-    options: [
+    "id": 6,
+    "type": "multiple",
+    "question": "6. According to the sources, what does \"Confidentiality\" in Professional Ethics in Computing primarily involve?",
+    "options": [
       "Ensuring software works without errors.",
       "Respecting the privacy and confidentiality of information, especially sensitive data.",
       "Taking responsibility for the impact of your work.",
       "Citing sources appropriately."
     ],
-    correctAnswer: 1
+    "correctAnswer": 1
   },
   {
-    type: "multiple",
-    question: "7. Which component of Professional Competency in Computing involves communication, teamwork, and interpersonal skills crucial for collaboration?",
-    options: [
+    "id": 7,
+    "type": "multiple",
+    "question": "7. Which component of Professional Competency in Computing involves communication, teamwork, and interpersonal skills crucial for collaboration?",
+    "options": [
       "Technical Skills",
       "Problem-Solving Abilities",
       "Ethical Awareness",
       "Soft Skills"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "8. Why is Life-Long Learning essential in the rapidly evolving field of computing, according to the sources?",
-    options: [
+    "id": 8,
+    "type": "multiple",
+    "question": "8. Why is Life-Long Learning essential in the rapidly evolving field of computing, according to the sources?",
+    "options": [
       "To meet legal requirements.",
       "To reduce financial risks.",
       "For maintaining professional competency.",
       "To avoid regulatory changes."
     ],
-    correctAnswer: 2
+    "correctAnswer": 2
   },
   {
-    type: "multiple",
-    question: "9. What type of software misuse involves the unauthorized copying, distribution, or use of software?",
-    options: [
+    "id": 9,
+    "type": "multiple",
+    "question": "9. What type of software misuse involves the unauthorized copying, distribution, or use of software?",
+    "options": [
       "Malware Creation",
       "Invasion of Privacy",
       "Data Manipulation",
       "Piracy"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "10. What is defined as the unauthorized access, use, or disclosure of an individual's personal information without their consent?",
-    options: [
+    "id": 10,
+    "type": "multiple",
+    "question": "10. What is defined as the unauthorized access, use, or disclosure of an individual's personal information without their consent?",
+    "options": [
       "Piracy",
       "Plagiarism",
       "Invasion of Privacy",
       "Data Manipulation"
     ],
-    correctAnswer: 2
+    "correctAnswer": 2
   },
   {
-    type: "multiple",
-    question: "11. Which key component of Information Security ensures that sensitive information is accessed only by authorized individuals or systems?",
-    options: [
+    "id": 11,
+    "type": "multiple",
+    "question": "11. Which key component of Information Security ensures that sensitive information is accessed only by authorized individuals or systems?",
+    "options": [
       "Integrity",
       "Availability",
       "Authentication",
       "Confidentiality"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "12. What does the principle of \"Purpose Limitation\" in Privacy mean, according to the sources?",
-    options: [
+    "id": 12,
+    "type": "multiple",
+    "question": "12. What does the principle of \"Purpose Limitation\" in Privacy mean, according to the sources?",
+    "options": [
       "Individuals should have the right to informed consent.",
       "Organizations should collect only necessary data.",
       "Organizations must be clear about data practices.",
       "Data should only be used for the purposes stated at the time of collection and not repurposed without consent."
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "13. In the comparison table, what is listed as the Key Concern for \"Piracy\"?",
-    options: [
+    "id": 13,
+    "type": "multiple",
+    "question": "13. In the comparison table, what is listed as the Key Concern for \"Piracy\"?",
+    "options": [
       "Protecting individual’s data from unauthorized access or misuse.",
       "Infringement of copyright laws by unauthorized use or sale of intellectual property.",
       "Ethical and intellectual dishonesty by not acknowledging the original creator.",
       "Misrepresentation of authorship or originality."
     ],
-    correctAnswer: 1
+    "correctAnswer": 1
   },
   {
-    type: "multiple",
-    question: "14. Which software business model involves providing basic features for free, while requiring payment for premium features?",
-    options: [
+    "id": 14,
+    "type": "multiple",
+    "question": "14. Which software business model involves providing basic features for free, while requiring payment for premium features?",
+    "options": [
       "Proprietary Software",
       "Open Source Software (OSS)",
       "Software as a Service (SaaS)",
       "Freemium"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "15. What economic concept in software development refers to the low cost of distributing software once it has been developed?",
-    options: [
+    "id": 15,
+    "type": "multiple",
+    "question": "15. What economic concept in software development refers to the low cost of distributing software once it has been developed?",
+    "options": [
       "Network Effects",
       "Economies of Scale",
       "Software Licensing",
       "Marginal Cost of Software"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "16. What is the definition of \"Practice Management\" according to the sources?",
-    options: [
+    "id": 16,
+    "type": "multiple",
+    "question": "16. What is the definition of \"Practice Management\" according to the sources?",
+    "options": [
       "The study of financial markets.",
       "Applying engineering principles to design.",
       "The processes, strategies, and actions involved in running a professional practice, ensuring it is efficient, profitable, and ethically responsible.",
       "The technical implementation of projects."
     ],
-    correctAnswer: 2
+    "correctAnswer": 2
   },
   {
-    type: "multiple",
-    question: "17. What is the primary goal of \"Sustainability\" as a benefit of Practice Management?",
-    options: [
+    "id": 17,
+    "type": "multiple",
+    "question": "17. What is the primary goal of \"Sustainability\" as a benefit of Practice Management?",
+    "options": [
       "Increase client satisfaction.",
       "Ensure ethical and legal compliance.",
       "Promote professional growth.",
       "Maintain the long-term viability of a practice and help it weather economic downturns."
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "18. Which role in Practice Management is responsible for coordinating daily operations and ensuring adherence to legal, ethical, and financial standards?",
-    options: [
+    "id": 18,
+    "type": "multiple",
+    "question": "18. Which role in Practice Management is responsible for coordinating daily operations and ensuring adherence to legal, ethical, and financial standards?",
+    "options": [
       "Principal Architect/Director",
       "Finance Manager",
       "Project Manager",
       "Practice Manager"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "19. In Ethical Practices in AI, what does the principle of \"Fairness\" aim to avoid?",
-    options: [
+    "id": 19,
+    "type": "multiple",
+    "question": "19. In Ethical Practices in AI, what does the principle of \"Fairness\" aim to avoid?",
+    "options": [
       "Lack of Transparency",
       "Accountability Gaps",
       "Safety Risks",
       "Bias and discrimination."
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "20. Why is Ethical Practices important in Artificial Systems, according to the sources?",
-    options: [
+    "id": 20,
+    "type": "multiple",
+    "question": "20. Why is Ethical Practices important in Artificial Systems, according to the sources?",
+    "options": [
       "Only to prevent legal compliance issues.",
       "To make systems less complex.",
       "To build trust, prevent harm, ensure legal compliance, promote responsible innovation, and safeguard human rights.",
       "To speed up development time."
     ],
-    correctAnswer: 2
+    "correctAnswer": 2
   },
   {
-    type: "multiple",
-    question: "21. What is described as a key ethical issue in AI where systems trained on biased data may perpetuate or amplify existing inequalities?",
-    options: [
+    "id": 21,
+    "type": "multiple",
+    "question": "21. What is described as a key ethical issue in AI where systems trained on biased data may perpetuate or amplify existing inequalities?",
+    "options": [
       "Lack of Transparency",
       "Privacy Concerns",
       "Accountability Gaps",
       "Bias and Discrimination"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "22. What does Financial Management in practice primarily involve?",
-    options: [
+    "id": 22,
+    "type": "multiple",
+    "question": "22. What does Financial Management in practice primarily involve?",
+    "options": [
       "Only managing day-to-day expenses.",
       "Focusing solely on short-term gains.",
       "Applying financial principles to real-world business scenarios, including budgeting, risk management, and ensuring sustainability.",
       "Strictly adhering to one specific accounting standard (e.g., GAAP)."
     ],
-    correctAnswer: 2
+    "correctAnswer": 2
   },
   {
-    type: "multiple",
-    question: "23. Which financial ratio measures a company's ability to meet its short-term obligations?",
-    options: [
+    "id": 23,
+    "type": "multiple",
+    "question": "23. Which financial ratio measures a company's ability to meet its short-term obligations?",
+    "options": [
       "Profitability Ratios",
       "Solvency Ratios",
       "Efficiency Ratios",
       "Liquidity Ratios"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "24. In financial risk management, which type of risk arises from changes in market conditions like stock prices or exchange rates?",
-    options: [
+    "id": 24,
+    "type": "multiple",
+    "question": "24. In financial risk management, which type of risk arises from changes in market conditions like stock prices or exchange rates?",
+    "options": [
       "Credit Risk",
       "Liquidity Risk",
       "Operational Risk",
       "Market Risk"
     ],
-    correctAnswer: 3
+    "correctAnswer": 3
   },
   {
-    type: "multiple",
-    question: "25. What strategy in financial risk management involves spreading investments across different assets to reduce risk?",
-    options: [
+    "id": 25,
+    "type": "multiple",
+    "question": "25. What strategy in financial risk management involves spreading investments across different assets to reduce risk?",
+    "options": [
       "Hedging",
       "Insurance",
       "Diversification",
       "Internal Controls"
     ],
-    correctAnswer: 2
+    "correctAnswer": 2
   },
   {
-    type: "multiple",
-    question: "26. What is a Gantt chart used for in project management?",
-    options: [
+    "id": 26,
+    "type": "multiple",
+    "question": "26. What is a Gantt chart used for in project management?",
+    "options": [
       "To display financial ratios.",
       "To manage software versions.",
       "To illustrate project schedules showing tasks against time.",
       "To analyze customer satisfaction."
     ],
-    correctAnswer: 2
+    "correctAnswer": 2
   },
   {
-    type: "multiple",
-    question: "27. In legal requirements management, what is the primary purpose of compliance?",
-    options: [
+    "id": 27,
+    "type": "multiple",
+    "question": "27. In legal requirements management, what is the primary purpose of compliance?",
+    "options": [
       "Increasing sales.",
       "Meeting customer demands.",
       "Ensuring that a company meets laws, regulations, and standards relevant to its business activities.",
       "Improving employee productivity."
     ],
-    correctAnswer: 2
+    "correctAnswer": 2
   },
   {
-    type: "multiple",
-    question: "28. What does a project risk register typically include?",
-    options: [
+    "id": 28,
+    "type": "multiple",
+    "question": "28. What does a project risk register typically include?",
+    "options": [
       "A list of team members.",
       "A log of identified risks, their severity, probability, mitigation strategies, and owners.",
       "Company financial statements.",
       "Project milestones."
     ],
-    correctAnswer: 1
+    "correctAnswer": 1
   },
   {
-    type: "multiple",
-    question: "29. Which of the following is an example of a non-functional requirement in software development?",
-    options: [
+    "id": 29,
+    "type": "multiple",
+    "question": "29. Which of the following is an example of a non-functional requirement in software development?",
+    "options": [
       "The software shall calculate taxes correctly.",
       "The system shall respond to user requests within 2 seconds.",
       "The software shall have a user login feature.",
       "The system shall provide monthly reports."
     ],
-    correctAnswer: 1
+    "correctAnswer": 1
   },
   {
-    type: "multiple",
-    question: "30. What is the primary focus of Software Quality Assurance (SQA)?",
-    options: [
+    "id": 30,
+    "type": "multiple",
+    "question": "30. What is the primary focus of Software Quality Assurance (SQA)?",
+    "options": [
       "To write code faster.",
       "To ensure the software meets defined quality standards and is defect-free.",
       "To design user interfaces.",
       "To manage project schedules."
     ],
-    correctAnswer: 1
-  },
-
-  // True/False Questions 31-60
-  {
-    type: "truefalse",
-    question: "31. A \"Profession\" requires formal education, training, and expertise.",
-    correctAnswer: true
+    "correctAnswer": 1
   },
   {
-    type: "truefalse",
-    question: "32. Professionalism only concerns technical competence and does not include ethical behavior.",
-    correctAnswer: false
+    "id": 31,
+    "type": "truefalse",
+    "question": "31. A \"Profession\" requires formal education, training, and expertise.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "33. Software Engineering is a discipline that applies engineering principles to software development.",
-    correctAnswer: true
+    "id": 32,
+    "type": "truefalse",
+    "question": "32. Professionalism only concerns technical competence and does not include ethical behavior.",
+    "correctAnswer": false
   },
   {
-    type: "truefalse",
-    question: "34. ACM is a professional society focused on computing science and organizing related conferences.",
-    correctAnswer: true
+    "id": 33,
+    "type": "truefalse",
+    "question": "33. Software Engineering is a discipline that applies engineering principles to software development.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "35. Confidentiality means sharing sensitive data freely to promote transparency.",
-    correctAnswer: false
+    "id": 34,
+    "type": "truefalse",
+    "question": "34. ACM is a professional society focused on computing science and organizing related conferences.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "36. Integrity in Professional Ethics means being honest and avoiding deception.",
-    correctAnswer: true
+    "id": 35,
+    "type": "truefalse",
+    "question": "35. Confidentiality means sharing sensitive data freely to promote transparency.",
+    "correctAnswer": false
   },
   {
-    type: "truefalse",
-    question: "37. Soft skills such as communication and teamwork are not important for computing professionals.",
-    correctAnswer: false
+    "id": 36,
+    "type": "truefalse",
+    "question": "36. Integrity in Professional Ethics means being honest and avoiding deception.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "38. Life-Long Learning helps professionals keep up with technological changes.",
-    correctAnswer: true
+    "id": 37,
+    "type": "truefalse",
+    "question": "37. Soft skills such as communication and teamwork are not important for computing professionals.",
+    "correctAnswer": false
   },
   {
-    type: "truefalse",
-    question: "39. Software piracy refers to authorized distribution of software.",
-    correctAnswer: false
+    "id": 38,
+    "type": "truefalse",
+    "question": "38. Life-Long Learning helps professionals keep up with technological changes.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "40. Invasion of privacy means unauthorized use or disclosure of personal information.",
-    correctAnswer: true
+    "id": 39,
+    "type": "truefalse",
+    "question": "39. Software piracy refers to authorized distribution of software.",
+    "correctAnswer": false
   },
   {
-    type: "truefalse",
-    question: "41. Confidentiality in Information Security means limiting access to authorized users only.",
-    correctAnswer: true
+    "id": 40,
+    "type": "truefalse",
+    "question": "40. Invasion of privacy means unauthorized use or disclosure of personal information.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "42. Purpose Limitation means data can be used for any purpose after collection.",
-    correctAnswer: false
+    "id": 41,
+    "type": "truefalse",
+    "question": "41. Confidentiality in Information Security means limiting access to authorized users only.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "43. Piracy is an infringement of copyright laws by unauthorized use or sale of intellectual property.",
-    correctAnswer: true
+    "id": 42,
+    "type": "truefalse",
+    "question": "42. Purpose Limitation means data can be used for any purpose after collection.",
+    "correctAnswer": false
   },
   {
-    type: "truefalse",
-    question: "44. Freemium is a software business model where basic features are free and premium features require payment.",
-    correctAnswer: true
+    "id": 43,
+    "type": "truefalse",
+    "question": "43. Piracy is an infringement of copyright laws by unauthorized use or sale of intellectual property.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "45. Marginal cost of software is high because software must be physically distributed each time.",
-    correctAnswer: false
+    "id": 44,
+    "type": "truefalse",
+    "question": "44. Freemium is a software business model where basic features are free and premium features require payment.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "46. Practice Management involves running a professional practice efficiently, ethically, and profitably.",
-    correctAnswer: true
+    "id": 45,
+    "type": "truefalse",
+    "question": "45. Marginal cost of software is high because software must be physically distributed each time.",
+    "correctAnswer": false
   },
   {
-    type: "truefalse",
-    question: "47. Sustainability in practice management aims to maintain long-term viability of the practice.",
-    correctAnswer: true
+    "id": 46,
+    "type": "truefalse",
+    "question": "46. Practice Management involves running a professional practice efficiently, ethically, and profitably.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "48. The Project Manager ensures legal, ethical, and financial standards are met daily.",
-    correctAnswer: true
+    "id": 47,
+    "type": "truefalse",
+    "question": "47. Sustainability in practice management aims to maintain long-term viability of the practice.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "49. Fairness in AI ethics aims to promote bias and discrimination.",
-    correctAnswer: false
+    "id": 48,
+    "type": "truefalse",
+    "question": "48. The Project Manager ensures legal, ethical, and financial standards are met daily.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "50. Ethical practices in AI help build trust and safeguard human rights.",
-    correctAnswer: true
+    "id": 49,
+    "type": "truefalse",
+    "question": "49. Fairness in AI ethics aims to promote bias and discrimination.",
+    "correctAnswer": false
   },
   {
-    type: "truefalse",
-    question: "51. AI bias occurs when systems trained on biased data perpetuate inequalities.",
-    correctAnswer: true
+    "id": 50,
+    "type": "truefalse",
+    "question": "50. Ethical practices in AI help build trust and safeguard human rights.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "52. Financial management focuses only on short-term gains.",
-    correctAnswer: false
+    "id": 51,
+    "type": "truefalse",
+    "question": "51. AI bias occurs when systems trained on biased data perpetuate inequalities.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "53. Liquidity ratios measure a company's ability to meet short-term obligations.",
-    correctAnswer: true
+    "id": 52,
+    "type": "truefalse",
+    "question": "52. Financial management focuses only on short-term gains.",
+    "correctAnswer": false
   },
   {
-    type: "truefalse",
-    question: "54. Market risk arises from changes in market conditions like stock prices or exchange rates.",
-    correctAnswer: true
+    "id": 53,
+    "type": "truefalse",
+    "question": "53. Liquidity ratios measure a company's ability to meet short-term obligations.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "55. Diversification spreads investments across assets to reduce risk.",
-    correctAnswer: true
+    "id": 54,
+    "type": "truefalse",
+    "question": "54. Market risk arises from changes in market conditions like stock prices or exchange rates.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "56. Gantt charts are used to display project schedules.",
-    correctAnswer: true
+    "id": 55,
+    "type": "truefalse",
+    "question": "55. Diversification spreads investments across assets to reduce risk.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "57. Compliance means ensuring a company meets laws and regulations relevant to its business.",
-    correctAnswer: true
+    "id": 56,
+    "type": "truefalse",
+    "question": "56. Gantt charts are used to display project schedules.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "58. A project risk register logs identified risks, their severity, mitigation strategies, and owners.",
-    correctAnswer: true
+    "id": 57,
+    "type": "truefalse",
+    "question": "57. Compliance means ensuring a company meets laws and regulations relevant to its business.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "59. Non-functional requirements define system behaviors like performance and response times.",
-    correctAnswer: true
+    "id": 58,
+    "type": "truefalse",
+    "question": "58. A project risk register logs identified risks, their severity, mitigation strategies, and owners.",
+    "correctAnswer": true
   },
   {
-    type: "truefalse",
-    question: "60. Software Quality Assurance focuses on ensuring software quality and defect-free products.",
-    correctAnswer: true
+    "id": 59,
+    "type": "truefalse",
+    "question": "59. Non-functional requirements define system behaviors like performance and response times.",
+    "correctAnswer": true
   },
-  
-      
+  {
+    "id": 60,
+    "type": "truefalse",
+    "question": "60. Software Quality Assurance focuses on ensuring software quality and defect-free products.",
+    "correctAnswer": true
+  },
+ {
+    "id": 61,
+    "type": "multiple",
+    "question": "What is defined as a specialized field of work requiring formal education, training, and expertise, often governed by standards or regulations?",
+    "options": [
+      "Professionalism",
+      "Computing",
+      "Profession",
+      "Professional"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 62,
+    "type": "truefalse",
+    "question": "A \"Professional\" is a person engaged in a profession, displaying competence, skill, and ethical behavior in their field of expertise.",
+    "correctAnswer": true
+  },
+  {
+    "id": 63,
+    "type": "multiple",
+    "question": "Which term describes the conduct, aims, and qualities that characterize a professional, including responsibility and ethical behavior?",
+    "options": [
+      "Professionalism",
+      "Profession",
+      "Competence",
+      "Computing"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": 64,
+    "type": "truefalse",
+    "question": "Professionalism is solely about how business people interact with clients and customers, not colleagues.",
+    "correctAnswer": false
+  },
+  {
+    "id": 65,
+    "type": "multiple",
+    "question": "What does \"Computing\" refer to?",
+    "options": [
+      "Only the study of algorithms and data structures.",
+      "The use of computers and telecommunications to store data.",
+      "The process of using computers for tasks like data processing and problem-solving.",
+      "The design and development of software."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 66,
+    "type": "truefalse",
+    "question": "Computing encompasses the use of hardware and software to manipulate data and execute algorithms.",
+    "correctAnswer": true
+  },
+  {
+    "id": 67,
+    "type": "multiple",
+    "question": "What is \"Computer Science\" primarily the study of?",
+    "options": [
+      "Managing a company's network infrastructure.",
+      "Algorithms, data structures, computation theory, programming languages, and software development.",
+      "Using remote servers for storage and processing.",
+      "Helping users with technical issues and training."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 68,
+    "type": "multiple",
+    "question": "Which of the following is an example of a task a computer scientist might work on?",
+    "options": [
+      "Managing an e-commerce platform's user interface.",
+      "Setting up a corporate VPN.",
+      "Developing new algorithms for sorting data efficiently.",
+      "Providing training sessions for new software applications."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 69,
+    "type": "multiple",
+    "question": "\"Software Engineering\" is a discipline that applies engineering principles to which of the following?",
+    "options": [
+      "The study of computation theory.",
+      "The design, development, maintenance, testing, and evaluation of software.",
+      "The management of computer networks.",
+      "Researching quantum computing algorithms."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 70,
+    "type": "truefalse",
+    "question": "An example of software engineering is an engineer working on an e-commerce platform, managing everything from the user interface to backend database interactions.",
+    "correctAnswer": true
+  },
+  {
+    "id": 71,
+    "type": "multiple",
+    "question": "What is \"Information Technology (IT)\" primarily concerned with?",
+    "options": [
+      "Developing new search algorithms.",
+      "The use of computers and telecommunications to store, retrieve, transmit, and manipulate data.",
+      "Designing systems that can learn from data.",
+      "Writing automated test cases for web applications."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 72,
+    "type": "multiple",
+    "question": "An IT professional managing a company's network infrastructure to ensure secure communication is an example of what?",
+    "options": [
+      "Computer Science",
+      "Software Engineering",
+      "Professionalism",
+      "Information Technology"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 73,
+    "type": "truefalse",
+    "question": "The study of efficient ways to process and store data falls under the Computer Science subject area of \"Operating Systems\".",
+    "correctAnswer": false
+  },
+  {
+    "id": 74,
+    "type": "multiple",
+    "question": "Developing a new search algorithm that reduces search time in databases is an example of which Computer Science subject area?",
+    "options": [
+      "Algorithms and Data Structures",
+      "Operating Systems",
+      "Artificial Intelligence and Machine Learning",
+      "Software Development Life Cycle"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": 75,
+    "type": "multiple",
+    "question": "Understanding how software interacts with hardware is a key aspect of which Computer Science subject area?",
+    "options": [
+      "Artificial Intelligence and Machine Learning",
+      "Operating Systems",
+      "Algorithms and Data Structures",
+      "Quality Assurance and Testing"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 76,
+    "type": "truefalse",
+    "question": "Creating a new lightweight operating system for embedded devices is an example related to the study of Algorithms and Data Structures.",
+    "correctAnswer": false
+  },
+  {
+    "id": 77,
+    "type": "multiple",
+    "question": "Designing systems that can learn from data is characteristic of which Computer Science subject area?",
+    "options": [
+      "Operating Systems",
+      "Software Architecture and Design Patterns",
+      "Artificial Intelligence and Machine Learning",
+      "Network Administration"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 78,
+    "type": "multiple",
+    "question": "Building a machine learning model for predicting stock market trends is an example of:",
+    "options": [
+      "Information Technology",
+      "Software Engineering",
+      "Professional Ethics",
+      "Artificial Intelligence and Machine Learning"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 79,
+    "type": "truefalse",
+    "question": "The Software Development Life Cycle (SDLC) is a subject area within Information Technology.",
+    "correctAnswer": false
+  },
+  {
+    "id": 80,
+    "type": "multiple",
+    "question": "Following Agile methodologies to release updates for a mobile app every two weeks is an example of applying principles from:",
+    "options": [
+      "Software Development Life Cycle (SDLC)",
+      "Cybersecurity",
+      "Open Source Contribution",
+      "Cloud Computing"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": 81,
+    "type": "multiple",
+    "question": "What is the primary goal of \"Quality Assurance and Testing\" in Software Engineering?",
+    "options": [
+      "To manage and maintain computer networks.",
+      "Ensuring software is free from defects.",
+      "To design systems that can learn from data.",
+      "To oversee software development projects."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 82,
+    "type": "truefalse",
+    "question": "Writing automated test cases for a web application to ensure all functionalities work correctly is an example of Network Administration.",
+    "correctAnswer": false
+  },
+  {
+    "id": 83,
+    "type": "multiple",
+    "question": "Structuring software projects efficiently is a key concern of which Software Engineering subject area?",
+    "options": [
+      "Quality Assurance and Testing",
+      "Software Development Life Cycle (SDLC)",
+      "Software Architecture and Design Patterns",
+      "Requirement Gathering and Analysis"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 84,
+    "type": "multiple",
+    "question": "Implementing the Model-View-Controller (MVC) pattern in a web application is an example of:",
+    "options": [
+      "Cybersecurity measures",
+      "An IT support activity",
+      "Software Architecture and Design Patterns",
+      "A Computer Science research activity"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 85,
+    "type": "truefalse",
+    "question": "\"Network Administration\" involves managing and maintaining computer networks.",
+    "correctAnswer": true
+  },
+  {
+    "id": 86,
+    "type": "multiple",
+    "question": "Setting up a corporate VPN for remote employees is an example of:",
+    "options": [
+      "Software Development",
+      "Network Administration",
+      "Cloud Computing",
+      "AI Research"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 87,
+    "type": "multiple",
+    "question": "Protecting systems from cyber threats is the main focus of which Information Technology subject area?",
+    "options": [
+      "Network Administration",
+      "Cloud Computing",
+      "Cybersecurity",
+      "IT Support"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 88,
+    "type": "truefalse",
+    "question": "Implementing firewalls and intrusion detection systems is an example of Cloud Computing.",
+    "correctAnswer": false
+  },
+  {
+    "id": 89,
+    "type": "multiple",
+    "question": "Using remote servers for storage and processing is known as:",
+    "options": [
+      "Network Administration",
+      "Cybersecurity",
+      "System Administration",
+      "Cloud Computing"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 90,
+    "type": "multiple",
+    "question": "Migrating a company's data storage to AWS (Amazon Web Services) to reduce costs and improve scalability is an example of:",
+    "options": [
+      "Cybersecurity",
+      "Cloud Computing",
+      "Network Administration",
+      "Software Testing"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 91,
+    "type": "truefalse",
+    "question": "\"Research and Development\" in Computer Science involves conducting studies to create innovative technologies.",
+    "correctAnswer": true
+  },
+  {
+    "id": 92,
+    "type": "multiple",
+    "question": "Researching quantum computing algorithms to solve complex problems faster than traditional computers is an example of what professional activity in Computer Science?",
+    "options": [
+      "Teaching and Academia",
+      "Open Source Contribution",
+      "Research and Development",
+      "Project Management"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 93,
+    "type": "multiple",
+    "question": "What professional activity in Computer Science involves educating the next generation of computer scientists?",
+    "options": [
+      "Research and Development",
+      "Teaching and Academia",
+      "Open Source Contribution",
+      "System Administration"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 94,
+    "type": "truefalse",
+    "question": "A professor teaching a course on data science at a university is an example of Open Source Contribution.",
+    "correctAnswer": false
+  },
+  {
+    "id": 95,
+    "type": "multiple",
+    "question": "Collaborating on publicly available software projects is known as:",
+    "options": [
+      "Requirement Gathering",
+      "Open Source Contribution",
+      "Security Implementation",
+      "IT Support"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 96,
+    "type": "multiple",
+    "question": "Contributing code to the Linux operating system or libraries like TensorFlow is an example of:",
+    "options": [
+      "A Software Engineering project management task.",
+      "An Information Technology support function.",
+      "An Open Source Contribution in Computer Science.",
+      "A Cybersecurity implementation."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 97,
+    "type": "truefalse",
+    "question": "\"Requirement Gathering and Analysis\" in Software Engineering involves understanding client needs for software.",
+    "correctAnswer": true
+  },
+  {
+    "id": 98,
+    "type": "multiple",
+    "question": "Conducting interviews with stakeholders to gather requirements for a new customer relationship management (CRM) system is an example of:",
+    "options": [
+      "Coding and Implementation",
+      "Requirement Gathering and Analysis",
+      "Project Management",
+      "Quality Assurance"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 99,
+    "type": "multiple",
+    "question": "The professional activity in Software Engineering that involves writing and deploying software code is called:",
+    "options": [
+      "Requirement Gathering and Analysis",
+      "Coding and Implementation",
+      "Project Management",
+      "Quality Assurance and Testing"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 100,
+    "type": "truefalse",
+    "question": "Developing a new feature in a web application using JavaScript and React is an example of Project Management in Software Engineering.",
+    "correctAnswer": false
+  },
+  {
+    "id": 101,
+    "type": "multiple",
+    "question": "Overseeing software development projects is the primary role of which Software Engineering activity?",
+    "options": [
+      "Coding and Implementation",
+      "Quality Assurance",
+      "Project Management",
+      "Requirement Analysis"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 102,
+    "type": "multiple",
+    "question": "Using tools like Jira or Trello to manage tasks and deadlines for a software project team is an example of:",
+    "options": [
+      "Open Source Contribution",
+      "IT Support",
+      "Software Engineering Project Management",
+      "Network Administration"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 103,
+    "type": "truefalse",
+    "question": "\"IT Support and User Training\" is a professional activity within Computer Science.",
+    "correctAnswer": false
+  },
+  {
+    "id": 104,
+    "type": "multiple",
+    "question": "Providing training sessions for employees on how to use new software applications is an example of:",
+    "options": [
+      "System Administration",
+      "IT Support and User Training",
+      "Security Implementation",
+      "Software Development"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 105,
+    "type": "multiple",
+    "question": "Keeping IT systems operational is the main responsibility of:",
+    "options": [
+      "Software Engineers",
+      "Computer Scientists involved in research",
+      "IT professionals in System Administration and Maintenance",
+      "Professionals focused on Open Source Contribution"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 106,
+    "type": "truefalse",
+    "question": "Regularly updating and patching server software to protect against vulnerabilities is an example of IT Support and User Training.",
+    "correctAnswer": false
+  },
+  {
+    "id": 107,
+    "type": "multiple",
+    "question": "Ensuring data protection through activities like security audits falls under which IT professional activity?",
+    "options": [
+      "IT Support and User Training",
+      "System Administration and Maintenance",
+      "Security Implementation and Monitoring",
+      "Cloud Computing Management"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 108,
+    "type": "multiple",
+    "question": "Conducting regular security audits to identify and fix vulnerabilities in a company's IT infrastructure is an example of:",
+    "options": [
+      "Research and Development in Computer Science.",
+      "Security Implementation and Monitoring in IT.",
+      "Software Architecture and Design in Software Engineering.",
+      "Teaching and Academia in Computer Science."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 109,
+    "type": "truefalse",
+    "question": "The Association for Computing Machinery (ACM) is primarily focused on electrical engineering.",
+    "correctAnswer": false
+  },
+  {
+    "id": 110,
+    "type": "multiple",
+    "question": "Which organization is described as one of the largest professional societies for computing professionals, focusing on advancing computing as a science and profession?",
+    "options": [
+      "IEEE",
+      "BCS",
+      "ACM",
+      "IACAP"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 111,
+    "type": "multiple",
+    "question": "Which of the following is NOT listed as an activity of the ACM?",
+    "options": [
+      "Organizes conferences",
+      "Publishes research journals",
+      "Provides resources for education",
+      "Develops hardware standards"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 112,
+    "type": "truefalse",
+    "question": "The ACM hosts the SIGGRAPH conference, which focuses on computer graphics and interactive techniques.",
+    "correctAnswer": true
+  },
+  {
+    "id": 113,
+    "type": "multiple",
+    "question": "The Institute of Electrical and Electronics Engineers (IEEE) is a leading organization for professionals in which fields?",
+    "options": [
+      "Philosophy and Computing",
+      "Electrical engineering and computer science",
+      "Only software development",
+      "Only IT support in the UK"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 114,
+    "type": "multiple",
+    "question": "Which of these is an activity of the IEEE?",
+    "options": [
+      "Primarily focusing on philosophical aspects of computing.",
+      "Offering various conferences, publications, and standards development.",
+      "Advocating for computing research funding exclusively.",
+      "Providing certifications like Chartered IT Professional (CITP)."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 115,
+    "type": "truefalse",
+    "question": "The IEEE Computer Society is a part of ACM.",
+    "correctAnswer": false
+  },
+  {
+    "id": 116,
+    "type": "multiple",
+    "question": "Which professional body for IT professionals is primarily based in the UK and promotes a wider understanding of computing and IT?",
+    "options": [
+      "ACM",
+      "IEEE",
+      "BCS",
+      "CRA"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 117,
+    "type": "multiple",
+    "question": "Which of the following is an activity of the British Computer Society (BCS)?",
+    "options": [
+      "Hosting the SIGGRAPH conference.",
+      "Publishing research mainly on the philosophy of computing.",
+      "Providing certifications, professional development, and networking events.",
+      "Organizing the biennial Snowbird conference."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 118,
+    "type": "true_false",
+    "question": "The Chartered IT Professional (CITP) is a certification offered by the IEEE.",
+    "correctAnswer": false
+  },
+  {
+    "id": 119,
+    "type": "multiple",
+    "question": "Which society explores the intersection of computing and philosophical inquiry?",
+    "options": [
+      "Computing Research Association (CRA)",
+      "British Computer Society (BCS)",
+      "International Association for Computing and Philosophy (IACAP)",
+      "Association for Computing Machinery (ACM)"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 120,
+    "type": "multiple",
+    "question": "Hosting conferences and publishing research on ethical and philosophical aspects of computing is an activity of:",
+    "options": [
+      "IEEE",
+      "IACAP",
+      "BCS",
+      "CRA"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 121,
+    "type": "truefalse",
+    "question": "Organizing discussions on the ethical implications of AI and machine learning technologies is an example activity of the Computing Research Association (CRA).",
+    "correctAnswer": false
+  },
+  {
+    "id": 122,
+    "type": "multiple",
+    "question": "What is the Computing Research Association (CRA) primarily focused on?",
+    "options": [
+      "Providing IT certifications in the UK.",
+      "The intersection of computing and philosophy.",
+      "Improving the understanding of computing research and its impact on society.",
+      "Advancing electrical engineering."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 123,
+    "type": "multiple",
+    "question": "Which of the following is an activity of the Computing Research Association (CRA)?",
+    "options": [
+      "Hosting SIGGRAPH.",
+      "Offering the CITP certification.",
+      "Providing resources for researchers and advocating for computing research funding.",
+      "Publishing research on ethical aspects of AI."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 124,
+    "type": "truefalse",
+    "question": "The CRA organizes the biennial Snowbird conference for computing research professionals.",
+    "correctAnswer": true
+  },
+  {
+    "id": 125,
+    "type": "multiple",
+    "question": "Professional ethics in computing emphasizes responsible behavior, accountability, and what else among practitioners?",
+    "options": [
+      "Speed of development",
+      "Profit maximization",
+      "The integrity of practitioners",
+      "Adherence to specific programming languages"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 126,
+    "type": "multiple",
+    "question": "The ethical principle of \"Integrity\" in computing means professionals should:",
+    "options": [
+      "Continuously improve their skills.",
+      "Be honest in their work and avoid deception.",
+      "Respect the privacy of information.",
+      "Take responsibility for their actions."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 127,
+    "type": "truefalse",
+    "question": "A software developer misrepresenting the capabilities of a product to clients is an example of upholding the principle of Integrity.",
+    "correctAnswer": false
+  },
+  {
+    "id": 128,
+    "type": "multiple",
+    "question": "Which ethical principle in computing stresses that respecting the privacy and confidentiality of information is critical, especially with sensitive data?",
+    "options": [
+      "Integrity",
+      "Accountability",
+      "Confidentiality",
+      "Professional Competence"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 129,
+    "type": "multiple",
+    "question": "An IT professional disclosing personal information about users without proper authorization violates which ethical principle?",
+    "options": [
+      "Accountability",
+      "Social Responsibility",
+      "Integrity",
+      "Confidentiality"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 130,
+    "type": "truefalse",
+    "question": "The principle of \"Accountability\" means professionals should take responsibility for their actions and the impact of their work.",
+    "correctAnswer": true
+  },
+  {
+    "id": 131,
+    "type": "multiple",
+    "question": "A software engineer addressing vulnerabilities in their code, especially if it poses risks to users, is an example of:",
+    "options": [
+      "Respect for Intellectual Property",
+      "Accountability",
+      "Confidentiality",
+      "Social Responsibility"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 132,
+    "type": "multiple",
+    "question": "Acknowledging and respecting the intellectual property rights of others is fundamental to which ethical principle in computing?",
+    "options": [
+      "Professional Competence",
+      "Respect for Intellectual Property",
+      "Social Responsibility",
+      "Integrity"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 133,
+    "type": "truefalse",
+    "question": "Citing sources appropriately when using open-source code or research findings is an example of Professional Competence.",
+    "correctAnswer": false
+  },
+  {
+    "id": 134,
+    "type": "multiple",
+    "question": "The ethical principle of \"Professional Competence\" emphasizes:",
+    "options": [
+      "Abiding by relevant laws.",
+      "Continuously improving one’s skills and knowledge.",
+      "Considering societal implications of technology.",
+      "Being honest in all communications."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 135,
+    "type": "multiple",
+    "question": "A professional pursuing ongoing education and training to stay updated with technological advancements is an example of:",
+    "options": [
+      "Social Responsibility",
+      "Compliance with Laws",
+      "Professional Competence",
+      "Accountability"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 136,
+    "type": "truefalse",
+    "question": "\"Social Responsibility\" in computing involves considering the societal implications of technology and striving to use computing for the greater good.",
+    "correctAnswer": true
+  },
+  {
+    "id": 137,
+    "type": "multiple",
+    "question": "Designing software that is accessible to people with disabilities and does not reinforce social inequalities is an example of:",
+    "options": [
+      "Integrity",
+      "Confidentiality",
+      "Compliance with Laws",
+      "Social Responsibility"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 138,
+    "type": "multiple",
+    "question": "Abiding by relevant laws and regulations that govern computing practices is known as:",
+    "options": [
+      "Professional Competence",
+      "Compliance with Laws and Regulations",
+      "Social Responsibility",
+      "Respect for Intellectual Property"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 139,
+    "type": "truefalse",
+    "question": "Ensuring compliance with data protection laws, such as GDPR, when handling user data is an example of respecting intellectual property.",
+    "correctAnswer": false
+  },
+  {
+    "id": 140,
+    "type": "multiple",
+    "question": "The title of the lecture is:",
+    "options": [
+      "Introduction to Computing Ethics",
+      "Professional Practice in Artificial Systems",
+      "Advanced Software Engineering",
+      "The Role of Professional Societies"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 141,
+    "type": "multiple",
+    "question": "What does \"professional competency\" refer to?",
+    "options": [
+      "Only the technical skills required for a job.",
+      "The skills, knowledge, and abilities professionals must possess to perform their jobs effectively.",
+      "A commitment solely to ethical practices in the workplace.",
+      "The ability to work independently without collaboration."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 142,
+    "type": "truefalse",
+    "question": "In computing, professional competency only encompasses technical skills.",
+    "correctAnswer": false
+  },
+  {
+    "id": 143,
+    "type": "multiple",
+    "question": "Which of the following is NOT listed as a key component of professional competency in computing?",
+    "options": [
+      "Technical Skills",
+      "Problem-Solving Abilities",
+      "Financial Management",
+      "Soft Skills"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 144,
+    "type": "multiple",
+    "question": "Proficiency in which of these programming languages is mentioned as an example of technical skills?",
+    "options": [
+      "Swift",
+      "Python",
+      "Ruby",
+      "Kotlin"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 145,
+    "type": "truefalse",
+    "question": "Understanding algorithms, data structures, and software development methodologies like Agile is part of technical skills.",
+    "correctAnswer": true
+  },
+  {
+    "id": 146,
+    "type": "multiple",
+    "question": "Which of the following is an example of tools and technologies relevant to specific roles in computing?",
+    "options": [
+      "Graphic design software",
+      "Video editing tools",
+      "Cloud computing platforms",
+      "Musical composition software"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 147,
+    "type": "multiple",
+    "question": "According to the lecture, what should a software engineer be able to do as an example of technical skill?",
+    "options": [
+      "Only debug existing code.",
+      "Design and implement a scalable web application using modern frameworks.",
+      "Manage marketing campaigns for software products.",
+      "Perform hardware maintenance on servers."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 148,
+    "type": "multiple",
+    "question": "What is defined as the capacity to analyze complex problems and develop effective solutions?",
+    "options": [
+      "Ethical Awareness",
+      "Adaptability",
+      "Problem-Solving Abilities",
+      "Continuous Education"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 149,
+    "type": "truefalse",
+    "question": "An IT support specialist troubleshooting a network issue is an example of demonstrating problem-solving abilities.",
+    "correctAnswer": true
+  },
+  {
+    "id": 150,
+    "type": "multiple",
+    "question": "Which soft skills are mentioned as crucial for collaboration and project management?",
+    "options": [
+      "Negotiation and persuasion",
+      "Public speaking and creative writing",
+      "Time management and organization",
+      "Communication, teamwork, and interpersonal skills"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 151,
+    "type": "multiple",
+    "question": "What must a project manager effectively communicate to both technical and non-technical stakeholders?",
+    "options": [
+      "Detailed code reviews",
+      "Only the budget constraints",
+      "Project goals and status",
+      "The personal development plans of team members"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 152,
+    "type": "truefalse",
+    "question": "Ethical awareness involves understanding the ethical implications of technology and adhering to professional ethical standards.",
+    "correctAnswer": true
+  },
+  {
+    "id": 153,
+    "type": "multiple",
+    "question": "What must a data scientist be aware of in machine learning algorithms to ensure fairness?",
+    "options": [
+      "The programming language used",
+      "Biases",
+      "The speed of the algorithm",
+      "The cost of the software"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 154,
+    "type": "multiple",
+    "question": "What is defined as the ability to adjust to new technologies, methodologies, and evolving industry standards?",
+    "options": [
+      "Problem-Solving Abilities",
+      "Adaptability",
+      "Technical Skills",
+      "Ethical Awareness"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 155,
+    "type": "truefalse",
+    "question": "A web developer transitioning from traditional server-based applications to cloud-based architectures is an example of adaptability.",
+    "correctAnswer": true
+  },
+  {
+    "id": 156,
+    "type": "multiple",
+    "question": "What is defined as the continuous, voluntary, and self-motivated pursuit of knowledge for personal or professional development?",
+    "options": [
+      "Formal Certification",
+      "Project Management",
+      "Life-long learning",
+      "Technical Proficiency"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 157,
+    "type": "truefalse",
+    "question": "Life-long learning is considered optional for maintaining professional competency in the rapidly evolving field of computing.",
+    "correctAnswer": false
+  },
+  {
+    "id": 158,
+    "type": "multiple",
+    "question": "Engaging in formal education programs, such as degree courses or workshops, is an aspect of which component of life-long learning?",
+    "options": [
+      "Online Learning",
+      "Continuous Education",
+      "Self-Directed Learning",
+      "Mentorship and Networking"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 159,
+    "type": "multiple",
+    "question": "A network engineer pursuing certifications like Cisco Certified Network Associate (CCNA) is an example of:",
+    "options": [
+      "Self-Directed Learning",
+      "Professional Development",
+      "Continuous Education",
+      "Online Learning"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 160,
+    "type": "truefalse",
+    "question": "Utilizing online platforms like Coursera or Udemy to access courses on emerging technologies is an example of Professional Development.",
+    "correctAnswer": false
+  },
+  {
+    "id": 161,
+    "type": "multiple",
+    "question": "A software developer taking a course on artificial intelligence to integrate machine learning capabilities into applications is an example of:",
+    "options": [
+      "Continuous Education",
+      "Online Learning",
+      "Mentorship",
+      "Staying Updated with Industry Trends"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 162,
+    "type": "multiple",
+    "question": "What does professional development, as a key aspect of life-long learning, primarily involve?",
+    "options": [
+      "Only reading books and research papers.",
+      "Participating in industry conferences, seminars, and workshops.",
+      "Seeking mentorship from experienced professionals.",
+      "Subscribing to industry newsletters."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 163,
+    "type": "truefalse",
+    "question": "Attending the annual IEEE conference is an example of self-directed learning.",
+    "correctAnswer": false
+  },
+  {
+    "id": 164,
+    "type": "multiple",
+    "question": "Taking the initiative to read books, research papers, and online articles to enhance knowledge in specific areas of interest is known as:",
+    "options": [
+      "Continuous Education",
+      "Online Learning",
+      "Self-Directed Learning",
+      "Professional Development"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 165,
+    "type": "multiple",
+    "question": "A cybersecurity professional reading about recent security breaches to understand new threats and defense strategies is an example of:",
+    "options": [
+      "Mentorship and Networking",
+      "Self-Directed Learning",
+      "Continuous Education",
+      "Professional Development"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 166,
+    "type": "truefalse",
+    "question": "Seeking mentorship and building a network of contacts are not considered important aspects of life-long learning.",
+    "correctAnswer": false
+  },
+  {
+    "id": 167,
+    "type": "multiple",
+    "question": "Joining local tech meetups or online forums to connect with others in the field and share knowledge is an example of:",
+    "options": [
+      "Continuous Education",
+      "Self-Directed Learning",
+      "Mentorship and Networking",
+      "Staying Updated with Industry Trends"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 168,
+    "type": "multiple",
+    "question": "Following industry news, blogs, and podcasts to remain aware of new tools, technologies, and best practices is part of:",
+    "options": [
+      "Formal Education",
+      "Staying Updated with Industry Trends",
+      "Mentorship Programs",
+      "Self-Directed Learning Projects"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 169,
+    "type": "truefalse",
+    "question": "Subscribing to newsletters or podcasts like \"Software Engineering Daily\" is an example of staying updated with industry trends.",
+    "correctAnswer": true
+  },
+  {
+    "id": 170,
+    "type": "multiple",
+    "question": "Word processors, spreadsheets, and presentation software are examples of what category of software?",
+    "options": [
+      "Communication tools",
+      "Productivity Tools",
+      "Data Management software",
+      "Entertainment software"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 171,
+    "type": "multiple",
+    "question": "What is a primary benefit of productivity tools like Microsoft Word or Excel?",
+    "options": [
+      "Facilitate real-time communication.",
+      "Enhance efficiency in creating documents and analyzing data.",
+      "Store and retrieve large amounts of data effectively.",
+      "Provide recreational activities."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 172,
+    "type": "truefalse",
+    "question": "Email clients and video conferencing tools are primarily used for data management.",
+    "correctAnswer": false
+  },
+  {
+    "id": 173,
+    "type": "multiple",
+    "question": "Which of the following is an example of communication software?",
+    "options": [
+      "MySQL",
+      "Slack",
+      "UiPath",
+      "Duolingo"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 174,
+    "type": "multiple",
+    "question": "What is a key benefit of communication software like Gmail or Zoom?",
+    "options": [
+      "Enhancing efficiency in creating documents.",
+      "Facilitating real-time communication and collaboration across distances.",
+      "Supporting programmers in writing and testing code.",
+      "Automating repetitive tasks."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 175,
+    "type": "multiple",
+    "question": "Database management systems (e.g., MySQL, Oracle) and CRM software (e.g., Salesforce) fall under which category of software uses?",
+    "options": [
+      "Productivity Tools",
+      "Communication",
+      "Data Management",
+      "Automation"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 176,
+    "type": "truefalse",
+    "question": "Data management software enables organizations to store, retrieve, and analyze large amounts of data effectively.",
+    "correctAnswer": true
+  },
+  {
+    "id": 177,
+    "type": "multiple",
+    "question": "Integrated development environments (IDEs) like Visual Studio and version control systems like Git are primarily used for:",
+    "options": [
+      "Data Management",
+      "Entertainment",
+      "Software Development",
+      "Productivity Tasks"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 178,
+    "type": "multiple",
+    "question": "What is a benefit of software development tools like IDEs and version control systems?",
+    "options": [
+      "They provide recreational activities.",
+      "They facilitate learning through interactive content.",
+      "They support programmers in writing, testing, and maintaining code more efficiently.",
+      "They streamline repetitive tasks."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 179,
+    "type": "truefalse",
+    "question": "Video games and streaming platforms like Netflix are examples of educational software.",
+    "correctAnswer": false
+  },
+  {
+    "id": 180,
+    "type": "multiple",
+    "question": "Software that provides recreational activities and content consumption for users is categorized as:",
+    "options": [
+      "Automation software",
+      "Entertainment software",
+      "Data management software",
+      "Productivity tools"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 181,
+    "type": "multiple",
+    "question": "Learning management systems (e.g., Moodle) and educational software (e.g., Duolingo) are used for:",
+    "options": [
+      "Software Development",
+      "Entertainment",
+      "Education and Training",
+      "Data Management"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 182,
+    "type": "truefalse",
+    "question": "A benefit of education and training software is to facilitate learning through interactive content and track student progress.",
+    "correctAnswer": true
+  },
+  {
+    "id": 183,
+    "type": "multiple",
+    "question": "Robotic process automation (RPA) tools and home automation software are examples of:",
+    "options": [
+      "Entertainment Software",
+      "Communication Software",
+      "Automation Software",
+      "Data Management Software"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 184,
+    "type": "multiple",
+    "question": "What is a primary benefit of automation software?",
+    "options": [
+      "To provide recreational activities.",
+      "To facilitate real-time communication.",
+      "To store and manage large datasets.",
+      "To streamline repetitive tasks and improve efficiency."
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 185,
+    "type": "multiple",
+    "question": "Unauthorized copying, distribution, or use of software is known as:",
+    "options": [
+      "Malware creation",
+      "Piracy",
+      "Data manipulation",
+      "Social engineering"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 186,
+    "type": "truefalse",
+    "question": "Financial losses for developers and compromised software integrity are potential consequences of software piracy.",
+    "correctAnswer": true
+  },
+  {
+    "id": 187,
+    "type": "multiple",
+    "question": "Using software to create malicious programs like viruses, worms, or ransomware is termed:",
+    "options": [
+      "Piracy",
+      "Invasion of Privacy",
+      "Malware Creation",
+      "Data Manipulation"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 188,
+    "type": "multiple",
+    "question": "Which of the following is a potential consequence of malware creation?",
+    "options": [
+      "Enhanced software integrity",
+      "Increased trust in digital systems",
+      "Data theft and system damage.",
+      "Financial gains for developers."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 189,
+    "type": "truefalse",
+    "question": "Software used to spy on individuals without their consent, such as keyloggers, is a form of data manipulation.",
+    "correctAnswer": false
+  },
+  {
+    "id": 190,
+    "type": "multiple",
+    "question": "What is a potential consequence of invasion of privacy through software misuse?",
+    "options": [
+      "Increased software sales",
+      "Loss of trust and identity theft.",
+      "Improved system performance",
+      "Enhanced data accuracy"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 191,
+    "type": "multiple",
+    "question": "Altering or falsifying data using software for fraudulent purposes is known as:",
+    "options": [
+      "Piracy",
+      "Data Manipulation",
+      "Malware Creation",
+      "Social Engineering"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 192,
+    "type": "truefalse",
+    "question": "Data manipulation can lead to legal consequences and damage to reputation.",
+    "correctAnswer": true
+  },
+  {
+    "id": 193,
+    "type": "multiple",
+    "question": "Using software tools to manipulate individuals into revealing sensitive information is called:",
+    "options": [
+      "Data Manipulation",
+      "Invasion of Privacy",
+      "Social Engineering Attacks",
+      "Piracy"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 194,
+    "type": "multiple",
+    "question": "Compromise of accounts and organizational security breaches are consequences of which software misuse?",
+    "options": [
+      "Malware Creation",
+      "Social Engineering Attacks",
+      "Piracy",
+      "Data Manipulation"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 195,
+    "type": "multiple",
+    "question": "Weaknesses in software that can be exploited by attackers are known as:",
+    "options": [
+      "Data Loss",
+      "Security Vulnerabilities",
+      "Software Obsolescence",
+      "Ethical Risks"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 196,
+    "type": "truefalse",
+    "question": "Unpatched software and weak passwords are examples of security vulnerabilities.",
+    "correctAnswer": true
+  },
+  {
+    "id": 197,
+    "type": "multiple",
+    "question": "Data breaches, financial losses, and damage to reputation are consequences of:",
+    "options": [
+      "Software Obsolescence",
+      "Dependence on Software",
+      "Security Vulnerabilities",
+      "Ethical Risks"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 198,
+    "type": "multiple",
+    "question": "What is described as the loss of important data due to software failures, bugs, or human errors?",
+    "options": [
+      "Security Vulnerability",
+      "Data Loss",
+      "Ethical Risk",
+      "Software Piracy"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 199,
+    "type": "truefalse",
+    "question": "Software crashes and accidental deletion are examples that can lead to data loss.",
+    "correctAnswer": true
+  },
+  {
+    "id": 200,
+    "type": "multiple",
+    "question": "Operational disruptions and loss of critical information are potential consequences of:",
+    "options": [
+      "Software obsolescence",
+      "Data loss",
+      "Ethical risks",
+      "Network effects"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 201,
+    "type": "multiple",
+    "question": "Over-reliance on software systems leading to vulnerabilities is termed:",
+    "options": [
+      "Data Loss",
+      "Security Vulnerability",
+      "Dependence on Software",
+      "Software Obsolescence"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 202,
+    "type": "truefalse",
+    "question": "Businesses facing operational challenges during specific application outages exemplify dependence on software.",
+    "correctAnswer": true
+  },
+  {
+    "id": 203,
+    "type": "multiple",
+    "question": "Increased risk of downtime and productivity losses are consequences associated with:",
+    "options": [
+      "Ethical Risks",
+      "Data Loss",
+      "Security Vulnerabilities",
+      "Dependence on Software"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 204,
+    "type": "multiple",
+    "question": "Software that can perpetuate bias or inequality, such as biased algorithms, is an example of:",
+    "options": [
+      "Security Vulnerabilities",
+      "Ethical Risks",
+      "Data Loss",
+      "Software Obsolescence"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 205,
+    "type": "truefalse",
+    "question": "Recruitment algorithms that favor certain demographics over others are an example of ethical risks in software.",
+    "correctAnswer": true
+  },
+  {
+    "id": 206,
+    "type": "multiple",
+    "question": "Discrimination and social unrest are potential consequences of what type of software risk?",
+    "options": [
+      "Compliance and Legal Risks",
+      "Ethical Risks",
+      "Data Loss",
+      "Obsolescence"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 207,
+    "type": "multiple",
+    "question": "Software that becomes outdated or unsupported over time is known as:",
+    "options": [
+      "Vulnerable software",
+      "Biased software",
+      "Obsolete software (Obsolescence)",
+      "Pirated software"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 208,
+    "type": "truefalse",
+    "question": "Legacy systems that are no longer maintained are examples of software obsolescence.",
+    "correctAnswer": true
+  },
+  {
+    "id": 209,
+    "type": "multiple",
+    "question": "Increased security risks and lack of compatibility with new technologies are consequences of:",
+    "options": [
+      "Ethical Risks",
+      "Software Obsolescence",
+      "Dependence on Software",
+      "Data Loss"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 210,
+    "type": "multiple",
+    "question": "Non-compliance with laws and regulations related to software use and data protection falls under:",
+    "options": [
+      "Ethical Risks",
+      "Security Vulnerabilities",
+      "Compliance and Legal Risks",
+      "Software Obsolescence"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 211,
+    "type": "truefalse",
+    "question": "Violating GDPR or HIPAA requirements is an example of software obsolescence.",
+    "correctAnswer": false
+  },
+  {
+    "id": 212,
+    "type": "multiple",
+    "question": "Fines, legal actions, and reputational damage can be consequences of:",
+    "options": [
+      "Software becoming outdated",
+      "Over-reliance on software",
+      "Compliance and Legal Risks",
+      "Ethical biases in algorithms"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 213,
+    "type": "multiple",
+    "question": "What does piracy primarily refer to?",
+    "options": [
+      "The authorized use of copyrighted material.",
+      "The unauthorized use, reproduction, distribution, or sale of copyrighted material.",
+      "The creation of new software from scratch.",
+      "The ethical distribution of free software."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 214,
+    "type": "truefalse",
+    "question": "Piracy is a violation of intellectual property rights.",
+    "correctAnswer": true
+  },
+  {
+    "id": 215,
+    "type": "multiple",
+    "question": "Creating and distributing fake copies of software, often with misleading labels or packaging, is known as:",
+    "options": [
+      "Softlifting",
+      "Internet Piracy",
+      "Counterfeiting",
+      "Peer-to-Peer Sharing"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 216,
+    "type": "multiple",
+    "question": "Selling copies of a popular software suite on a CD or DVD that are not genuine is an example of:",
+    "options": [
+      "Internet Piracy",
+      "Counterfeiting",
+      "Softlifting",
+      "P2P Sharing"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 217,
+    "type": "truefalse",
+    "question": "Softlifting involves distributing or downloading software illegally over the internet.",
+    "correctAnswer": false
+  },
+  {
+    "id": 218,
+    "type": "multiple",
+    "question": "A company purchasing one license for software but installing it on several workstations is an example of:",
+    "options": [
+      "Counterfeiting",
+      "Peer-to-Peer Sharing",
+      "Softlifting",
+      "Internet Piracy"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 219,
+    "type": "multiple",
+    "question": "What is Internet Piracy?",
+    "options": [
+      "Installing a single licensed copy of software on multiple computers.",
+      "Sharing copyrighted software through file-sharing networks.",
+      "Creating and distributing fake copies of software.",
+      "Distributing or downloading software illegally over the internet."
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 220,
+    "type": "truefalse",
+    "question": "Using torrent sites to download cracked versions of commercial software is an example of softlifting.",
+    "correctAnswer": false
+  },
+  {
+    "id": 221,
+    "type": "multiple",
+    "question": "Sharing copyrighted software through file-sharing networks without the owner's permission is:",
+    "options": [
+      "Counterfeiting",
+      "Softlifting",
+      "Internet Piracy",
+      "Peer-to-Peer (P2P) Sharing"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 222,
+    "type": "multiple",
+    "question": "Sharing game files through a P2P application like BitTorrent is an example of:",
+    "options": [
+      "Softlifting",
+      "Peer-to-Peer Sharing",
+      "Counterfeiting",
+      "Creating fake software copies"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 223,
+    "type": "multiple",
+    "question": "What does \"invasion of privacy\" refer to in the context of information?",
+    "options": [
+      "The authorized access and use of personal information with consent.",
+      "The unauthorized access, use, or disclosure of an individual's personal information without their consent.",
+      "The act of forgetting one's password.",
+      "The creation of strong, unique passwords for online accounts."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 224,
+    "type": "truefalse",
+    "question": "Invasion of privacy can occur through surveillance, data breaches, or intrusive software practices.",
+    "correctAnswer": true
+  },
+  {
+    "id": 225,
+    "type": "multiple",
+    "question": "Gathering personal data from users without their knowledge or agreement is a type of invasion of privacy known as:",
+    "options": [
+      "Surveillance",
+      "Data Collection without Consent",
+      "Unauthorized Access to Personal Accounts",
+      "Social Engineering"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 226,
+    "type": "multiple",
+    "question": "A mobile application collecting location data and sharing it with third parties without user consent is an example of:",
+    "options": [
+      "Surveillance",
+      "Social Engineering",
+      "Data Collection without Consent",
+      "Unauthorized Access to Personal Accounts"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 227,
+    "type": "truefalse",
+    "question": "Surveillance involves monitoring individuals only with their explicit consent.",
+    "correctAnswer": false
+  },
+  {
+    "id": 228,
+    "type": "multiple",
+    "question": "Employers using software to track employees' computer activities without notifying them is an example of:",
+    "options": [
+      "Data Collection without Consent",
+      "Surveillance",
+      "Social Engineering",
+      "Unauthorized Access to Personal Accounts"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 229,
+    "type": "multiple",
+    "question": "Hacking into individuals' online accounts to steal personal information is termed:",
+    "options": [
+      "Surveillance",
+      "Social Engineering",
+      "Data Collection without Consent",
+      "Unauthorized Access to Personal Accounts"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 230,
+    "type": "truefalse",
+    "question": "A cybercriminal accessing someone's email to gather sensitive information is an example of social engineering.",
+    "correctAnswer": false
+  },
+  {
+    "id": 231,
+    "type": "multiple",
+    "question": "Manipulating individuals into revealing confidential information by exploiting psychological tactics is known as:",
+    "options": [
+      "Surveillance",
+      "Social Engineering",
+      "Unauthorized Access to Personal Accounts",
+      "Data Collection without Consent"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 232,
+    "type": "multiple",
+    "question": "Phishing attacks that trick users into providing passwords by posing as a trustworthy entity are an example of:",
+    "options": [
+      "Data Collection without Consent",
+      "Unauthorized Access to Personal Accounts",
+      "Surveillance",
+      "Social Engineering"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 233,
+    "type": "multiple",
+    "question": "What does Information Security (InfoSec) refer to?",
+    "options": [
+      "The practice of freely sharing all information.",
+      "The practice of protecting information from unauthorized access, use, disclosure, disruption, modification, or destruction.",
+      "The process of creating new information.",
+      "The speed at which information can be accessed."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 234,
+    "type": "truefalse",
+    "question": "InfoSec encompasses strategies to safeguard data only when it is in storage.",
+    "correctAnswer": false
+  },
+  {
+    "id": 235,
+    "type": "multiple",
+    "question": "Which key component of Information Security ensures that sensitive information is accessed only by authorized individuals or systems?",
+    "options": [
+      "Integrity",
+      "Availability",
+      "Confidentiality",
+      "Auditing"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 236,
+    "type": "multiple",
+    "question": "Which component guarantees that data is accurate and unaltered, maintaining its authenticity and reliability?",
+    "options": [
+      "Confidentiality",
+      "Integrity",
+      "Availability",
+      "Authentication"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 237,
+    "type": "truefalse",
+    "question": "Availability in InfoSec ensures that information and resources are accessible only to system administrators.",
+    "correctAnswer": false
+  },
+  {
+    "id": 238,
+    "type": "multiple",
+    "question": "What is the purpose of Authentication in Information Security?",
+    "options": [
+      "To ensure data is accurate and unaltered.",
+      "To verify the identity of users or systems before granting access.",
+      "To ensure information is accessible when needed.",
+      "To regularly review access logs."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 239,
+    "type": "multiple",
+    "question": "Which component determines which users or systems have permission to access specific resources and data?",
+    "options": [
+      "Auditing",
+      "Authentication",
+      "Authorization",
+      "Confidentiality"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 240,
+    "type": "truefalse",
+    "question": "Auditing in Information Security involves modifying data to ensure accuracy.",
+    "correctAnswer": false
+  },
+  {
+    "id": 241,
+    "type": "multiple",
+    "question": "How is \"Privacy\" defined in the context of an individual's rights?",
+    "options": [
+      "An individual’s right to access all public information.",
+      "An individual’s right to control their personal information and how it is collected, used, and shared.",
+      "An individual’s right to remain anonymous in all online interactions.",
+      "An individual’s right to demand financial compensation for data usage."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 242,
+    "type": "truefalse",
+    "question": "Privacy emphasizes the protection of personal data from unauthorized access or misuse and is unrelated to ethical considerations.",
+    "correctAnswer": false
+  },
+  {
+    "id": 243,
+    "type": "multiple",
+    "question": "Which key principle of privacy states that individuals should have the right to provide informed consent regarding their personal information?",
+    "options": [
+      "Data Minimization",
+      "Consent",
+      "Purpose Limitation",
+      "Transparency"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 244,
+    "type": "multiple",
+    "question": "The principle that organizations should collect only the personal data necessary for specific purposes is known as:",
+    "options": [
+      "Consent",
+      "Accountability",
+      "Data Minimization",
+      "Transparency"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 245,
+    "type": "truefalse",
+    "question": "Purpose limitation means data can be repurposed for any new objective without additional consent if it benefits the user.",
+    "correctAnswer": false
+  },
+  {
+    "id": 246,
+    "type": "multiple",
+    "question": "What does the privacy principle of \"Transparency\" entail?",
+    "options": [
+      "Collecting as much data as possible for future use.",
+      "Organizations being clear about their data collection practices and how they use and protect personal information.",
+      "Individuals giving up their right to know how their data is used.",
+      "Using data for any purpose deemed necessary by the organization."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 247,
+    "type": "multiple",
+    "question": "Which principle requires organizations to take responsibility for their data handling practices and ensure compliance with privacy laws?",
+    "options": [
+      "Consent",
+      "Transparency",
+      "Data Minimization",
+      "Accountability"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 248,
+    "type": "multiple",
+    "question": "According to the comparison table, what is the definition of Privacy?",
+    "options": [
+      "The illegal reproduction of copyrighted material.",
+      "The act of using someone else's work without credit.",
+      "The right of individuals to control their personal information.",
+      "The misrepresentation of authorship."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 249,
+    "type": "truefalse",
+    "question": "Piracy is defined as the act of using someone else's work or ideas without proper credit.",
+    "correctAnswer": false
+  },
+  {
+    "id": 250,
+    "type": "multiple",
+    "question": "What is the definition of Plagiarism?",
+    "options": [
+      "Protecting personal information and data.",
+      "The illegal reproduction or distribution of copyrighted material.",
+      "The act of using someone else's work or ideas without proper credit, passing them off as your own.",
+      "The right to control personal information."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 251,
+    "type": "multiple",
+    "question": "What is the primary \"Focus\" of Privacy, according to the table?",
+    "options": [
+      "Misrepresentation of authorship or originality.",
+      "Protecting personal information and data.",
+      "Unauthorized distribution of digital content.",
+      "Infringement of copyright laws."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 252,
+    "type": "truefalse",
+    "question": "The focus of Piracy is the misrepresentation of authorship or originality.",
+    "correctAnswer": false
+  },
+  {
+    "id": 253,
+    "type": "multiple",
+    "question": "What is the \"Focus\" of Plagiarism?",
+    "options": [
+      "Protecting individual’s data from unauthorized access.",
+      "Unauthorized distribution of software or movies.",
+      "Protecting personal information.",
+      "Misrepresentation of authorship or originality."
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 254,
+    "type": "multiple",
+    "question": "What is the \"Key Concern\" of Privacy?",
+    "options": [
+      "Infringement of copyright laws.",
+      "Protecting individual’s data from unauthorized access or misuse.",
+      "Ethical and intellectual dishonesty.",
+      "Financial loss to creators."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 255,
+    "type": "truefalse",
+    "question": "The key concern of Piracy is protecting an individual's data from misuse.",
+    "correctAnswer": false
+  },
+  {
+    "id": 256,
+    "type": "multiple",
+    "question": "What is the \"Key Concern\" of Plagiarism?",
+    "options": [
+      "Protecting personal information.",
+      "Infringement of copyright laws.",
+      "Unauthorized distribution of content.",
+      "Ethical and intellectual dishonesty by not acknowledging the original creator."
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 257,
+    "type": "multiple",
+    "question": "Collecting user data without their consent and selling it to third parties is an example of:",
+    "options": [
+      "Piracy",
+      "Plagiarism",
+      "A violation of Privacy.",
+      "Copyright infringement."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 258,
+    "type": "truefalse",
+    "question": "Downloading cracked versions of paid software is an example of plagiarism.",
+    "correctAnswer": false
+  },
+  {
+    "id": 259,
+    "type": "multiple",
+    "question": "Copying parts of a research paper without citing the original author is an example of:",
+    "options": [
+      "Privacy violation",
+      "Piracy",
+      "Plagiarism",
+      "Software misuse"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 260,
+    "type": "multiple",
+    "question": "Violation of privacy laws (e.g., GDPR, HIPAA) can lead to:",
+    "options": [
+      "Only academic penalties.",
+      "Fines and legal consequences.",
+      "Increased software sales.",
+      "Revoked degrees."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 261,
+    "type": "truefalse",
+    "question": "Copyright infringement, a consequence of piracy, can lead to lawsuits, fines, or imprisonment.",
+    "correctAnswer": true
+  },
+  {
+    "id": 262,
+    "type": "multiple",
+    "question": "Academic penalties like expulsion or revoked degrees are potential legal/institutional implications primarily associated with:",
+    "options": [
+      "Piracy",
+      "Privacy violations",
+      "Plagiarism",
+      "Data breaches"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 263,
+    "type": "multiple",
+    "question": "Which action primarily \"Involves protecting or violating someone’s right to data privacy\" in terms of intent?",
+    "options": [
+      "Piracy",
+      "Plagiarism",
+      "Privacy-related actions",
+      "Copyright infringement"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 264,
+    "type": "truefalse",
+    "question": "The intent of Piracy involves bypassing payment or legal permissions for copyrighted works.",
+    "correctAnswer": true
+  },
+  {
+    "id": 265,
+    "type": "multiple",
+    "question": "What is the primary \"Intent\" associated with Plagiarism?",
+    "options": [
+      "Bypassing payment for copyrighted works.",
+      "Protecting someone's right to data privacy.",
+      "Claiming ownership or credit for someone else's work or ideas.",
+      "Distributing illegal software."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 266,
+    "type": "multiple",
+    "question": "Violating a person's right to control their personal information is an ethical issue related to:",
+    "options": [
+      "Piracy",
+      "Plagiarism",
+      "Privacy",
+      "Software licensing"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 267,
+    "type": "truefalse",
+    "question": "Disrespecting intellectual property rights is an ethical issue primarily associated with plagiarism.",
+    "correctAnswer": false
+  },
+  {
+    "id": 268,
+    "type": "multiple",
+    "question": "Dishonestly taking credit for someone else's work, harming the original author, is an ethical issue of:",
+    "options": [
+      "Privacy",
+      "Piracy",
+      "Plagiarism",
+      "Data misuse"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 269,
+    "type": "multiple",
+    "question": "Data collection, surveillance, and user consent are typical \"Contexts\" for issues related to:",
+    "options": [
+      "Piracy",
+      "Plagiarism",
+      "Privacy",
+      "Software development"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 270,
+    "type": "truefalse",
+    "question": "Digital media distribution, software, movies, and books are the primary \"Context\" for plagiarism.",
+    "correctAnswer": false
+  },
+  {
+    "id": 271,
+    "type": "multiple",
+    "question": "Academia, writing, research, and creative works form the \"Context\" for:",
+    "options": [
+      "Piracy",
+      "Privacy",
+      "Plagiarism",
+      "Data Security"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 272,
+    "type": "multiple",
+    "question": "Software developed by a company that requires purchasing licenses (e.g., Microsoft Windows) is known as:",
+    "options": [
+      "Open Source Software",
+      "Proprietary Software",
+      "Software as a Service",
+      "Freemium Software"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 273,
+    "type": "truefalse",
+    "question": "Open Source Software (OSS) like Linux is publicly available for use and modification.",
+    "correctAnswer": true
+  },
+  {
+    "id": 274,
+    "type": "multiple",
+    "question": "Subscription-based, cloud-hosted software (e.g., Google Workspace) is an example of which business model?",
+    "options": [
+      "Proprietary Software",
+      "Freemium",
+      "Software as a Service (SaaS)",
+      "Ad-Supported Software"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 275,
+    "type": "multiple",
+    "question": "A software model where basic features are free, but premium features require payment (e.g., Spotify) is called:",
+    "options": [
+      "Open Source",
+      "Ad-Supported",
+      "Proprietary",
+      "Freemium"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 276,
+    "type": "truefalse",
+    "question": "Ad-supported software, like YouTube, is funded by users paying for premium features.",
+    "correctAnswer": false
+  },
+  {
+    "id": 277,
+    "type": "multiple",
+    "question": "Iterative development with continuous feedback is characteristic of which software development practice?",
+    "options": [
+      "DevOps",
+      "Agile Development",
+      "Outsourcing",
+      "Proprietary Development"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 278,
+    "type": "multiple",
+    "question": "Which software development practice combines development and operations for faster delivery and reliability?",
+    "options": [
+      "Agile Development",
+      "Outsourcing",
+      "DevOps",
+      "Freemium Development"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 279,
+    "type": "truefalse",
+    "question": "Outsourcing in software development involves contracting external developers to increase internal team size.",
+    "correctAnswer": false
+  },
+  {
+    "id": 280,
+    "type": "multiple",
+    "question": "The low cost of distributing software once developed (e.g., digital downloads) refers to:",
+    "options": [
+      "Network Effects",
+      "Economies of Scale",
+      "Marginal Cost of Software",
+      "Software Licensing"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 281,
+    "type": "multiple",
+    "question": "When software becomes more valuable as more people use it (e.g., Microsoft Office), this is known as:",
+    "options": [
+      "Marginal Cost",
+      "Network Effects",
+      "Economies of Scale",
+      "Perpetual License"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 282,
+    "type": "truefalse",
+    "question": "Economies of scale in software occur when large companies reduce costs per unit with increased scale (e.g., AWS).",
+    "correctAnswer": true
+  },
+  {
+    "id": 283,
+    "type": "multiple",
+    "question": "What is a primary purpose of software licensing?",
+    "options": [
+      "To make all software free.",
+      "To increase the marginal cost of software.",
+      "To protect intellectual property and influence monetization.",
+      "To reduce network effects."
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 284,
+    "type": "multiple",
+    "question": "A one-time payment for indefinite use of software (e.g., older versions of Microsoft Office) is called a:",
+    "options": [
+      "Usage-Based Price",
+      "Subscription",
+      "Perpetual License",
+      "Freemium Model"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 285,
+    "type": "truefalse",
+    "question": "Usage-based pricing charges users based on the number of features they access, not how much they use the software.",
+    "correctAnswer": false
+  },
+  {
+    "id": 286,
+    "type": "multiple",
+    "question": "Illegal copying or distribution of software, causing financial loss to companies, is referred to as:",
+    "options": [
+      "Intellectual Property Rights",
+      "Software Piracy",
+      "Perpetual Licensing",
+      "Localization"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 287,
+    "type": "multiple",
+    "question": "What protects the intellectual property of software developers?",
+    "options": [
+      "Software Piracy",
+      "Marginal Costs",
+      "Intellectual Property Rights (IPR)",
+      "Network Effects"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 288,
+    "type": "truefalse",
+    "question": "Ensuring compliance with privacy regulations and protecting user data is related to network effects in software economics.",
+    "correctAnswer": false
+  },
+  {
+    "id": 289,
+    "type": "multiple",
+    "question": "Outsourcing and offshoring in the context of globalization primarily aim to:",
+    "options": [
+      "Increase quality management challenges.",
+      "Reduce costs.",
+      "Expand to global markets immediately.",
+      "Simplify localization."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 290,
+    "type": "truefalse",
+    "question": "Global markets and localization involve adapting software for different languages, cultures, and regulations.",
+    "correctAnswer": true
+  }
     ];
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
+    const lectureRanges = [
+      { name: "Lecture 1", from: 61, to: 140 },
+      { name: "Lecture 2", from: 141, to: 290 },
+      { name: "Lecture 3", from: 140, to: 159 },
+      { name: "Lecture 4", from: 160, to: 179 },
+      { name: "All the questions", from: 1, to: 1000 },
 
-    const questions = JSON.parse(JSON.stringify(originalQuestions)); // deep copy
-    shuffleArray(questions);
+    ];
 
     const container = document.getElementById("quiz-container");
 
-    questions.forEach((q, index) => {
-      const card = document.createElement("div");
-      card.className = "question-card";
+    function renderQuiz(questions) {
+      container.innerHTML = "";
+      questions.forEach((q, index) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
 
-      const questionText = document.createElement("div");
-      questionText.className = "question-text";
-      questionText.textContent = `${index + 1}. ${q.question}`;
-      card.appendChild(questionText);
+        const questionText = document.createElement("div");
+        questionText.className = "question-text";
+        questionText.textContent = `${q.question}`;
+        card.appendChild(questionText);
 
-      const feedback = document.createElement("div");
-      feedback.className = "feedback";
-      card.appendChild(feedback);
+        const feedback = document.createElement("div");
+        feedback.className = "feedback";
+        card.appendChild(feedback);
 
-      if (q.type === "multiple") {
-        // تحضير الخيارات مع العلامة الصحيحة
-        const optionPairs = q.options.map((text, idx) => ({ text, isCorrect: idx === q.correctAnswer }));
-        shuffleArray(optionPairs);
+        if (q.type === "multiple") {
+          const optionPairs = q.options.map((text, idx) => ({ text, isCorrect: idx === q.correctAnswer }));
+          optionPairs.forEach(({ text, isCorrect }) => {
+            const label = document.createElement("label");
+            label.className = "option-label";
+            label.textContent = text;
 
-        optionPairs.forEach(({ text, isCorrect }) => {
-          const label = document.createElement("label");
-          label.className = "option-label";
-          label.textContent = text;
+            label.onclick = () => {
+              const allLabels = card.querySelectorAll(".option-label");
+              allLabels.forEach(l => l.classList.remove("selected", "correct", "incorrect"));
+              label.classList.add("selected");
 
-          label.onclick = () => {
-            // إزالة التحديد والتلوين من جميع الخيارات أولاً
-            const allLabels = card.querySelectorAll(".option-label");
-            allLabels.forEach(l => {
-              l.classList.remove("selected", "correct", "incorrect");
-            });
-
-            // إضافة تحديد للخيار المختار
-            label.classList.add("selected");
-
-            // تلوين الخيارات حسب الصحة والخطأ
-            allLabels.forEach(l => {
-              if (l === label) {
-                // الخيار المختار
-                if (isCorrect) {
-                  l.classList.add("correct");
+              allLabels.forEach(l => {
+                if (l === label) {
+                  isCorrect ? l.classList.add("correct") : l.classList.add("incorrect");
                 } else {
-                  l.classList.add("incorrect");
+                  if (l.textContent === optionPairs.find(op => op.isCorrect && op.text === l.textContent)?.text) {
+                    l.classList.add("correct");
+                  }
                 }
+              });
+
+              feedback.textContent = isCorrect ? "Correct!" : "Incorrect.";
+              feedback.className = `feedback ${isCorrect ? "correct" : "incorrect"}`;
+            };
+
+            card.appendChild(label);
+          });
+
+        } else if (q.type === "truefalse") {
+          ["True", "False"].forEach(optionText => {
+            const label = document.createElement("label");
+            label.className = "option-label";
+            label.textContent = optionText;
+
+            label.onclick = () => {
+              const allLabels = card.querySelectorAll(".option-label");
+              allLabels.forEach(l => l.classList.remove("selected", "correct", "incorrect"));
+              label.classList.add("selected");
+
+              const userAnswer = optionText === "True";
+              if (userAnswer === q.correctAnswer) {
+                label.classList.add("correct");
               } else {
-                // خيارات أخرى، نميز الصحيحة منها فقط
-                if (l.textContent === optionPairs.find(op => op.isCorrect && op.text === l.textContent)?.text) {
+                label.classList.add("incorrect");
+              }
+
+              allLabels.forEach(l => {
+                if ((l.textContent === "True" && q.correctAnswer === true) ||
+                    (l.textContent === "False" && q.correctAnswer === false)) {
                   l.classList.add("correct");
                 }
-              }
-            });
+              });
 
-            // تحديث التعليق
-            if (isCorrect) {
-              feedback.textContent = "Correct!";
-              feedback.className = "feedback correct";
-            } else {
-              feedback.textContent = "Incorrect.";
-              feedback.className = "feedback incorrect";
-            }
-          };
+              feedback.textContent = userAnswer === q.correctAnswer ? "Correct!" : "Incorrect.";
+              feedback.className = `feedback ${userAnswer === q.correctAnswer ? "correct" : "incorrect"}`;
+            };
 
-          card.appendChild(label);
-        });
+            card.appendChild(label);
+          });
+        }
 
-      } else if (q.type === "truefalse") {
-        ["True", "False"].forEach(optionText => {
-          const label = document.createElement("label");
-          label.className = "option-label";
-          label.textContent = optionText;
+        container.appendChild(card);
+      });
+    }
 
-          label.onclick = () => {
-            // إزالة التحديد والتلوين من جميع الخيارات
-            const allLabels = card.querySelectorAll(".option-label");
-            allLabels.forEach(l => {
-              l.classList.remove("selected", "correct", "incorrect");
-            });
-
-            label.classList.add("selected");
-
-            const userAnswer = optionText === "True";
-            if (userAnswer === q.correctAnswer) {
-              label.classList.add("correct");
-            } else {
-              label.classList.add("incorrect");
-            }
-
-            // تلوين الخيار الصحيح (حتى لو لم يُختار)
-            allLabels.forEach(l => {
-              if ((l.textContent === "True" && q.correctAnswer === true) ||
-                  (l.textContent === "False" && q.correctAnswer === false)) {
-                l.classList.add("correct");
-              }
-            });
-
-            // تحديث التعليق
-            if (userAnswer === q.correctAnswer) {
-              feedback.textContent = "Correct!";
-              feedback.className = "feedback correct";
-            } else {
-              feedback.textContent = "Incorrect.";
-              feedback.className = "feedback incorrect";
-            }
-          };
-
-          card.appendChild(label);
-        });
-      }
-
-      container.appendChild(card);
+    // زر المحاضرات
+    const buttonsContainer = document.getElementById("lecture-buttons");
+    lectureRanges.forEach(range => {
+      const btn = document.createElement("button");
+      btn.textContent = range.name;
+      btn.onclick = () => {
+        const filtered = originalQuestions.filter(q => q.id >= range.from && q.id <= range.to);
+        renderQuiz(filtered);
+      };
+      buttonsContainer.appendChild(btn);
     });
+
+    // عرض الكل عند البدء
+    renderQuiz(originalQuestions);
   </script>
 </body>
 </html>
