@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Professional Practice Quiz</title>
+  <title>Quiz App</title>
   <style>
     :root {
       --primary: #00796b;
@@ -12,121 +12,166 @@
       --card: #ffffff;
       --correct: #c8e6c9;
       --incorrect: #ffcdd2;
-      --selected: #e0f7fa;
       --text: #333;
-      --radius: 10px;
     }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       background-color: var(--background);
       color: var(--text);
     }
+
     h1 {
       text-align: center;
+      padding: 20px;
       color: var(--primary-dark);
-      font-size: 2rem;
-      margin-bottom: 30px;
     }
+
     .container {
       max-width: 800px;
       margin: 0 auto;
+      padding: 20px;
     }
+
     .question-card {
       background-color: var(--card);
       padding: 20px;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
       margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     }
+
     .question-text {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
+
     .option-label {
       display: block;
-      background-color: #f9f9f9;
+      background: #f9f9f9;
       border: 2px solid transparent;
-      padding: 12px;
-      border-radius: var(--radius);
-      cursor: pointer;
+      border-radius: 10px;
+      padding: 10px;
       margin-bottom: 10px;
-      transition: background 0.2s, border 0.2s, color 0.2s;
-      user-select: none;
-      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
     }
+
     .option-label:hover {
-      background-color: #e0f2f1;
+      background: #e0f2f1;
     }
+
     .option-label.selected {
       border-color: var(--primary);
     }
+
     .option-label.correct {
-      background-color: var(--correct);
+      background: var(--correct);
       border-color: var(--primary-dark);
-      color: var(--primary-dark);
     }
+
     .option-label.incorrect {
-      background-color: var(--incorrect);
+      background: var(--incorrect);
       border-color: #b71c1c;
-      color: #b71c1c;
     }
+
     .feedback {
       margin-top: 10px;
-      padding: 12px;
-      border-radius: var(--radius);
       font-weight: bold;
       display: none;
     }
+
     .feedback.correct {
       display: block;
-      background-color: var(--correct);
       color: var(--primary-dark);
     }
+
     .feedback.incorrect {
       display: block;
-      background-color: var(--incorrect);
       color: #b71c1c;
     }
 
-    /* أزرار المحاضرات */
-    #lecture-buttons {
+    /* FAB (Floating Action Button) */
+    #lecture-fab {
       position: fixed;
-      top: 50%;
+      bottom: 10px;
       right: 20px;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
       z-index: 999;
     }
+
+    #lecture-fab .main-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+
+    #lecture-buttons {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      pointer-events: none;
+    }
+
     #lecture-buttons button {
-      background-color: var(--primary);
+      background: var(--primary);
       color: white;
       border: none;
       border-radius: 20px;
-      padding: 10px 20px;
+      padding: 8px 16px;
+      opacity: 0;
+      transform: scale(0) translateY(0);
+      transition: transform 0.4s ease, opacity 0.4s ease;
       cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-      transition: background 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
-    #lecture-buttons button:hover {
-      background-color: var(--primary-dark);
+
+    #lecture-buttons.show {
+      pointer-events: auto;
     }
+
+    #lecture-buttons.show button {
+      opacity: 1;
+      transform: scale(1) translateY(var(--offset));
+    }
+
+#lecture-buttons.show button:nth-child(1) { --offset: -60px; }
+#lecture-buttons.show button:nth-child(2) { --offset: -50px; }
+#lecture-buttons.show button:nth-child(3) { --offset: -40px; }
+#lecture-buttons.show button:nth-child(4) { --offset: -30px; }
+#lecture-buttons.show button:nth-child(5) { --offset: -20px; }
+#lecture-buttons.show button:nth-child(6) { --offset: -10px; }
+#lecture-buttons.show button:nth-child(7) { --offset: 0px; }
+#lecture-buttons.show button:nth-child(8) { --offset: 10px; }
   </style>
 </head>
 <body>
   <h1>Professional Practice Quiz</h1>
+
   <div class="container" id="quiz-container"></div>
 
-  <div id="lecture-buttons"></div>
+  <!-- Floating Action Button -->
+  <div id="lecture-fab">
+    <div id="lecture-buttons"></div>
+    <button class="main-btn" onclick="toggleLectures()">📚</button>
+  </div>
 
   <script>
     const originalQuestions = [
-    {
+       {
     "id": 1,
     "type": "multiple",
     "question": "1. According to the sources, what is the definition of a \"Professional\"?",
@@ -6695,27 +6740,30 @@
     const lectureRanges = [
       { name: "Lecture 1", from: 61, to: 140 },
       { name: "Lecture 2", from: 141, to: 290 },
-      { name: "Lecture 3", from: 290, to: 363 },
+      { name: "Lecture 3", from: 291, to: 363 },
       { name: "Lecture 4", from: 364, to: 456 },
       { name: "Lecture 5", from: 457, to: 533 },
       { name: "Lecture 6", from: 534, to: 598 },
       { name: "Lecture 7", from: 599, to: 683 },
-
-      { name: "All the questions", from: 1, to: 1000 },
-
+      { name: "All the questions", from: 1, to: 1000 }
     ];
 
-    const container = document.getElementById("quiz-container");
+    const quizContainer = document.getElementById("quiz-container");
+    const buttonsContainer = document.getElementById("lecture-buttons");
+
+    function toggleLectures() {
+      buttonsContainer.classList.toggle("show");
+    }
 
     function renderQuiz(questions) {
-      container.innerHTML = "";
+      quizContainer.innerHTML = "";
       questions.forEach((q, index) => {
         const card = document.createElement("div");
         card.className = "question-card";
 
         const questionText = document.createElement("div");
         questionText.className = "question-text";
-        questionText.textContent = `${q.question}`;
+        questionText.textContent = `Q${index + 1}: ${q.question}`;
         card.appendChild(questionText);
 
         const feedback = document.createElement("div");
@@ -6723,84 +6771,81 @@
         card.appendChild(feedback);
 
         if (q.type === "multiple") {
-          const optionPairs = q.options.map((text, idx) => ({ text, isCorrect: idx === q.correctAnswer }));
-          optionPairs.forEach(({ text, isCorrect }) => {
+          q.options.forEach((opt, i) => {
             const label = document.createElement("label");
             label.className = "option-label";
-            label.textContent = text;
+            label.textContent = opt;
 
             label.onclick = () => {
-              const allLabels = card.querySelectorAll(".option-label");
-              allLabels.forEach(l => l.classList.remove("selected", "correct", "incorrect"));
+              const labels = card.querySelectorAll(".option-label");
+              labels.forEach(l => l.classList.remove("selected", "correct", "incorrect"));
               label.classList.add("selected");
 
-              allLabels.forEach(l => {
-                if (l === label) {
-                  isCorrect ? l.classList.add("correct") : l.classList.add("incorrect");
-                } else {
-                  if (l.textContent === optionPairs.find(op => op.isCorrect && op.text === l.textContent)?.text) {
-                    l.classList.add("correct");
-                  }
-                }
-              });
-
-              feedback.textContent = isCorrect ? "Correct!" : "Incorrect.";
-              feedback.className = `feedback ${isCorrect ? "correct" : "incorrect"}`;
+              if (i === q.correctAnswer) {
+                label.classList.add("correct");
+                feedback.textContent = "Correct!";
+                feedback.className = "feedback correct";
+              } else {
+                label.classList.add("incorrect");
+                feedback.textContent = "Incorrect.";
+                feedback.className = "feedback incorrect";
+                labels[q.correctAnswer].classList.add("correct");
+              }
             };
 
             card.appendChild(label);
           });
-
-        } else if (q.type === "truefalse") {
-          ["True", "False"].forEach(optionText => {
+        } else {
+          ["True", "False"].forEach(option => {
             const label = document.createElement("label");
             label.className = "option-label";
-            label.textContent = optionText;
+            label.textContent = option;
 
             label.onclick = () => {
-              const allLabels = card.querySelectorAll(".option-label");
-              allLabels.forEach(l => l.classList.remove("selected", "correct", "incorrect"));
+              const labels = card.querySelectorAll(".option-label");
+              labels.forEach(l => l.classList.remove("selected", "correct", "incorrect"));
               label.classList.add("selected");
 
-              const userAnswer = optionText === "True";
+              const userAnswer = option === "True";
               if (userAnswer === q.correctAnswer) {
                 label.classList.add("correct");
+                feedback.textContent = "Correct!";
+                feedback.className = "feedback correct";
               } else {
                 label.classList.add("incorrect");
+                feedback.textContent = "Incorrect.";
+                feedback.className = "feedback incorrect";
+
+                labels.forEach(l => {
+                  if ((l.textContent === "True" && q.correctAnswer === true) ||
+                      (l.textContent === "False" && q.correctAnswer === false)) {
+                    l.classList.add("correct");
+                  }
+                });
               }
-
-              allLabels.forEach(l => {
-                if ((l.textContent === "True" && q.correctAnswer === true) ||
-                    (l.textContent === "False" && q.correctAnswer === false)) {
-                  l.classList.add("correct");
-                }
-              });
-
-              feedback.textContent = userAnswer === q.correctAnswer ? "Correct!" : "Incorrect.";
-              feedback.className = `feedback ${userAnswer === q.correctAnswer ? "correct" : "incorrect"}`;
             };
 
             card.appendChild(label);
           });
         }
 
-        container.appendChild(card);
+        quizContainer.appendChild(card);
       });
     }
 
-    // زر المحاضرات
-    const buttonsContainer = document.getElementById("lecture-buttons");
+    // Add lecture buttons dynamically
     lectureRanges.forEach(range => {
       const btn = document.createElement("button");
       btn.textContent = range.name;
       btn.onclick = () => {
         const filtered = originalQuestions.filter(q => q.id >= range.from && q.id <= range.to);
         renderQuiz(filtered);
+        buttonsContainer.classList.remove("show");
       };
       buttonsContainer.appendChild(btn);
     });
 
-    // عرض الكل عند البدء
+    // Load default
     renderQuiz(originalQuestions);
   </script>
 </body>
