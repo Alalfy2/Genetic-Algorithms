@@ -1,105 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quiz App</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart City Quiz 3D</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #00796b;
-      --primary-dark: #004d40;
-      --background: #f1f8f9;
-      --card: #ffffff;
-      --correct: #c8e6c9;
-      --incorrect: #ffcdd2;
-      --text: #333;
+      --primary: #00c9a7;
+      --dark-bg: #0e0e0e;
+      --light-bg: #f3f4f6;
+      /* Card backgrounds */
+      --card-bg-dark: rgba(255, 255, 255, 0.12);
+      --card-bg-light: rgba(255, 255, 255, 0.8); /* More opaque for light mode */
+      /* Option backgrounds */
+      --option-bg-dark: rgba(255, 255, 255, 0.08);
+      --option-bg-light: rgba(0, 0, 0, 0.04);
+      --option-hover-dark: rgba(0, 201, 167, 0.15);
+      --option-hover-light: rgba(0, 201, 167, 0.08);
+      /* Feedback colors */
+      --correct-bg: #a7f3d0;
+      --incorrect-bg: #fecaca;
+      --correct-text: #065f46;
+      --incorrect-text: #991b1b;
+      /* General text colors */
+      --text-light: #ffffff;
+      --text-dark: #111827;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: var(--background);
-      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      transition: background-color 0.5s, color 0.5s;
+      overflow-x: hidden;
+    }
+
+    body.light {
+      background-color: var(--light-bg);
+      color: var(--text-dark);
+    }
+
+    body.dark {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
     }
 
     h1 {
       text-align: center;
-      padding: 20px;
-      color: var(--primary-dark);
+      font-size: 2.5rem;
+      margin: 30px 0;
+      color: var(--primary);
     }
 
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 20px;
+      z-index: 1;
+      position: relative;
     }
 
     .question-card {
-      background-color: var(--card);
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border: 1px solid transparent; /* Base border */
+    }
+
+    body.light .question-card {
+        background: var(--card-bg-light);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark .question-card {
+        background: var(--card-bg-dark);
+        border-color: rgba(255, 255, 255, 0.1);
     }
 
     .question-text {
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 10px;
+      font-size: 1.3rem;
+      margin-bottom: 20px; /* Increased margin */
+      font-weight: 600;
     }
 
     .option-label {
       display: block;
-      background: #f9f9f9;
-      border: 2px solid transparent;
-      border-radius: 10px;
-      padding: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      padding: 12px 18px;
+      border-radius: 15px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: background-color 0.3s, border-color 0.3s;
+      border: 2px solid transparent;
     }
 
-    .option-label:hover {
-      background: #e0f2f1;
+    body.light .option-label {
+        background-color: var(--option-bg-light);
+    }
+    body.light .option-label:hover {
+        background-color: var(--option-hover-light);
+        border-color: var(--primary);
     }
 
-    .option-label.selected {
+    body.dark .option-label {
+        background-color: var(--option-bg-dark);
+    }
+     body.dark .option-label:hover {
+      background-color: var(--option-hover-dark);
       border-color: var(--primary);
     }
 
-    .option-label.correct {
-      background: var(--correct);
-      border-color: var(--primary-dark);
+    .option-label.selected {
+      border-color: var(--primary) !important; /* Ensure selected border is prominent */
     }
 
-    .option-label.incorrect {
-      background: var(--incorrect);
-      border-color: #b71c1c;
+    .option-label.correct {
+      background-color: var(--correct-bg) !important; /* Ensure correct bg overrides hover */
+      color: var(--correct-text) !important;
+      border-color: var(--correct-text) !important;
+    }
+
+    .option-label.incorrect.selected { /* Only the selected incorrect option */
+      background-color: var(--incorrect-bg) !important;
+      color: var(--incorrect-text) !important;
+      border-color: var(--incorrect-text) !important;
     }
 
     .feedback {
-      margin-top: 10px;
+      margin-top: 25px; /* Further increased margin */
       font-weight: bold;
       display: none;
+      padding: 12px; /* Increased padding */
+      border-radius: 8px;
+      text-align: center;
     }
-
+    
     .feedback.correct {
-      display: block;
-      color: var(--primary-dark);
+        display: block;
+        background-color: var(--correct-bg);
+        color: var(--correct-text);
     }
 
     .feedback.incorrect {
-      display: block;
-      color: #b71c1c;
+        display: block;
+        background-color: var(--incorrect-bg);
+        color: var(--incorrect-text);
     }
 
-    /* FAB (Floating Action Button) */
+    #theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 1000;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    #theme-toggle:hover {
+      background-color: #00b894;
+    }
+
     #lecture-fab {
       position: fixed;
-      bottom: 10px;
-      right: 20px;
-      z-index: 999;
+      bottom: 20px;
+      right: 30px;
+      z-index: 1000;
     }
 
     #lecture-fab .main-btn {
@@ -109,16 +187,22 @@
       border-radius: 50%;
       width: 60px;
       height: 60px;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: transform 0.3s ease;
+    }
+    #lecture-fab .main-btn:hover {
+        transform: scale(1.1);
     }
 
     #lecture-buttons {
       position: absolute;
-      bottom: 70px;
-      right: 0;
+      bottom: 75px;
+      right: 5px;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
@@ -126,4844 +210,1161 @@
       pointer-events: none;
     }
 
+    #lecture-buttons.show {
+      pointer-events: auto;
+    }
+
     #lecture-buttons button {
       background: var(--primary);
       color: white;
       border: none;
       border-radius: 20px;
-      padding: 8px 16px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
       opacity: 0;
-      transform: scale(0) translateY(0);
-      transition: transform 0.4s ease, opacity 0.4s ease;
+      transform: scale(0.5) translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease-out;
       cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-
-    #lecture-buttons.show {
-      pointer-events: auto;
-    }
+     #lecture-buttons button:hover {
+        background-color: #00b894;
+     }
 
     #lecture-buttons.show button {
       opacity: 1;
-      transform: scale(1) translateY(var(--offset));
+      transform: scale(1) translateY(0);
     }
 
-    #lecture-buttons.show button:nth-child(1) { --offset: -60px; }
-    #lecture-buttons.show button:nth-child(2) { --offset: -50px; }
-    #lecture-buttons.show button:nth-child(3) { --offset: -40px; }
-    #lecture-buttons.show button:nth-child(4) { --offset: -30px; }
-    #lecture-buttons.show button:nth-child(5) { --offset: -20px; }
-    #lecture-buttons.show button:nth-child(6) { --offset: -10px; }
-    #lecture-buttons.show button:nth-child(7) { --offset: 0px; }
-    #lecture-buttons.show button:nth-child(8) { --offset: 10px; }
-    #lecture-buttons.show button:nth-child(8) { --offset: 3px; }
+    /* Staggered animation for lecture buttons */
+    #lecture-buttons.show button:nth-child(1) { transition-delay: 0.0s; } /* Start immediately */
+    #lecture-buttons.show button:nth-child(2) { transition-delay: 0.05s; }
+    #lecture-buttons.show button:nth-child(3) { transition-delay: 0.1s; }
+    #lecture-buttons.show button:nth-child(4) { transition-delay: 0.15s; }
+    #lecture-buttons.show button:nth-child(5) { transition-delay: 0.2s; }
+    #lecture-buttons.show button:nth-child(6) { transition-delay: 0.25s; }
+    #lecture-buttons.show button:nth-child(7) { transition-delay: 0.3s; }
+    #lecture-buttons.show button:nth-child(8) { transition-delay: 0.35s; }
+
+    canvas.webgl {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1; /* Ensure it's behind everything */
+    }
   </style>
 </head>
 <body>
-  <h1>Smart Cities Questions</h1>
-
+  <div id="theme-toggle">🌙</div>
+  <h1>Smart Cities Quiz</h1>
   <div class="container" id="quiz-container"></div>
 
-  <!-- Floating Action Button -->
   <div id="lecture-fab">
     <div id="lecture-buttons"></div>
-    <button class="main-btn" onclick="toggleLectures()">📚</button>
+    <button class="main-btn">📚</button>
   </div>
 
+  <canvas class="webgl"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script>
+    // DOM Elements
+    const canvasElement = document.querySelector('.webgl');
+    const themeToggleButton = document.getElementById('theme-toggle');
+    const quizContainer = document.getElementById("quiz-container");
+    const lectureFabButton = document.querySelector("#lecture-fab .main-btn");
+    const lectureButtonsContainer = document.getElementById("lecture-buttons");
+
+    // Three.js Scene
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvasElement, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.position.z = 35;
+
+    const stars = [];
+    function createStars() {
+      stars.length = 0; // Clear existing stars if any (for potential re-creation)
+      const starMaterial = new THREE.MeshStandardMaterial({ emissiveIntensity: 0.6 }); // Will set color later
+
+      for (let i = 0; i < 500; i++) {
+        const geometry = new THREE.SphereGeometry(Math.random() * 0.2 + 0.05, 16, 16);
+        const star = new THREE.Mesh(geometry, starMaterial.clone()); // Clone material for individual control if needed, though color is set on all
+        const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(250));
+        star.position.set(x, y, z);
+        scene.add(star);
+        stars.push(star);
+      }
+    }
+    createStars(); // Create stars once
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 10, 7.5);
+    scene.add(directionalLight);
+
+    function animateScene() {
+      requestAnimationFrame(animateScene);
+      stars.forEach(star => {
+        star.rotation.x += Math.random() * 0.001; // Slower random rotation
+        star.rotation.y += Math.random() * 0.001;
+      });
+      scene.rotation.y += 0.00015; // Slower scene rotation
+      scene.rotation.x += 0.00004;
+      renderer.render(scene, camera);
+    }
+    animateScene();
+
+    // Theme Logic
+    function applyTheme(isDark) {
+        document.body.classList.toggle('dark', isDark);
+        document.body.classList.toggle('light', !isDark);
+        themeToggleButton.textContent = isDark ? '☀️' : '🌙';
+
+        const starColorHex = isDark ? 0x222222 : 0x000000;
+        const starEmissiveHex = isDark ? 0xcccccc : 0x000000; // Brighter emissive for dark, none for light
+        const starEmissiveIntensity = isDark ? 0.7 : 0;
+
+        stars.forEach(star => {
+            if (star && star.material) {
+                star.material.color.setHex(starColorHex);
+                star.material.emissive.setHex(starEmissiveHex);
+                star.material.emissiveIntensity = starEmissiveIntensity;
+            }
+        });
+    }
+
+    function toggleTheme() {
+      const isCurrentlyDark = document.body.classList.contains('dark');
+      applyTheme(!isCurrentlyDark);
+      localStorage.setItem('theme', !isCurrentlyDark ? 'dark' : 'light');
+    }
+    themeToggleButton.addEventListener('click', toggleTheme);
+
+
+    // Lecture FAB Logic
+    function toggleLectures() {
+      lectureButtonsContainer.classList.toggle("show");
+    }
+    lectureFabButton.addEventListener('click', toggleLectures);
+
+    // Quiz Data
     const originalQuestions = [
-  {
+   {
     "id": 1,
     "type": "multiple",
-    "question": "What is the main topic of the presentation?",
+    "question": "A fitness function should possess the following characteristics -",
     "options": [
-      "Database Management",
-      "Visualizing Smart System Design",
-      "Network Security Protocols",
-      "Machine Learning Algorithms"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 2,
-    "type": "truefalse",
-    "question": "The presentation is authored by Fatma M. Talaat.",
-    "correctAnswer": true
-  },
-  {
-    "id": 3,
-    "type": "multiple",
-    "question": "Which of the following diagram types will be covered in the presentation?",
-    "options": [
-      "Use Case Diagrams",
-      "Sequence Diagrams",
-      "Activity Diagrams",
-      "Class Diagrams"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 4,
-    "type": "multiple",
-    "question": "Besides activity and block diagrams, what other visualization tool is examined?",
-    "options": [
-      "Gantt Charts",
-      "Mind Maps",
-      "Fishbone Diagrams",
-      "Flowcharts"
+      "It must quantitatively measure how fit a given solution is",
+      "How fit individuals can be produced from the solution given.",
+      "The fitness function should be sufficiently fast to compute.",
+      "All the above"
     ],
     "correctAnswer": 3
   },
   {
-    "id": 5,
+    "id": 2,
     "type": "truefalse",
-    "question": "The presentation includes an agent-based application for financial forecasting.",
-    "correctAnswer": false
+    "question": "Heuristic approaches are typically used to solve more complex problems.",
+    "correctAnswer": 1
+  },
+  {
+    "id": 3,
+    "type": "truefalse",
+    "question": "Genetic algorithms are heuristic methods that do not guarantee an optimal solution to a problem",
+    "correctAnswer": 1
+  },
+  {
+    "id": 4,
+    "type": "truefalse",
+    "question": "Crossover operation is performed on one set of chromosomes of one parent.",
+    "correctAnswer": 0
+  },
+  {
+    "id": 5,
+    "type": "multiple",
+    "question": "Genetic Algorithm (GA) is used in",
+    "options": [
+      "Machine Learning",
+      "Robotics & Al",
+      "Traveling Salesman Problem",
+      "All the above"
+    ],
+    "correctAnswer": 3
   },
   {
     "id": 6,
     "type": "multiple",
-    "question": "What specific application of agent-based systems is mentioned?",
+    "question": "Genetic algorithms involve which of the following phenomena?",
     "options": [
-      "Healthcare monitoring",
-      "Traffic management",
-      "E-commerce recommendation",
-      "Smart agriculture"
+      "Mutation",
+      "Cross over",
+      "Selection",
+      "All the above"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": 7,
-    "type": "truefalse",
-    "question": "The presentation will discuss challenges and solutions related to smart system design.",
-    "correctAnswer": true
+    "type": "multiple",
+    "question": "Which of the following is not true about fitness functions?",
+    "options": [
+      "They perform similar role to an objective function",
+      "Maximization of sum of squared residuals is an example of fitness function",
+      "They help with optimization",
+      "All the above"
+    ],
+    "correctAnswer": 3
   },
   {
     "id": 8,
     "type": "multiple",
-    "question": "What is the primary purpose of activity diagrams?",
+    "question": "The accuracy of results obtained from Simulated Annealing depends on:",
     "options": [
-      "To define database schemas",
-      "To model system processes",
-      "To show hardware configurations",
-      "To illustrate user interface layouts"
+      "Temperature schedule",
+      "Randomness of the search",
+      "Initial conditions",
+      "All the above"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": 9,
     "type": "multiple",
-    "question": "In activity diagrams, what do \"Actions\" represent?",
+    "question": "Simulated annealing is based on the idea that all moves that minimize cost are accepted along with some moves with low probability that increase cost. Which of the following statements is/are TRUE?",
     "options": [
-      "Branching based on conditions",
-      "The sequence of activities",
-      "Specific tasks or operations",
-      "System boundaries"
+      "Convergence depends on initial conditions",
+      "Convergence doesn't depend on initial conditions",
+      "This method helps escape local minima",
+      "Always converges at global minima"
     ],
     "correctAnswer": 2
   },
   {
     "id": 10,
-    "type": "truefalse",
-    "question": "Decisions in activity diagrams indicate the sequence of activities.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "Genetic algorithms are based on biological evolution and frequently used for parameter estimation. Which of the following options best describes the description?",
+    "options": [
+      "Chromosomes",
+      "Population",
+      "Generation",
+      "Colony"
+    ],
+    "correctAnswer": 1
   },
   {
     "id": 11,
     "type": "multiple",
-    "question": "What element in an activity diagram shows branching based on conditions?",
+    "question": "Large changes in the parameter vector independent of other parameter vectors",
     "options": [
-      "Flows",
-      "Actions",
-      "Start Node",
-      "Decisions"
+      "Mutation",
+      "Crossover",
+      "Selection",
+      "Macro-mutation"
     ],
     "correctAnswer": 3
   },
   {
     "id": 12,
-    "type": "truefalse",
-    "question": "Activity diagrams help visualize system behavior and clarify interactions and dependencies.",
-    "correctAnswer": true
+    "type": "multiple",
+    "question": "Large changes in the parameter vector dependent on other parameter vectors",
+    "options": [
+      "Mutation",
+      "Crossover",
+      "Selection",
+      "Macro-mutation"
+    ],
+    "correctAnswer": 1
   },
   {
     "id": 13,
     "type": "multiple",
-    "question": "What is the main function of block diagrams?",
+    "question": "Small changes in the parameter vector independent of other parameter vectors",
     "options": [
-      "To illustrate algorithm logic",
-      "To model user interactions",
-      "To define system architecture",
-      "To show data flow within a process"
+      "Mutation",
+      "Crossover",
+      "Selection",
+      "Macro-mutation"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   },
   {
     "id": 14,
-    "type": "truefalse",
-    "question": "Block diagrams are primarily used to show the detailed steps of an algorithm.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "Which one of the following is the migration topology for the archipelago \"archi\" in the code below (Hint: Look at PyGMO documentation)\nfrom PyGMO import *\nprob problem.schwefel (dim=5\u03b8)\nalgo = []\nfor i in range(1,9):\nalgo.append(algorithm.de de(gen=5\u03b8\u03b8, variant= ))\narchi archipelago()\nfor i in range(0,8):\narchi.push_back(island(algo[i], prob, 20))\nprint min([isl.population.champion.f for isl in archi])\narchi.evolve (20)\nprint min([isl.population.champion.f for isl in archi])",
+    "options": [
+      "None",
+      "topology.ring()",
+      "topology.fully_connected()",
+      "migration.unconnected()"
+    ],
+    "correctAnswer": 1
   },
   {
     "id": 15,
     "type": "multiple",
-    "question": "In block diagrams, what do \"Components\" represent?",
+    "question": "Which of the following statements is/are true about 'Traveling Salesman problem' (TSP)?",
     "options": [
-      "Interaction points",
-      "Relationships between functional units",
-      "Functional units",
-      "The sequence of operations"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 16,
-    "type": "multiple",
-    "question": "What defines interaction points in a block diagram?",
-    "options": [
-      "Connections",
-      "Components",
-      "Modules",
-      "Interfaces"
+      "It is an NP-hard problem in combinatorial optimisation",
+      "There aren't any exact algorithms known to solve TSP therefore we use heuristic techniques.",
+      "Ant colony optimisation can generate \"good solutions\" to TSP using a simulation of an ant colony",
+      "All the above"
     ],
     "correctAnswer": 3
   },
   {
+    "id": 16,
+    "type": "multiple",
+    "question": "Genetic Algorithms are",
+    "options": [
+      "a class of algorithms that try and build solutions by introducing evolution and selection of the best in a population of candidate solutions",
+      "Methods, based on the theory of natural selection and evolutionary biology, for solving optimisation problems.",
+      "methods for genetically modifying ants to do ant colony optimisation",
+      "a heuristic search method used in artificial intelligence and computing."
+    ],
+    "correctAnswer": 1
+  },
+  {
     "id": 17,
-    "type": "truefalse",
-    "question": "\"Connections\" in block diagrams represent functional units.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "The Fitness Function in Genetic Algorithms is",
+    "options": [
+      "A method to measure how fit a candidate solution is in solving the problem.",
+      "the objective function for the optimization problem being solved.",
+      "a substitute to approximate the survival abilities of individuals in nature.",
+      "at least squares approximation for a polynomial."
+    ],
+    "correctAnswer": 1
   },
   {
     "id": 18,
     "type": "multiple",
-    "question": "According to the lecture, block diagrams are key for understanding what?",
+    "question": "The basic idea behind Genetic Algorithms is to work with a population",
     "options": [
-      "User requirements",
-      "Algorithmic complexity",
-      "Interfaces",
-      "Market trends"
+      "of problem solvers that interact with each other through signs.",
+      "of candidate solutions to try and create better candidates by mixing genes.",
+      "of candidate solutions in which each candidate is heuristically refined.",
+      "of problem solvers each of which does an independent heuristic search."
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": 19,
     "type": "multiple",
-    "question": "What is the primary purpose of flowcharts?",
+    "question": "Which chemical is released by ants to keep track of their path?",
     "options": [
-      "To show system architecture",
-      "To illustrate algorithm logic",
-      "To define user roles",
-      "To model system data"
+      "Deoxyribonucleic acid (DNA)",
+      "Pheromone",
+      "H20",
+      "Citric acid"
     ],
     "correctAnswer": 1
   },
   {
     "id": 20,
-    "type": "truefalse",
-    "question": "Flowcharts use symbols to represent actions and decisions.",
-    "correctAnswer": true
-  },
-  {
-    "id": 21,
     "type": "multiple",
-    "question": "How do flowcharts aid in the software development process?",
+    "question": "The basic idea behind Ant Colony Optimization algorithms is to work with a population",
     "options": [
-      "By managing project timelines",
-      "By facilitating user testing",
-      "By aiding in debugging and optimization",
-      "By defining hardware specifications"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 22,
-    "type": "multiple",
-    "question": "In a flowchart, what does the \"Start\" symbol represent?",
-    "options": [
-      "Conditional branching",
-      "Actions to be performed",
-      "The algorithm's beginning point",
-      "The algorithm's termination"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 23,
-    "type": "truefalse",
-    "question": "The \"Process\" symbol in a flowchart represents conditional branching.",
-    "correctAnswer": false
-  },
-  {
-    "id": 24,
-    "type": "multiple",
-    "question": "Which flowchart symbol is used for conditional branching?",
-    "options": [
-      "End",
-      "Process",
-      "Start",
-      "Decision"
+      "of problem solvers that interact with each other through signs",
+      "of candidate solutions to try and create better candidates by mixing genes.",
+      "of candidate solutions in which each candidate is heuristically refined.",
+      "of problem solvers each of which does an independent heuristic search."
     ],
     "correctAnswer": 3
   },
   {
-    "id": 25,
-    "type": "truefalse",
-    "question": "The \"End\" symbol in a flowchart signifies the actions to be performed.",
-    "correctAnswer": false
-  },
-  {
-    "id": 26,
+    "id": 21,
     "type": "multiple",
-    "question": "What drives agent behavior in smart systems?",
+    "question": "A genetic algorithm (GA) for optimization is most likely to succeed given",
     "options": [
-      "User interfaces",
-      "Hardware capacity",
-      "Algorithms",
-      "Network speed"
+      "a small population of fit and similar individuals.",
+      "a large population of fit and similar individuals.",
+      "a small diverse population of fit individuals.",
+      "a large diverse population of fit individuals."
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
-    "id": 27,
-    "type": "truefalse",
-    "question": "Effective algorithms are not essential for ensuring smart actions in agents.",
-    "correctAnswer": false
-  },
-  {
-    "id": 28,
+    "id": 22,
     "type": "multiple",
-    "question": "What aspects are included in algorithm design for agent behavior?",
+    "question": "Which of the following is/are True?",
     "options": [
-      "Data storage and retrieval",
-      "Planning and decision making",
-      "User authentication and authorization",
-      "Network communication protocols"
+      "The Path Representation of the TSP candidates does not allow all permutations of the cities as candidate tours, while the Adjacency Representation does.",
+      "In Adjacency Representation every tour has many different representations",
+      "In Path Representation every tour has many different representations.",
+      "The Adjacency Representation of the TSP candidates does not allow all permutations of the cities as candidate tours, while the Path Representation does."
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 23,
+    "type": "multiple",
+    "question": "An Ant in Ant Colony Optimization algorithm for TSP produces a tour by",
+    "options": [
+      "a deterministic greedy constructive method.",
+      "a stochastic greedy constructive method.",
+      "a deterministic perturbation of the previous tour.",
+      "a stochastic perturbation of the previous tour."
     ],
     "correctAnswer": 1
   },
   {
+    "id": 24,
+    "type": "multiple",
+    "question": "What is the relation between the pheromone deposited by an ant on an edge and the cost of the tour generated by that ant in the ACO algorithm?",
+    "options": [
+      "The pheromone deposited on each edge is directly proportional to the cost of the tour.",
+      "The pheromone deposited on each edge is inversely proportional to the cost of the tour.",
+      "The pheromone deposited on each edge is constant.",
+      "The pheromone deposited on each edge depends upon the length of that edge."
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 25,
+    "type": "multiple",
+    "question": "What are the offspring tours generated by Order Crossover (OX) between P1 and P2 given above when the cuts are made after the 2nd and 5th cities?",
+    "options": [
+      "(Type: String) 56412378,23615487",
+      "(Type: String) 23615487,56412378",
+      "(Type: String) 23614487,56412372",
+      "(Type: String) 23319487,56415372"
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": 26,
+    "type": "multiple",
+    "question": "Given the reference vector R=(A,B,C,D,E,F,G,H), what is the ordinal representation for the tour (A, D,B,C,F,E,G,H)?",
+    "options": [
+      "(Type: String) 1,3,1,1,2,1,1,2",
+      "(Type: String) 1,3,1,5,2,1,1,1",
+      "(Type: String) 1,3,1,1,2,3,1,1",
+      "(Type: String) 1,3,1,1,2,1,1,1"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 27,
+    "type": "multiple",
+    "question": "An optimization problem is stated as follows:\nmaximize $f(x,y)=x^2/2+125/y^2$ where x, $y\\in R+$\nThe above optimization problem comes under the category of",
+    "options": [
+      "Unconstrained optimization problem.",
+      "Linear optimization problem.",
+      "Integer value optimization problem.",
+      "Real value optimization problem."
+    ],
+    "correctAnswer": 0
+  },
+  {
+    "id": 28,
+    "type": "multiple",
+    "question": "Which of the following(s) is/are the pre-requisite(s) when Genetic Algorithms are applied to solve problems?\ni. Encoding of solutions.\nii. Well-understood search space.\niii. Method of evaluating the suitability of the solutions.\niv. Contain only one optimal solution.",
+    "options": [
+      "i and ii only.",
+      "ii and iii only.",
+      "i and iii only.",
+      "iii and iv only."
+    ],
+    "correctAnswer": 2
+  },
+  {
     "id": 29,
-    "type": "truefalse",
-    "question": "The algorithm design component allows for optimization and learning.",
-    "correctAnswer": true
+    "type": "multiple",
+    "question": "Suppose all steps in both SGA and SSGA remain same, except instead of selecting two individuals from the current population of size N, $Np(Np<<N)$ individuals as in SGA are selected. Then, the correct statement is",
+    "options": [
+      "Generation gap of SGA will be more than that of SSGA",
+      "Generation gap of SSGA will be more than that of SGA",
+      "Generation gap in both algorithms remains same",
+      "Nothing can be said precisely"
+    ],
+    "correctAnswer": 1
   },
   {
     "id": 30,
     "type": "multiple",
-    "question": "Which of these is the first stage in algorithm design for agents as listed in the presentation?",
+    "question": "What are the offspring tours generated by Partially Mapped Crossover (PMX) when the cuts are made after the 2nd and 5th cities, as illustrated in bold above? If the two answer tours are (1,2,3,4) AND (2,3,1,4) then enter 1234,2314 as answer",
     "options": [
-      "Execution",
-      "Decision",
-      "Planning",
-      "Optimization"
+      "(Type: String) 13564278,15236487",
+      "(Type: String) 15236487,13564278",
+      "(Type: String) 15236447,13564279",
+      "(Type: String) 15236987,13563278"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": 31,
     "type": "multiple",
-    "question": "What does \"Planning\" in agent algorithm design involve?",
+    "question": "What are the offspring tours generated by Partially Mapped Crossover (PMX) between P1 and P2 given above when the cuts are made after the 2nd and 6th cities? If the two answer tours are (1,2,3,4) AND (2,3,1,4) then enter 1234,2314 as answer",
     "options": [
-      "Choosing actions",
-      "Performing actions",
-      "Defining agent goals",
-      "Evaluating outcomes"
+      "(Type: String) 12564378,14236587",
+      "(Type: String) 14236587,12564378",
+      "(Type: String) 14233587,12564379",
+      "(Type: String) 14232587,12564373"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": 32,
-    "type": "truefalse",
-    "question": "Decision\" in agent algorithm design refers to performing actions.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "What is the adjacency representation for the tour (14236578)?",
+    "options": [
+      "(Type: String) 4,3,6,2,7,5,8,1",
+      "(Type: String) 4,3,5,2,7,5,8,1",
+      "(Type: String) 4,3,3,2,7,5,8,2",
+      "(Type: String) 4,2,7,2,7,5,8,2"
+    ],
+    "correctAnswer": 0
   },
   {
     "id": 33,
     "type": "multiple",
-    "question": "What is an example of an agent-based application discussed in the lecture?",
+    "question": "Which GA operation is computationally expensive?",
     "options": [
-      "Smart home automation",
-      "Medical diagnosis system",
-      "Smart traffic management",
-      "Personalized news recommendation"
+      "Initial population creation",
+      "Selection of sub-population for mating",
+      "Reproduction to produce next generation",
+      "Convergence testing"
     ],
     "correctAnswer": 2
   },
   {
     "id": 34,
-    "type": "truefalse",
-    "question": "In the smart traffic management example, each agent controls a power grid.",
-    "correctAnswer": false
-  },
-  {
-    "id": 35,
     "type": "multiple",
-    "question": "How do agents contribute to smart traffic management?",
+    "question": "Which of the following is not true for Genetic algorithms?",
     "options": [
-      "By increasing traffic signs",
-      "By coordinating for optimal flow",
-      "By manually directing cars",
-      "By designing new roads"
+      "It is a probabilistic search algorithm",
+      "It is guaranteed to give global optimum solutions",
+      "If an optimization problem has more than one solution, then it will return all the solutions",
+      "It is an iterative process suitable for parallel programming"
     ],
     "correctAnswer": 1
   },
   {
+    "id": 35,
+    "type": "multiple",
+    "question": "Which one of the following is not necessarily be considered as GA parameters?",
+    "options": [
+      "N, the population size.",
+      "E, the obtainable accuracy",
+      "up, the mutation probability",
+      "f', the average fitness score"
+    ],
+    "correctAnswer": 3
+  },
+  {
     "id": 36,
     "type": "multiple",
-    "question": "What are the benefits of smart traffic management using agents?",
+    "question": "Which of the following optimization problems(s) can be better solved with Order GA?",
     "options": [
-      "Increased fuel consumption and travel time",
-      "Reduced congestion and improved safety",
-      "More complex traffic rules",
-      "Higher infrastructure costs"
+      "0-1 Knapsack problem",
+      "Travelling salesman problem",
+      "Job shop scheduling problem",
+      "Optimal binary search tree construction problem"
     ],
     "correctAnswer": 1
   },
   {
     "id": 37,
     "type": "multiple",
-    "question": "In the context of smart traffic management, what do \"Vehicle Agents\" manage?",
+    "question": "Which of the following is not a valid chromosome in Order GA?",
     "options": [
-      "Traffic lights",
-      "Overall traffic flow",
-      "Individual vehicles",
-      "Road maintenance schedules"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 38,
-    "type": "truefalse",
-    "question": "\"Signal Agents\" are responsible for managing individual vehicles in smart traffic management.",
-    "correctAnswer": false
-  },
-  {
-    "id": 39,
-    "type": "multiple",
-    "question": "Which type of agent optimizes overall traffic flow in the smart traffic management example?",
-    "options": [
-      "Vehicle Agents",
-      "Signal Agents",
-      "Pedestrian Agents",
-      "Central Coordinator"
+      "1,3,5,7,2,4,6,8",
+      "A,B,D,E,C,F,H,G",
+      "1,0,0,1,1,0,0,1",
+      "14.6-23.4,177.23"
     ],
     "correctAnswer": 3
   },
   {
+    "id": 38,
+    "type": "multiple",
+    "question": "Roulette wheel selection scheme is preferable when",
+    "options": [
+      "Fitness values are uniformly distributed",
+      "Fitness values are non-uniformly distributed",
+      "Needs low selection pressure",
+      "Needs high population diversity"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 39,
+    "type": "multiple",
+    "question": "What GA encoding scheme suffers from Hamming cliff problem?",
+    "options": [
+      "Binary coded GA",
+      "Real coded GA",
+      "Order GA",
+      "Tree coded GA"
+    ],
+    "correctAnswer": 0
+  },
+  {
     "id": 40,
     "type": "multiple",
-    "question": "What are common challenges faced by smart systems?",
+    "question": "What is the fundamental principle behind Genetic Algorithms (GAS)?",
     "options": [
-      "Simplicity and predictability",
-      "Abundance of resources",
-      "Complexity and uncertainty",
-      "Lack of data"
+      "Random mutation",
+      "Natural selection",
+      "Artificial intelligence",
+      "Stochastic optimization"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": 41,
-    "type": "truefalse",
-    "question": "Solutions for challenges in smart systems involve rigid design and minimal adaptability.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "Which of the following is a crucial component of Genetic Algorithms for evaluating the suitability of individuals within a population?",
+    "options": [
+      "Encoding",
+      "Fitness function",
+      "Crossover",
+      "Mutation"
+    ],
+    "correctAnswer": 1
   },
   {
     "id": 42,
     "type": "multiple",
-    "question": "What activities are described as vital for addressing challenges in smart system design?",
+    "question": "What is the role of encoding in Genetic Algorithms?",
     "options": [
-      "Marketing and sales",
-      "Ignoring user feedback",
-      "Testing and validation",
-      "Rapid prototyping without testing"
+      "It determines the probability of crossover.",
+      "It converts candidate solutions into a form suitable for processing.",
+      "It selects the individuals for reproduction.",
+      "It controls the mutation rate."
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": 43,
     "type": "multiple",
-    "question": "In the context of challenges, what does \"Complexity\" refer to?",
+    "question": "Which function selects individuals from a population for reproduction based on their fitness?",
     "options": [
-      "Adapting to unknown conditions",
-      "Ensuring correctness",
-      "Managing intricate systems",
-      "Dealing with limited computational power"
+      "Crossover function",
+      "Mutation function",
+      "Selection function",
+      "Encoding function"
     ],
     "correctAnswer": 2
   },
   {
     "id": 44,
-    "type": "truefalse",
-    "question": "\"Uncertainty\" as a challenge in smart systems means ensuring the correctness of the system.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "What genetic operator combines genetic material from two parents to create offspring?",
+    "options": [
+      "Mutation",
+      "Crossover",
+      "Encoding",
+      "Selection"
+    ],
+    "correctAnswer": 1
   },
   {
     "id": 45,
     "type": "multiple",
-    "question": "What does \"Validation\" aim to ensure in smart system design?",
+    "question": "Which genetic operator introduces random changes in an individual's genetic material?",
     "options": [
-      "That the system is complex",
-      "That the system can adapt to unknown conditions",
-      "That the system is marketable",
-      "That the system is correct"
+      "Crossover",
+      "Encoding",
+      "Selection",
+      "Mutation"
     ],
     "correctAnswer": 3
   },
   {
     "id": 46,
     "type": "multiple",
-    "question": "According to the conclusion, what does smart system design require?",
+    "question": "In a Genetic Algorithm, what does a high fitness value indicate?",
     "options": [
-      "Minimal planning",
-      "Only textual descriptions",
-      "Visuals",
-      "Complex mathematical models only"
+      "Poor solution",
+      "Unfit individual",
+      "Optimal solution",
+      "Low diversity"
     ],
     "correctAnswer": 2
   },
   {
     "id": 47,
-    "type": "truefalse",
-    "question": "Diagrams hinder understanding and communication in smart system design.",
-    "correctAnswer": false
-  },
-  {
-    "id": 48,
     "type": "multiple",
-    "question": "What drives intelligent behavior in smart systems, according to the conclusion?",
+    "question": "Which phase of a Genetic Algorithm involves the creation of new individuals for the next generation?",
     "options": [
-      "User manuals",
-      "Hardware specifications",
-      "Marketing strategies",
-      "Algorithms"
+      "Evaluation",
+      "Crossover",
+      "Mutation",
+      "Reproduction"
     ],
     "correctAnswer": 3
   },
   {
+    "id": 48,
+    "type": "multiple",
+    "question": "What is the primary purpose of crossover in a Genetic Algorithm?",
+    "options": [
+      "To introduce random changes",
+      "To select individuals for reproduction",
+      "To create offspring with traits from both parents",
+      "To evaluate the fitness of individuals"
+    ],
+    "correctAnswer": 2
+  },
+  {
     "id": 49,
     "type": "multiple",
-    "question": "What is a future direction for smart systems mentioned in the presentation?",
+    "question": "Which of the following represents the main advantage of Genetic Algorithms?",
     "options": [
-      "Less reliance on visual tools",
-      "More advanced AI",
-      "Reduction in system complexity",
-      "Discontinuation of agent-based approaches"
+      "Guaranteed global optimum",
+      "Fast convergence",
+      "Robustness and versatility",
+      "Minimal computational resources"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": 50,
-    "type": "truefalse",
-    "question": "Visual tools are expected to become less essential in the future of smart system design.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "What does the fitness function evaluate in a Genetic Algorithm?",
+    "options": [
+      "The diversity of the population",
+      "The probability of crossover",
+      "The suitability of individuals in the population",
+      "The rate of mutation"
+    ],
+    "correctAnswer": 2
   },
   {
     "id": 51,
     "type": "multiple",
-    "question": "Which three diagram types are highlighted as key takeaways?",
+    "question": "Which operator in a Genetic Algorithm increases the diversity of the population?",
     "options": [
-      "ERD, DFD, and State Diagrams",
-      "Activity, Block, and Flowchart",
-      "Sequence, Class, and Component Diagrams",
-      "Use Case, Deployment, and Package Diagrams"
+      "Crossover",
+      "Selection",
+      "Encoding",
+      "Mutation"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": 52,
-    "type": "truefalse",
-    "question": "The conclusion states that AI is considered non-essential for smart system design.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "What is the purpose of the selection function in a Genetic Algorithm?",
+    "options": [
+      "To determine crossover points",
+      "To evaluate the fitness of individuals",
+      "To create new individuals",
+      "To select individuals for reproduction"
+    ],
+    "correctAnswer": 3
   },
   {
     "id": 53,
     "type": "multiple",
-    "question": "What is highlighted as a \"Future Focus\" in the key takeaways?",
+    "question": "Which phase of a Genetic Algorithm involves assessing the performance of individuals within the population?",
     "options": [
-      "Simplified user interfaces",
-      "Reduced data dependency",
-      "Advanced AI integration",
-      "Hardware miniaturization"
+      "Reproduction",
+      "Mutation",
+      "Evaluation",
+      "Crossover"
     ],
     "correctAnswer": 2
   },
   {
     "id": 54,
-    "type": "truefalse",
-    "question": "The lecture concludes that visual tools are only moderately important for design.",
-    "correctAnswer": false
-  },
-  {
-    "id": 55,
     "type": "multiple",
-    "question": "What optimization algorithm is suggested in Assignment 2 for enhancing battery capacity estimation in Electric Vehicles?",
+    "question": "What aspect of a Genetic Algorithm contributes to its ability to explore a wide search space efficiently?",
     "options": [
-      "Genetic Algorithm",
-      "Particle Swarm Optimization",
-      "Archimedes optimization algorithm",
-      "Simulated Annealing"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 56,
-    "type": "truefalse",
-    "question": "Assignment 2 proposes using a recurrent neural network to diagnose Ovarian cancer.",
-    "correctAnswer": false
-  },
-  {
-    "id": 57,
-    "type": "multiple",
-    "question": "What technology is suggested in Assignment 2 for diagnosing Ovarian cancer?",
-    "options": [
-      "Support Vector Machines",
-      "Convolutional Neural Networks",
-      "Decision Trees",
-      "Enhanced vision transformer"
+      "High mutation rate",
+      "Low diversity",
+      "Effective selection mechanism",
+      "Crossover operation"
     ],
     "correctAnswer": 3
   },
   {
-    "id": 58,
+    "id": 55,
     "type": "multiple",
-    "question": "What is the main topic of the presentation?",
+    "question": "In a Genetic Algorithm, what does the term \"offspring\" refer to?",
     "options": [
-      "Database Management",
-      "Visualizing Smart System Design",
-      "Network Security Protocols",
-      "Machine Learning Algorithms"
+      "The initial population",
+      "New individuals created in the reproduction phase",
+      "Individuals selected for mutation",
+      "The fittest individual in the population"
     ],
     "correctAnswer": 1
   },
   {
+    "id": 56,
+    "type": "multiple",
+    "question": "What is the primary objective of crossover in a Genetic Algorithm?",
+    "options": [
+      "To increase the population size",
+      "To create a diverse population",
+      "To maintain genetic diversity",
+      "To combine genetic information from parents"
+    ],
+    "correctAnswer": 3
+  },
+  {
+    "id": 57,
+    "type": "multiple",
+    "question": "Which feature of Genetic Algorithms makes them suitable for optimization in complex, multi-dimensional spaces?",
+    "options": [
+      "Greedy search strategy",
+      "Exhaustive search",
+      "Population-based approach",
+      "Deterministic algorithms"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 58,
+    "type": "multiple",
+    "question": "What does the encoding process accomplish in Genetic Algorithms?",
+    "options": [
+      "Selects individuals for reproduction",
+      "Determines the crossover points",
+      "Converts solutions into a suitable form for processing",
+      "Evaluates the fitness of individuals"
+    ],
+    "correctAnswer": 2
+  },
+  {
     "id": 59,
-    "type": "truefalse",
-    "question": "The presentation is authored by Fatma M. Talaat.",
-    "correctAnswer": true
+    "type": "multiple",
+    "question": "What aspect of Genetic Algorithms contributes to their ability to adapt to changing environments?",
+    "options": [
+      "Fixed mutation rate",
+      "Inheritance of traits",
+      "Static population size",
+      "Consistent fitness function"
+    ],
+    "correctAnswer": 1
   },
   {
     "id": 60,
     "type": "multiple",
-    "question": "Which of the following diagram types will be covered in the presentation?",
+    "question": "The kind of symbols for basic syntactic elements of first-order logic are",
     "options": [
-      "Use Case Diagrams",
-      "Sequence Diagrams",
-      "Activity Diagrams",
-      "Class Diagrams"
+      "Constant",
+      "Domain",
+      "Predicate",
+      "Temporal",
+      "Function"
     ],
     "correctAnswer": 2
   },
   {
     "id": 61,
     "type": "multiple",
-    "question": "Besides activity and block diagrams, what other visualization tool is examined?",
+    "question": "In the context of Genetic Algorithms, which of the following selection methods is most likely to select the best individuals multiple times?",
     "options": [
-      "Gantt Charts",
-      "Mind Maps",
-      "Fishbone Diagrams",
-      "Flowcharts"
+      "Tournament selection",
+      "Roulette wheel selection",
+      "Rank selection",
+      "Elitism"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 1
   },
   {
     "id": 62,
-    "type": "truefalse",
-    "question": "The presentation includes an agent-based application for financial forecasting.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "Which of the following are Mutation techniques?",
+    "options": [
+      "Multipoint",
+      "Interchange",
+      "Uniform",
+      "Flipping",
+      "One Point"
+    ],
+    "correctAnswer": 1
   },
   {
     "id": 63,
     "type": "multiple",
-    "question": "What specific application of agent-based systems is mentioned?",
+    "question": "For the following figure P1 and P2 represent the Parent genes (bits) and 01 and 02 represent Offspring genes (bits). C1 and C2 represent Crossover points. Look the figure and identify which one of the correct?",
     "options": [
-      "Healthcare monitoring",
-      "Traffic management",
-      "E-commerce recommendation",
-      "Smart agriculture"
+      "Offspring is One point crossover of parents.",
+      "Offspring is an N-point crossover of parents.",
+      "Offspring is Two-point crossover of parents.",
+      "Offspring is One Uniform crossover of parents."
     ],
-    "correctAnswer": 1
+    "correctAnswer": 2
   },
   {
     "id": 64,
-    "type": "truefalse",
-    "question": "The presentation will discuss challenges and solutions related to smart system design.",
-    "correctAnswer": true
+    "type": "multiple",
+    "question": "Let the population of chromosomes in genetic algorithm is represented in terms of binary number. The strength of fitness of a chromosome in decimal form, x, is given by $r(Sf\\left(\\times\\right)=\\frac{\\{f\\left(\\times\\right)\\}\\{\\sum~f\\left(\\times\\right)\\}}$, where $f\\left( x \\right) = {x^2})$. The population is given by P where: $P=\\{(01101)$, (11000), (01000), (10011)}\\}. The strength of fitness of chromosome (11000) is",
+    "options": [
+      "24",
+      "576",
+      "14.4",
+      "49.2"
+    ],
+    "correctAnswer": 2
   },
   {
     "id": 65,
     "type": "multiple",
-    "question": "What is the primary purpose of activity diagrams?",
+    "question": "Which of the following is not a solution representation in a genetic algorithm?",
     "options": [
-      "To define database schemas",
-      "To model system processes",
-      "To show hardware configurations",
-      "To illustrate user interface layouts"
+      "Binary valued",
+      "Real valued",
+      "Permutation",
+      "Combinations"
     ],
-    "correctAnswer": 1
+    "correctAnswer": 3
   },
   {
     "id": 66,
     "type": "multiple",
-    "question": "In activity diagrams, what do \"Actions\" represent?",
+    "question": "Given below are two statements:\nStatement I: A genetic algorithm is a stochastic hill-climbing search in which a large population of states is maintained.\nStatement II: In nondeterministic environments, agents can apply AND-OR search to generate contingent plans that reach the goal regardless of which outcomes occur during execution.",
     "options": [
-      "Branching based on conditions",
-      "The sequence of activities",
-      "Specific tasks or operations",
-      "System boundaries"
+      "Both Statement I and Statement II are true",
+      "Both Statement I and Statement II are false",
+      "Statement I is correct, but Statement II is false",
+      "Statement I is incorrect, but Statement II is true"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 0
   },
   {
     "id": 67,
-    "type": "truefalse",
-    "question": "Decisions in activity diagrams indicate the sequence of activities.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "Which Al System mimics the evolutionary process to generate increasingly better solutions to a problem?",
+    "options": [
+      "Self organizing neural network.",
+      "Back propagation neural network.",
+      "Genetic algorithm.",
+      "Forward propagation neural network."
+    ],
+    "correctAnswer": 2
   },
   {
     "id": 68,
     "type": "multiple",
-    "question": "What element in an activity diagram shows branching based on conditions?",
+    "question": "The kind of symbols for basic syntactic elements of first-order logic are\nA. Constant\nB. Domain\nC. Predicate\nD. Temporal\nE. Function",
     "options": [
-      "Flows",
-      "Actions",
-      "Start Node",
-      "Decisions"
+      "B, D only",
+      "A, B, C only",
+      "A, C, E only",
+      "C, D only"
     ],
-    "correctAnswer": 3
+    "correctAnswer": 2
   },
   {
     "id": 69,
-    "type": "truefalse",
-    "question": "Activity diagrams help visualize system behavior and clarify interactions and dependencies.",
-    "correctAnswer": true
+    "type": "multiple",
+    "question": "In a genetic algorithm optimization problem the fitness function is defined as $f(x)=x^2-4x+4$. Given a population of four individuals with values of x: {1.5, 2.0, 3.0, 4.5} What is the fitness value of the individual that will be selected as the parent for reproduction in one generation?",
+    "options": [
+      "2.25",
+      "6.0",
+      "0.0",
+      "6.25"
+    ],
+    "correctAnswer": 2
   },
   {
     "id": 70,
     "type": "multiple",
-    "question": "What is the main function of block diagrams?",
+    "question": "Which of the following is not a mutation operator in a genetic algorithm?",
     "options": [
-      "To illustrate algorithm logic",
-      "To model user interactions",
-      "To define system architecture",
-      "To show data flow within a process"
+      "Random resetting",
+      "Scramble",
+      "Inversion",
+      "Difference"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 3
   },
   {
     "id": 71,
-    "type": "truefalse",
-    "question": "Block diagrams are primarily used to show the detailed steps of an algorithm.",
-    "correctAnswer": false
+    "type": "multiple",
+    "question": "A 4-input neuron has weights 1, 2, 3, 4. The transfer function is linear with the constant of proportionality being equal to 3. The inputs are 5, 7, 10, 30, respectively. Then the output will be,",
+    "options": [
+      "120",
+      "213",
+      "410",
+      "507"
+    ],
+    "correctAnswer": 2
   },
   {
     "id": 72,
     "type": "multiple",
-    "question": "In block diagrams, what do \"Components\" represent?",
+    "question": "In this case, the algorithm is trained using both input features and output labels. It aids in the establishment of a link between variables by estimating how one influences the other.",
     "options": [
-      "Interaction points",
-      "Relationships between functional units",
-      "Functional units",
-      "The sequence of operations"
+      "Classification",
+      "Regression",
+      "Association",
+      "Clustering"
     ],
-    "correctAnswer": 2
+    "correctAnswer": 1
   },
   {
     "id": 73,
     "type": "multiple",
-    "question": "What defines interaction points in a block diagram?",
+    "question": "Consider the following:\n(a) Evolution\n(b) Selection\n(c) reproduction\n(d) Mutation\nWhich of the following are found in genetic algorithms?",
     "options": [
-      "Connections",
-      "Components",
-      "Modules",
-      "Interfaces"
+      "(b), (c) and (d) only",
+      "(b) and (d) only",
+      "(a), (b), (c) and (d)",
+      "(a), (b) and (d) only"
     ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 74,
-    "type": "truefalse",
-    "question": "\"Connections\" in block diagrams represent functional units.",
-    "correctAnswer": false
-  },
-  {
-    "id": 75,
-    "type": "multiple",
-    "question": "According to the lecture, block diagrams are key for understanding what?",
-    "options": [
-      "User requirements",
-      "Algorithmic complexity",
-      "Interfaces",
-      "Market trends"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 76,
-    "type": "multiple",
-    "question": "What is the primary purpose of flowcharts?",
-    "options": [
-      "To show system architecture",
-      "To illustrate algorithm logic",
-      "To define user roles",
-      "To model system data"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 77,
-    "type": "truefalse",
-    "question": "Flowcharts use symbols to represent actions and decisions.",
-    "correctAnswer": true
-  },
-  {
-    "id": 78,
-    "type": "multiple",
-    "question": "How do flowcharts aid in the software development process?",
-    "options": [
-      "By managing project timelines",
-      "By facilitating user testing",
-      "By aiding in debugging and optimization",
-      "By defining hardware specifications"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 79,
-    "type": "multiple",
-    "question": "In a flowchart, what does the \"Start\" symbol represent?",
-    "options": [
-      "Conditional branching",
-      "Actions to be performed",
-      "The algorithm's beginning point",
-      "The algorithm's termination"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 80,
-    "type": "truefalse",
-    "question": "The \"Process\" symbol in a flowchart represents conditional branching.",
-    "correctAnswer": false
-  },
-  {
-    "id": 81,
-    "type": "multiple",
-    "question": "Which flowchart symbol is used for conditional branching?",
-    "options": [
-      "End",
-      "Process",
-      "Start",
-      "Decision"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 82,
-    "type": "truefalse",
-    "question": "The \"End\" symbol in a flowchart signifies the actions to be performed.",
-    "correctAnswer": false
-  },
-  {
-    "id": 83,
-    "type": "multiple",
-    "question": "What drives agent behavior in smart systems?",
-    "options": [
-      "User interfaces",
-      "Hardware capacity",
-      "Algorithms",
-      "Network speed"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 84,
-    "type": "truefalse",
-    "question": "Effective algorithms are not essential for ensuring smart actions in agents.",
-    "correctAnswer": false
-  },
-  {
-    "id": 85,
-    "type": "multiple",
-    "question": "What aspects are included in algorithm design for agent behavior?",
-    "options": [
-      "Data storage and retrieval",
-      "Planning and decision making",
-      "User authentication and authorization",
-      "Network communication protocols"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 86,
-    "type": "truefalse",
-    "question": "The algorithm design component allows for optimization and learning.",
-    "correctAnswer": true
-  },
-  {
-    "id": 87,
-    "type": "multiple",
-    "question": "Which of these is the first stage in algorithm design for agents as listed in the presentation?",
-    "options": [
-      "Execution",
-      "Decision",
-      "Planning",
-      "Optimization"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 88,
-    "type": "multiple",
-    "question": "What does \"Planning\" in agent algorithm design involve?",
-    "options": [
-      "Choosing actions",
-      "Performing actions",
-      "Defining agent goals",
-      "Evaluating outcomes"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 89,
-    "type": "truefalse",
-    "question": "\"Decision\" in agent algorithm design refers to performing actions.",
-    "correctAnswer": false
-  },
-  {
-    "id": 90,
-    "type": "multiple",
-    "question": "What is an example of an agent-based application discussed in the lecture?",
-    "options": [
-      "Smart home automation",
-      "Medical diagnosis system",
-      "Smart traffic management",
-      "Personalized news recommendation"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 91,
-    "type": "truefalse",
-    "question": "In the smart traffic management example, each agent controls a power grid.",
-    "correctAnswer": false
-  },
-  {
-    "id": 92,
-    "type": "multiple",
-    "question": "How do agents contribute to smart traffic management?",
-    "options": [
-      "By increasing traffic signs",
-      "By coordinating for optimal flow",
-      "By manually directing cars",
-      "By designing new roads"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 93,
-    "type": "multiple",
-    "question": "What are the benefits of smart traffic management using agents?",
-    "options": [
-      "Increased fuel consumption and travel time",
-      "Reduced congestion and improved safety",
-      "More complex traffic rules",
-      "Higher infrastructure costs"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 94,
-    "type": "multiple",
-    "question": "In the context of smart traffic management, what do \"Vehicle Agents\" manage?",
-    "options": [
-      "Traffic lights",
-      "Overall traffic flow",
-      "Individual vehicles",
-      "Road maintenance schedules"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 95,
-    "type": "truefalse",
-    "question": "\"Signal Agents\" are responsible for managing individual vehicles in smart traffic management.",
-    "correctAnswer": false
-  },
-  {
-    "id": 96,
-    "type": "multiple",
-    "question": "Which type of agent optimizes overall traffic flow in the smart traffic management example?",
-    "options": [
-      "Vehicle Agents",
-      "Signal Agents",
-      "Pedestrian Agents",
-      "Central Coordinator"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 97,
-    "type": "multiple",
-    "question": "What are common challenges faced by smart systems?",
-    "options": [
-      "Simplicity and predictability",
-      "Abundance of resources",
-      "Complexity and uncertainty",
-      "Lack of data"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 98,
-    "type": "truefalse",
-    "question": "Solutions for challenges in smart systems involve rigid design and minimal adaptability.",
-    "correctAnswer": false
-  },
-  {
-    "id": 99,
-    "type": "multiple",
-    "question": "What activities are described as vital for addressing challenges in smart system design?",
-    "options": [
-      "Marketing and sales",
-      "Ignoring user feedback",
-      "Testing and validation",
-      "Rapid prototyping without testing"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 100,
-    "type": "multiple",
-    "question": "In the context of challenges, what does \"Complexity\" refer to?",
-    "options": [
-      "Adapting to unknown conditions",
-      "Ensuring correctness",
-      "Managing intricate systems",
-      "Dealing with limited computational power"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 101,
-    "type": "truefalse",
-    "question": "\"Uncertainty\" as a challenge in smart systems means ensuring the correctness of the system.",
-    "correctAnswer": false
-  },
-  {
-    "id": 102,
-    "type": "multiple",
-    "question": "What does \"Validation\" aim to ensure in smart system design?",
-    "options": [
-      "That the system is complex",
-      "That the system can adapt to unknown conditions",
-      "That the system is marketable",
-      "That the system is correct"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 103,
-    "type": "multiple",
-    "question": "According to the conclusion, what does smart system design require?",
-    "options": [
-      "Minimal planning",
-      "Only textual descriptions",
-      "Visuals",
-      "Complex mathematical models only"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 104,
-    "type": "truefalse",
-    "question": "Diagrams hinder understanding and communication in smart system design.",
-    "correctAnswer": false
-  },
-  {
-    "id": 105,
-    "type": "multiple",
-    "question": "What drives intelligent behavior in smart systems, according to the conclusion?",
-    "options": [
-      "User manuals",
-      "Hardware specifications",
-      "Marketing strategies",
-      "Algorithms"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 106,
-    "type": "multiple",
-    "question": "What is a future direction for smart systems mentioned in the presentation?",
-    "options": [
-      "Less reliance on visual tools",
-      "More advanced AI",
-      "Reduction in system complexity",
-      "Discontinuation of agent-based approaches"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 107,
-    "type": "truefalse",
-    "question": "Visual tools are expected to become less essential in the future of smart system design.",
-    "correctAnswer": false
-  },
-  {
-    "id": 108,
-    "type": "multiple",
-    "question": "Which three diagram types are highlighted as key takeaways?",
-    "options": [
-      "ERD, DFD, and State Diagrams",
-      "Activity, Block, and Flowchart",
-      "Sequence, Class, and Component Diagrams",
-      "Use Case, Deployment, and Package Diagrams"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 109,
-    "type": "truefalse",
-    "question": "The conclusion states that AI is considered non-essential for smart system design.",
-    "correctAnswer": false
-  },
-  {
-    "id": 110,
-    "type": "multiple",
-    "question": "What is highlighted as a \"Future Focus\" in the key takeaways?",
-    "options": [
-      "Simplified user interfaces",
-      "Reduced data dependency",
-      "Advanced AI integration",
-      "Hardware miniaturization"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 111,
-    "type": "truefalse",
-    "question": "The lecture concludes that visual tools are only moderately important for design.",
-    "correctAnswer": false
-  },
-  {
-    "id": 112,
-    "type": "multiple",
-    "question": "What optimization algorithm is suggested in Assignment 2 for enhancing battery capacity estimation in Electric Vehicles?",
-    "options": [
-      "Genetic Algorithm",
-      "Particle Swarm Optimization",
-      "Archimedes optimization algorithm",
-      "Simulated Annealing"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 113,
-    "type": "truefalse",
-    "question": "Assignment 2 proposes using a recurrent neural network to diagnose Ovarian cancer.",
-    "correctAnswer": false
-  },
-  {
-    "id": 114,
-    "type": "multiple",
-    "question": "What technology is suggested in Assignment 2 for diagnosing Ovarian cancer?",
-    "options": [
-      "Support Vector Machines",
-      "Convolutional Neural Networks",
-      "Decision Trees",
-      "Enhanced vision transformer"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 115,
-    "type": "multiple",
-    "question": "What is the main focus of the presentation \"Climate Changes in Smart Cities\"?",
-    "options": [
-      "The historical development of urban areas.",
-      "The challenges and opportunities for sustainable urban development in the context of climate change and smart cities.",
-      "The economic impact of smart city technologies.",
-      "The social implications of climate change in rural areas."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 116,
-    "type": "truefalse",
-    "question": "The presentation explores the singular challenge of climate change for smart cities.",
-    "correctAnswer": false
-  },
-  {
-    "id": 117,
-    "type": "multiple",
-    "question": "Who is the author of the presentation \"Climate Changes in Smart Cities\"?",
-    "options": [
-      "Gamma Technologies",
-      "An unnamed urban planner",
-      "Fatma M. Talaat",
-      "The Smart City Council"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 118,
-    "type": "multiple",
-    "question": "How do smart cities primarily improve urban infrastructure, resource management, and citizen services?",
-    "options": [
-      "By increasing the city's population density.",
-      "By relying solely on traditional urban planning methods.",
-      "By leveraging technology.",
-      "By reducing public transportation options."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 119,
-    "type": "truefalse",
-    "question": "Smart cities utilize technologies such as sensors, data analytics, and the Internet of Things (IoT).",
-    "correctAnswer": true
-  },
-  {
-    "id": 120,
-    "type": "multiple",
-    "question": "Which of the following is NOT listed as an area optimized by smart cities using technology?",
-    "options": [
-      "Transportation",
-      "Energy consumption",
-      "Historical preservation",
-      "Public safety"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 121,
-    "type": "multiple",
-    "question": "Which of these is an example of a smart city initiative mentioned in the presentation?",
-    "options": [
-      "Manual traffic direction by police officers.",
-      "Smart grids for energy distribution.",
-      "Weekly curbside recycling pickup without technological integration.",
-      "Building more highways to reduce congestion."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 122,
-    "type": "truefalse",
-    "question": "Connected waste management platforms are an example of smart city initiatives.",
-    "correctAnswer": true
-  },
-  {
-    "id": 123,
-    "type": "multiple",
-    "question": "What are the stated benefits of smart city initiatives?",
-    "options": [
-      "Decreasing urban diversity and increasing suburban sprawl.",
-      "Enhancing urban resilience and quality of life.",
-      "Focusing solely on economic growth without environmental considerations.",
-      "Reducing the need for citizen participation in governance."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 124,
-    "type": "multiple",
-    "question": "According to the presentation, what is a primary consequence of rising temperatures in smart cities?",
-    "options": [
-      "Decreased demand for air conditioning.",
-      "Reduced instances of heatwaves.",
-      "Increased energy demand and health risks.",
-      "More predictable weather patterns."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 125,
-    "type": "truefalse",
-    "question": "Climate change is leading to less frequent and milder weather events.",
-    "correctAnswer": false
-  },
-  {
-    "id": 126,
-    "type": "multiple",
-    "question": "What kind of challenges do more frequent and severe weather events like floods, droughts, and storms pose to smart cities?",
-    "options": [
-      "Minor inconveniences to public parks.",
-      "Increased agricultural output within city limits.",
-      "Significant challenges to urban infrastructure.",
-      "A decrease in the need for emergency services."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 127,
-    "type": "multiple",
-    "question": "Which specific climate change impact are coastal cities primarily grappling with?",
-    "options": [
-      "Increased snowfall.",
-      "Desertification of green spaces.",
-      "Sea level rise.",
-      "More frequent earthquakes."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 128,
-    "type": "truefalse",
-    "question": "Sea level rise only threatens beaches and not waterfront properties or infrastructure in coastal cities.",
-    "correctAnswer": false
-  },
-  {
-    "id": 129,
-    "type": "multiple",
-    "question": "What is the purpose of incorporating green spaces, urban forests, and rooftop gardens in urban planning?",
-    "options": [
-      "To increase property taxes.",
-      "To exclusively attract tourism.",
-      "To mitigate heat island effects and improve air quality.",
-      "To provide more space for commercial development."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 130,
-    "type": "truefalse",
-    "question": "Sustainable transportation in urban planning aims to increase reliance on private vehicles.",
-    "correctAnswer": false
-  },
-  {
-    "id": 131,
-    "type": "multiple",
-    "question": "Which of the following is NOT a method mentioned for promoting sustainable transportation?",
-    "options": [
-      "Promoting walking",
-      "Expanding highway networks for private cars",
-      "Encouraging cycling",
-      "Improving public transportation"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 132,
-    "type": "multiple",
-    "question": "How do energy-efficient buildings contribute to sustainable urban planning?",
-    "options": [
-      "By increasing the overall energy demand of the city.",
-      "By optimizing energy consumption through codes, renewables, and smart grids.",
-      "By mandating the use of fossil fuels for heating.",
-      "By reducing the need for insulation."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 133,
-    "type": "truefalse",
-    "question": "Implementing energy-efficient building codes is a strategy for sustainable urban planning.",
-    "correctAnswer": true
-  },
-  {
-    "id": 134,
-    "type": "multiple",
-    "question": "What is the ambitious goal many cities are setting regarding renewable energy?",
-    "options": [
-      "To transition to 50% renewable energy by 2030.",
-      "To rely entirely on nuclear power by 2050.",
-      "To transition to 100% renewable energy by 2050.",
-      "To reduce fossil fuel use by only 10% by 2050."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 135,
-    "type": "truefalse",
-    "question": "The transition to renewable energy involves shifting away from sources like solar and wind power.",
-    "correctAnswer": false
-  },
-  {
-    "id": 136,
-    "type": "multiple",
-    "question": "Which of the following is listed as a renewable energy source cities are shifting towards?",
-    "options": [
-      "Natural Gas",
-      "Clean Coal",
-      "Geothermal power",
-      "Shale Oil"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 137,
-    "type": "multiple",
-    "question": "Smart cities are implementing energy efficiency measures to reduce energy consumption by up to what percentage?",
-    "options": [
-      "20%",
-      "50%",
-      "80%",
-      "100%"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 138,
-    "type": "truefalse",
-    "question": "Behavior change programs are not considered a method for achieving energy efficiency in smart cities.",
-    "correctAnswer": false
-  },
-  {
-    "id": 139,
-    "type": "multiple",
-    "question": "Which of these is a method smart cities use to achieve energy efficiency?",
-    "options": [
-      "Increasing energy tariffs indiscriminately.",
-      "Implementing smart grids and energy-saving technologies.",
-      "Discouraging the use of public transportation.",
-      "Promoting the use of older, less efficient appliances."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 140,
-    "type": "multiple",
-    "question": "What is the primary purpose of implementing early warning systems in the context of extreme weather?",
-    "options": [
-      "To predict the stock market impact of weather events.",
-      "To allow for timely evacuations and preparedness.",
-      "To control the weather itself.",
-      "To promote tourism to areas experiencing extreme weather."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 141,
-    "type": "truefalse",
-    "question": "Developing flood-resistant infrastructure includes building structures that are intentionally designed to be submerged.",
-    "correctAnswer": false
-  },
-  {
-    "id": 142,
-    "type": "multiple",
-    "question": "Which of the following is an example of flood-resistant infrastructure?",
-    "options": [
-      "Standard, non-permeable pavements.",
-      "Water retention systems.",
-      "Buildings constructed in known floodplains without elevation.",
-      "Removing all urban drainage systems."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 143,
-    "type": "multiple",
-    "question": "What does investing in resilient infrastructure, such as reinforced buildings and flood-proof power grids, help cities to do?",
-    "options": [
-      "Eliminate the possibility of extreme weather events.",
-      "Attract more businesses that are heavy polluters.",
-      "Withstand the impact of extreme weather events.",
-      "Reduce the need for early warning systems."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 144,
-    "type": "multiple",
-    "question": "Which of the following is a benefit of planting trees and creating urban forests?",
-    "options": [
-      "Increasing the urban heat island effect.",
-      "Enhancing biodiversity and improving air quality.",
-      "Decreasing stormwater runoff significantly on their own.",
-      "Reducing the need for public parks."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 145,
-    "type": "truefalse",
-    "question": "Urban forests primarily serve an aesthetic purpose and have little impact on air quality or heat island effects.",
-    "correctAnswer": false
-  },
-  {
-    "id": 146,
-    "type": "multiple",
-    "question": "What is a key advantage of developing green roofs and green walls?",
-    "options": [
-      "Increasing energy consumption for building cooling.",
-      "Reducing stormwater runoff and providing insulation.",
-      "Making buildings less structurally sound.",
-      "Eliminating the need for indoor plants."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 147,
-    "type": "multiple",
-    "question": "Which of the following is an example of integrating green infrastructure to manage stormwater?",
-    "options": [
-      "Building more concrete channels to speed up water flow.",
-      "Permeable pavements and rain gardens.",
-      "Covering all green spaces with buildings.",
-      "Increasing the capacity of combined sewer systems."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 148,
-    "type": "truefalse",
-    "question": "Green infrastructure strategies like permeable pavements aim to increase flooding.",
-    "correctAnswer": false
-  },
-  {
-    "id": 149,
-    "type": "multiple",
-    "question": "How can mobile apps be used to engage citizens in climate action?",
-    "options": [
-      "By automatically paying their energy bills.",
-      "By providing real-time information on air quality, energy consumption, and transportation options.",
-      "By restricting access to information about climate change.",
-      "By encouraging increased private vehicle use through traffic updates."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 150,
-    "type": "truefalse",
-    "question": "Citizen engagement in climate action is discouraged in smart cities to ensure expert-driven solutions.",
-    "correctAnswer": false
-  },
-  {
-    "id": 151,
-    "type": "multiple",
-    "question": "Which of the following is mentioned as a way to encourage public participation in climate action?",
-    "options": [
-      "Implementing policies without public consultation.",
-      "Limiting access to environmental data.",
-      "Community forums, surveys, and citizen science projects.",
-      "Discouraging the use of mobile apps for information."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 152,
-    "type": "multiple",
-    "question": "What role do smart cities play in addressing climate change, according to the presentation?",
-    "options": [
-      "They are minor contributors to the problem with little role in solutions.",
-      "They are at the forefront of the fight against climate change.",
-      "Their primary focus is on economic development, not climate resilience.",
-      "They primarily rely on national governments for climate solutions."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 153,
-    "type": "truefalse",
-    "question": "Smart cities are embracing sustainable technologies and innovative solutions to build a more resilient future.",
-    "correctAnswer": true
-  },
-  {
-    "id": 154,
-    "type": "multiple",
-    "question": "What is the ultimate goal of smart cities' efforts in combating climate change as stated in the presentation's conclusion?",
-    "options": [
-      "To return to a pre-industrial way of life.",
-      "To achieve complete independence from global economic systems.",
-      "To build a more resilient and livable future.",
-      "To relocate all urban populations to rural areas."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 155,
-    "type": "multiple",
-    "question": "What is the primary focus of Chapter 4 as titled in the lecture material?",
-    "options": [
-      "AI in Smart Building Security Systems",
-      "AI in Smart Building Construction",
-      "AI in Smart Building Energy Consumption Optimization",
-      "AI in Smart Building Occupant Comfort"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 156,
-    "type": "truefalse",
-    "question": "The author of Chapter 4 is Dr. Fatma M. Talaat.",
-    "correctAnswer": true
-  },
-  {
-    "id": 157,
-    "type": "multiple",
-    "question": "Which of the following is NOT listed as a main section in the \"Contents\" of Chapter 4?",
-    "options": [
-      "Introduction",
-      "AI Technologies in Smart Building Energy Management",
-      "Historical Development of Smart Buildings",
-      "Benefits of AI in Energy Optimization"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 158,
-    "type": "multiple",
-    "question": "According to the introduction, what do smart buildings integrate to optimize energy consumption and reduce costs?",
-    "options": [
-      "Traditional building materials",
-      "Manual control systems",
-      "Advanced technologies",
-      "Basic automation features"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 159,
-    "type": "truefalse",
-    "question": "Artificial Intelligence (AI) plays a minor role in enhancing energy efficiency in smart buildings.",
-    "correctAnswer": false
-  },
-  {
-    "id": 160,
-    "type": "multiple",
-    "question": "Which AI technology involves models for energy consumption forecasting and anomaly detection?",
-    "options": [
-      "Internet of Things (IoT)",
-      "Deep Learning",
-      "Machine Learning Algorithms",
-      "Cloud Computing"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 161,
-    "type": "multiple",
-    "question": "What type of machine learning is used for dynamic energy management and optimization?",
-    "options": [
-      "Supervised learning",
-      "Reinforcement learning",
-      "Unsupervised learning",
-      "Semi-supervised learning"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 162,
-    "type": "truefalse",
-    "question": "Convolutional Neural Networks (CNNs) and Recurrent Neural Networks (RNNs) are applied in energy prediction.",
-    "correctAnswer": true
-  },
-  {
-    "id": 163,
-    "type": "multiple",
-    "question": "What are autoencoders used for in the context of deep learning for energy management?",
-    "options": [
-      "Forecasting energy demand",
-      "Controlling HVAC systems",
-      "Detecting inefficiencies in energy usage",
-      "Optimizing renewable energy generation"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 164,
-    "type": "multiple",
-    "question": "What is the role of smart sensors in the integration of IoT and AI for energy management?",
-    "options": [
-      "Automating billing processes",
-      "Providing user interfaces",
-      "Real-time data collection",
-      "Storing historical energy data"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 165,
-    "type": "truefalse",
-    "question": "Edge AI solutions are not suitable for energy optimization in smart buildings.",
-    "correctAnswer": false
-  },
-  {
-    "id": 166,
-    "type": "multiple",
-    "question": "Which of these is a primary application of AI in smart building energy optimization?",
-    "options": [
-      "Building structural design",
-      "Predictive Energy Analytics",
-      "Water usage monitoring",
-      "Security surveillance"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 167,
-    "type": "multiple",
-    "question": "What type of data is primarily used in weather-based predictive analytics for energy demand?",
-    "options": [
-      "Historical building maintenance records",
-      "Social media trends",
-      "Occupant feedback surveys",
-      "Meteorological data (temperature, humidity, etc.)"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 168,
-    "type": "truefalse",
-    "question": "Machine learning models like LSTMs and XGBoost are employed for time-series forecasting in weather-based predictive analytics.",
-    "correctAnswer": true
-  },
-  {
-    "id": 169,
-    "type": "multiple",
-    "question": "How does weather-based predictive analytics help grid operators?",
-    "options": [
-      "By reducing the need for smart meters",
-      "By automating lighting controls directly",
-      "By anticipating peak loads and optimizing energy distribution",
-      "By predicting equipment failures in the power grid"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 170,
-    "type": "multiple",
-    "question": "What data sources are used for occupancy-based predictive analytics?",
-    "options": [
-      "Energy price fluctuations",
-      "IoT sensors, smart meters, and building automation data",
-      "Weather forecasts",
-      "Appliance manufacturing specifications"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 171,
-    "type": "truefalse",
-    "question": "Occupancy-based predictive analytics adjusts heating, cooling, and lighting dynamically based on human activity.",
-    "correctAnswer": true
-  },
-  {
-    "id": 172,
-    "type": "multiple",
-    "question": "For which areas is occupancy-based predictive analytics particularly beneficial?",
-    "options": [
-      "Industrial manufacturing processes",
-      "Transportation logistics",
-      "Smart buildings and urban energy optimization",
-      "Agricultural irrigation systems"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 173,
-    "type": "multiple",
-    "question": "Which deep learning techniques are mentioned as effective for sequential data and long-term forecasting in energy consumption?",
-    "options": [
-      "Autoencoders and CNNs",
-      "Generative Adversarial Networks (GANs)",
-      "LSTM and GRU",
-      "Support Vector Machines (SVMs)"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 174,
-    "type": "truefalse",
-    "question": "Ensemble learning techniques like Random Forest and XGBoost decrease accuracy by combining multiple models.",
-    "correctAnswer": false
-  },
-  {
-    "id": 175,
-    "type": "multiple",
-    "question": "How does AI contribute to intelligent HVAC control?",
-    "options": [
-      "By manually setting fixed temperature schedules",
-      "By optimizing temperature and ventilation control",
-      "By increasing the need for manual overrides",
-      "By solely focusing on reducing fan speed"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 176,
-    "type": "multiple",
-    "question": "Smart lighting systems use AI for which of the following?",
-    "options": [
-      "Increasing overall energy consumption",
-      "Maintaining constant brightness regardless of occupancy",
-      "Adaptive brightness and scheduling",
-      "Only manual control by occupants"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 177,
-    "type": "truefalse",
-    "question": "AI-driven load balancing and peak demand management are part of energy-efficient appliance management.",
-    "correctAnswer": true
-  },
-  {
-    "id": 178,
-    "type": "multiple",
-    "question": "How does AI assist in renewable energy integration?",
-    "options": [
-      "By reducing the efficiency of solar panels",
-      "Forecasting solar and wind energy generation",
-      "By increasing reliance on non-renewable sources",
-      "By eliminating the need for energy storage"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 179,
-    "type": "multiple",
-    "question": "Which of the following is listed as a benefit of AI in energy optimization?",
-    "options": [
-      "Increased initial implementation costs",
-      "Reduced occupant comfort",
-      "Energy Cost Reduction",
-      "Decreased operational efficiency"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 180,
-    "type": "truefalse",
-    "question": "AI in energy optimization contributes to sustainability and a reduced carbon footprint.",
-    "correctAnswer": true
-  },
-  {
-    "id": 181,
-    "type": "multiple",
-    "question": "What is a key challenge mentioned in implementing AI for smart building energy optimization?",
-    "options": [
-      "Lack of available data",
-      "Data Privacy and Security",
-      "AI models being too simple",
-      "Low occupant acceptance"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 182,
-    "type": "multiple",
-    "question": "What percentage of building energy is mentioned as being wasted, especially during non-peak hours?",
-    "options": [
-      "Nearly 25%",
-      "Nearly half (50%)",
-      "About 10%",
-      "Over 75%"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 183,
-    "type": "truefalse",
-    "question": "Traditional building energy management systems can accurately predict energy needs.",
-    "correctAnswer": false
-  },
-  {
-    "id": 184,
-    "type": "multiple",
-    "question": "Manual energy adjustments can lead to what common efficiency loss?",
-    "options": [
-      "Up to 5%",
-      "Up to 23%",
-      "Up to 50%",
-      "Efficiency loss is negligible"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 185,
-    "type": "multiple",
-    "question": "Which AI technology is noted for improving energy forecasting through pattern recognition and anomaly detection?",
-    "options": [
-      "Computer Vision",
-      "Natural Language Processing",
-      "Machine Learning",
-      "Robotics"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 186,
-    "type": "truefalse",
-    "question": "Computer Vision is used in smart buildings for optimizing lighting and HVAC usage in real-time through occupancy detection.",
-    "correctAnswer": true
-  },
-  {
-    "id": 187,
-    "type": "multiple",
-    "question": "What capability does Natural Language Processing (NLP) enable in smart building management?",
-    "options": [
-      "Predicting equipment failures",
-      "Optimizing energy distribution in the grid",
-      "Voice control of building systems and automated reporting",
-      "Real-time adjustment of HVAC settings"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 188,
-    "type": "multiple",
-    "question": "Which of the following is highlighted as a key implementation area where AI can dynamically adjust settings for maximum energy savings?",
-    "options": [
-      "Water filtration systems",
-      "HVAC Optimization",
-      "Elevator traffic management",
-      "Waste management systems"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 189,
-    "type": "truefalse",
-    "question": "AI algorithms can be used to predict equipment failures, thereby reducing downtime in smart buildings.",
-    "correctAnswer": true
-  },
-  {
-    "id": 190,
-    "type": "multiple",
-    "question": "In the Google DeepMind case study, what was the reported cooling cost reduction in data centers?",
-    "options": [
-      "15%",
-      "25%",
-      "40%",
-      "50%"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 191,
-    "type": "multiple",
-    "question": "What was the overall energy decrease achieved by Google DeepMind's AI implementation in the case study?",
-    "options": [
-      "5%",
-      "40%",
-      "9 months",
-      "15%"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 192,
-    "type": "truefalse",
-    "question": "The ROI in the Google DeepMind case study was achieved in 9 months.",
-    "correctAnswer": true
-  },
-  {
-    "id": 193,
-    "type": "multiple",
-    "question": "What is crucial for data collection in AI-driven smart building systems?",
-    "options": [
-      "Manual data entry",
-      "Limited sensor deployment",
-      "Extensive sensor networks (IoT Sensors)",
-      "Reliance on weather forecasts only"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 194,
-    "type": "multiple",
-    "question": "How does edge computing benefit AI implementation in smart buildings?",
-    "options": [
-      "It increases reliance on cloud platforms.",
-      "It increases data transmission to the cloud.",
-      "It reduces latency and bandwidth needs by local processing.",
-      "It requires more powerful cloud servers."
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 195,
-    "type": "truefalse",
-    "question": "Cloud platforms enable powerful AI analysis and model training for energy optimization.",
-    "correctAnswer": true
-  },
-  {
-    "id": 196,
-    "type": "multiple",
-    "question": "According to the \"Measurable Benefits and ROI\" section, Al-powered energy optimization yields considerable savings and what other key benefit?",
-    "options": [
-      "Increased building complexity",
-      "Higher maintenance requirements",
-      "Environmental benefits",
-      "Reduced need for skilled personnel"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 197,
-    "type": "multiple",
-    "question": "What is one aspect of the \"Future Outlook\" for AI in smart buildings?",
-    "options": [
-      "Decreased integration with city infrastructure",
-      "Autonomous Management, where buildings self-adjust to changing conditions",
-      "Reduced precision in energy need anticipation",
-      "A shift away from predictive analytics"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 198,
-    "type": "truefalse",
-    "question": "Enhanced prediction, with advanced algorithms anticipating energy needs with greater precision, is part of the future outlook for AI in smart buildings.",
-    "correctAnswer": true
-  },
-  {
-    "id": 199,
-    "type": "multiple",
-    "question": "What is implied by \"Smart City Integration\" in the future outlook?",
-    "options": [
-      "Buildings will operate in isolation from city-wide energy systems.",
-      "Connected buildings will optimize city-wide energy use.",
-      "Smart cities will rely less on individual smart building data.",
-      "Energy optimization will be limited to individual buildings only."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 200,
-    "type": "multiple",
-    "question": "Supervised learning models are primarily used for what purpose in smart building energy management?",
-    "options": [
-      "Anomaly detection",
-      "Dynamic energy management",
-      "Energy consumption forecasting",
-      "Energy pattern analysis"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 201,
-    "type": "truefalse",
-    "question": "Unsupervised learning is used for energy pattern analysis in smart buildings.",
-    "correctAnswer": true
-  },
-  {
-    "id": 202,
-    "type": "multiple",
-    "question": "AI-driven analytics are used in conjunction with IoT for analyzing what?",
-    "options": [
-      "Building material stress",
-      "Energy consumption patterns",
-      "Water purity levels",
-      "Air traffic noise"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 203,
-    "type": "multiple",
-    "question": "Besides temperature, what else does AI-powered HVAC optimization control?",
-    "options": [
-      "Building security access",
-      "Water heating",
-      "Ventilation",
-      "Appliance energy ratings"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 204,
-    "type": "truefalse",
-    "question": "Smart grid interaction and demand-response strategies are part of energy-efficient appliance management.",
-    "correctAnswer": true
-  },
-  {
-    "id": 205,
-    "type": "multiple",
-    "question": "AI models are used for forecasting the generation of which types of renewable energy?",
-    "options": [
-      "Geothermal and hydroelectric",
-      "Solar and wind",
-      "Biomass and tidal",
-      "Nuclear and hydrogen"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 206,
-    "type": "multiple",
-    "question": "Which of these is NOT listed as a benefit of AI in Energy Optimization?",
-    "options": [
-      "Energy Cost Reduction",
-      "Increased Data Privacy Risks",
-      "Enhanced Operational Efficiency",
-      "Improved Occupant Comfort and Productivity"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 207,
-    "type": "truefalse",
-    "question": "High initial implementation costs are a challenge for AI in smart building energy optimization.",
-    "correctAnswer": true
-  },
-  {
-    "id": 208,
-    "type": "multiple",
-    "question": "Ethical and regulatory considerations are listed under which section?",
-    "options": [
-      "Benefits of AI in Energy Optimization",
-      "AI Applications in Smart Building Energy Optimization",
-      "Challenges and Future Directions",
-      "AI Technologies in Smart Building Energy Management"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 209,
-    "type": "multiple",
-    "question": "What is a challenge related to AI models themselves in smart building energy optimization?",
-    "options": [
-      "Their inherent simplicity",
-      "AI Model Reliability and Scalability",
-      "Their inability to process large datasets",
-      "Their lack of adaptability"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 210,
-    "type": "multiple",
-    "question": "What is the estimated annual cost of urban traffic congestion in the US?",
-    "options": [
-      "$150 billion",
-      "$51 billion",
-      "$190 billion",
-      "$200 billion"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 211,
-    "type": "truefalse",
-    "question": "The average commuter spends 25 hours in traffic each year.",
-    "correctAnswer": false
-  },
-  {
-    "id": 212,
-    "type": "multiple",
-    "question": "According to the lecture, AI enables which of the following in traffic management?",
-    "options": [
-      "Reactive and inefficient management",
-      "Proactive and efficient traffic management",
-      "Manual data collection only",
-      "Increased congestion"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 213,
-    "type": "multiple",
-    "question": "Which of the following are mentioned as key AI applications in traffic management?",
-    "options": [
-      "Historical data storage and manual signal control",
-      "Driver behavior monitoring and toll collection",
-      "Real-time analysis and predictive modeling",
-      "Vehicle manufacturing and road construction"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 214,
-    "type": "truefalse",
-    "question": "The lecture \"AI-Driven Traffic Management in Smart Cities\" was prepared by Google AI.",
-    "correctAnswer": false
-  },
-  {
-    "id": 215,
-    "type": "multiple",
-    "question": "Which of the following is NOT listed as a data source for Real-Time Traffic Analysis with AI?",
-    "options": [
-      "IoT sensors in connected vehicles",
-      "AI-powered cameras",
-      "Weather forecast reports",
-      "Aggregated smartphone location data"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 216,
-    "type": "multiple",
-    "question": "Pittsburgh's Surtrac system, an example of AI in traffic management, achieved what?",
-    "options": [
-      "Reduced travel times by 50%",
-      "Increased fuel consumption by 10%",
-      "Reduced travel times by 25%",
-      "Eliminated traffic congestion completely"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 217,
-    "type": "multiple",
-    "question": "Which AI techniques are mentioned in the context of Real-Time Traffic Analysis?",
-    "options": [
-      "Quantum computing and blockchain",
-      "Machine learning algorithms and natural language processing",
-      "Expert systems and fuzzy logic",
-      "Augmented reality and virtual reality"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 218,
-    "type": "truefalse",
-    "question": "Historical data, weather data, and event data are used in AI models for congestion prediction.",
-    "correctAnswer": true
-  },
-  {
-    "id": 219,
-    "type": "multiple",
-    "question": "What type of AI models are used to forecast traffic volume?",
-    "options": [
-      "Neural networks",
-      "Decision trees",
-      "Time series analysis models",
-      "Genetic algorithms"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 220,
-    "type": "multiple",
-    "question": "According to the lecture, what type of AI model is used to predict congestion?",
-    "options": [
-      "Time series analysis models",
-      "Neural networks",
-      "Support vector machines",
-      "K-means clustering"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 221,
-    "type": "truefalse",
-    "question": "Google Maps' accuracy improved by 50% using AI.",
-    "correctAnswer": false
-  },
-  {
-    "id": 222,
-    "type": "multiple",
-    "question": "What AI technique is primarily used for AI-Driven Signal Timing in Adaptive Traffic Control Systems?",
-    "options": [
-      "Natural language processing",
-      "Reinforcement learning",
-      "Supervised learning",
-      "Unsupervised learning"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 223,
-    "type": "multiple",
-    "question": "How does AI contribute to Incident Management in Adaptive Traffic Control Systems?",
-    "options": [
-      "By manually dispatching emergency services",
-      "By identifying accidents and adjusting signals",
-      "By predicting weather patterns",
-      "By analyzing historical traffic data only"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 224,
-    "type": "truefalse",
-    "question": "Automated alerts in AI-driven traffic systems are sent only to emergency services.",
-    "correctAnswer": false
-  },
-  {
-    "id": 225,
-    "type": "multiple",
-    "question": "Singapore's Intelligent Transport System is cited to have achieved what?",
-    "options": [
-      "Reduced congestion by 25%",
-      "Increased travel times by 5%",
-      "Reduced congestion by 15%",
-      "Improved air quality by 10%"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 226,
-    "type": "multiple",
-    "question": "In the context of AI for Public Transportation, what does AI predict for Demand Forecasting?",
-    "options": [
-      "Fuel prices",
-      "Vehicle maintenance schedules",
-      "Ridership based on events and weather",
-      "Driver availability"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 227,
-    "type": "truefalse",
-    "question": "AI is used for dynamic route planning to optimize bus routes in real-time.",
-    "correctAnswer": true
-  },
-  {
-    "id": 228,
-    "type": "multiple",
-    "question": "Which of the following is listed as an application of AI in Public Transportation?",
-    "options": [
-      "Ticket sales management",
-      "Autonomous Vehicles",
-      "Manual scheduling",
-      "Public transport infrastructure maintenance"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 229,
-    "type": "multiple",
-    "question": "Helsinki's Kutsuplus system, utilizing AI for public transportation, resulted in:",
-    "options": [
-      "A 10% increase in operational costs",
-      "A 20% reduction in travel times",
-      "A 5% decrease in ridership",
-      "No significant change in travel times"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 230,
-    "type": "truefalse",
-    "question": "Data privacy is not a concern when implementing AI in traffic management.",
-    "correctAnswer": false
-  },
-  {
-    "id": 231,
-    "type": "multiple",
-    "question": "How is user data protected according to the challenges and considerations mentioned?",
-    "options": [
-      "By selling data to third parties",
-      "Through anonymization and aggregation",
-      "By collecting as much personal data as possible",
-      "By avoiding data collection altogether"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 232,
-    "type": "multiple",
-    "question": "What is a key consideration regarding AI models in traffic management to prevent negative societal impacts?",
-    "options": [
-      "Maximizing data collection",
-      "Ensuring fairness and addressing bias in AI models",
-      "Prioritizing commercial vehicle routes",
-      "Using the most complex models available"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 233,
-    "type": "truefalse",
-    "question": "Infrastructure limitations, including deployment costs and maintenance, are not considered significant challenges for AI in traffic management.",
-    "correctAnswer": false
-  },
-  {
-    "id": 234,
-    "type": "multiple",
-    "question": "What is the benefit of Edge Computing in the context of future trends in AI traffic management?",
-    "options": [
-      "To store data in a centralized cloud",
-      "To process data faster",
-      "To increase latency",
-      "To reduce the need for sensors"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 235,
-    "type": "multiple",
-    "question": "What is the purpose of using Digital Twins in AI traffic management?",
-    "options": [
-      "To replace physical infrastructure",
-      "To create marketing materials",
-      "To use virtual replicas for simulation",
-      "To manage driver licenses"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 236,
-    "type": "truefalse",
-    "question": "Smart City Platforms aim to disconnect traffic management from other city services.",
-    "correctAnswer": false
-  },
-  {
-    "id": 237,
-    "type": "multiple",
-    "question": "Connecting traffic management with other smart city services is a feature of which future trend?",
-    "options": [
-      "Edge Computing",
-      "Smart City Platforms",
-      "Digital Twins",
-      "Autonomous Vehicles"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 238,
-    "type": "multiple",
-    "question": "According to the conclusion, AI in traffic improves which aspects?",
-    "options": [
-      "Only traffic flow speed",
-      "Efficiency, safety, and sustainability",
-      "Parking availability exclusively",
-      "Public transportation costs only"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 239,
-    "type": "truefalse",
-    "question": "AI in traffic management helps reduce economic losses and environmental impact.",
-    "correctAnswer": true
-  },
-  {
-    "id": 240,
-    "type": "multiple",
-    "question": "What is needed to realize the full potential of AI in smart cities, according to the lecture?",
-    "options": [
-      "Less reliance on data",
-      "Stricter regulations on AI development",
-      "Continued innovation and overcoming challenges",
-      "Focusing solely on private vehicle management"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 241,
-    "type": "multiple",
-    "question": "What is the final call to action mentioned in the conclusion of the lecture?",
-    "options": [
-      "To reduce funding for AI research",
-      "To prioritize manual traffic control methods",
-      "To invest in AI research and infrastructure",
-      "To halt the deployment of smart city technologies"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 242,
-    "type": "truefalse",
-    "question": "The lecture suggests that the current state of AI in traffic management has reached its full potential.",
-    "correctAnswer": false
-  },
-  {
-    "id": 243,
-    "type": "multiple",
-    "question": "Which city's system is mentioned as an example of reducing travel times by 25% through real-time traffic analysis with AI?",
-    "options": [
-      "Singapore",
-      "Helsinki",
-      "Pittsburgh",
-      "New York"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 244,
-    "type": "multiple",
-    "question": "Improving Google Maps' accuracy by 30% is an example of AI application in:",
-    "options": [
-      "Adaptive Traffic Control",
-      "AI for Public Transportation",
-      "Congestion Prediction",
-      "Incident Management"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 245,
-    "type": "truefalse",
-    "question": "Reinforcement learning is a technique used to adjust signal timings in real-time.",
-    "correctAnswer": true
-  },
-  {
-    "id": 246,
-    "type": "multiple",
-    "question": "What is the primary benefit of AI in incident management systems?",
-    "options": [
-      "Predicting the number of passengers",
-      "Optimizing fuel consumption for emergency vehicles",
-      "Identifying accidents and adjusting signals accordingly",
-      "Issuing traffic violation tickets automatically"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 247,
-    "type": "multiple",
-    "question": "Predicting ridership based on events and weather is a feature of AI in:",
-    "options": [
-      "Adaptive Signal Control",
-      "Demand Forecasting for Public Transportation",
-      "Edge Computing",
-      "Digital Twin simulations"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 248,
-    "type": "truefalse",
-    "question": "Anonymization and aggregation are techniques suggested to address bias in AI models.",
-    "correctAnswer": false
-  },
-  {
-    "id": 249,
-    "type": "multiple",
-    "question": "The use of virtual replicas for simulation in traffic management refers to:",
-    "options": [
-      "Edge Computing",
-      "Smart City Platforms",
-      "Digital Twins",
-      "Reinforcement Learning"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 250,
-    "type": "truefalse",
-    "question": "The lecture indicates that AI in traffic management primarily benefits private vehicle owners.",
-    "correctAnswer": false
-  },
-  {
-    "id": 251,
-    "type": "multiple",
-    "question": "What is the primary focus of SmartCityX as described on its title page?",
-    "options": [
-      "Rural agricultural development",
-      "Space exploration and colonization",
-      "AI-Powered Optimization for Urban Services, Transportation, and Healthcare",
-      "Historical archive digitization"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 252,
-    "type": "truefalse",
-    "question": "The subtitle of the SmartCityX presentation is \"Addressing critical challenges in urban environments.\"",
-    "correctAnswer": false
-  },
-  {
-    "id": 253,
-    "type": "multiple",
-    "question": "Who is the author of the \"SmartCityX\" presentation?",
-    "options": [
-      "John Doe",
-      "Fatma M. Talaat",
-      "Jane Smith",
-      "Alan Turing"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 254,
-    "type": "truefalse",
-    "question": "SmartCityX aims to enhance efficiency, sustainability, and quality of life in urban settings.",
-    "correctAnswer": true
-  },
-  {
-    "id": 255,
-    "type": "multiple",
-    "question": "According to the presentation, what is a major consequence of rapid urbanization?",
-    "options": [
-      "Decrease in technological innovation",
-      "Reduction in resource consumption",
-      "Existing systems are overwhelmed (Infrastructure Strain)",
-      "A decline in population density"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 256,
-    "type": "truefalse",
-    "question": "The presentation states that commuters lose approximately 30+ hours yearly in traffic jams.",
-    "correctAnswer": false
-  },
-  {
-    "id": 257,
-    "type": "multiple",
-    "question": "What percentage of hospital readmissions are identified as preventable with better care?",
-    "options": [
-      "10%",
-      "50%",
-      "5%",
-      "20%"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 258,
-    "type": "truefalse",
-    "question": "Cities are responsible for generating 70% of global carbon emissions.",
-    "correctAnswer": true
-  },
-  {
-    "id": 259,
-    "type": "multiple",
-    "question": "How much is lost annually due to inefficient resource use in cities, according to the presentation?",
-    "options": [
-      "$160B",
-      "$100B",
-      "$200B",
-      "$50B"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 260,
-    "type": "multiple",
-    "question": "Which of the following is NOT listed as a core feature of the SmartCityX platform?",
-    "options": [
-      "Predictive Analytics",
-      "Manual Data Entry Systems",
-      "Secure Infrastructure",
-      "Real-Time Monitoring"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 261,
-    "type": "truefalse",
-    "question": "SmartCityX uses Predictive Analytics to reactively address issues after they occur.",
-    "correctAnswer": false
-  },
-  {
-    "id": 262,
-    "type": "multiple",
-    "question": "What does SmartCityX's Real-Time Monitoring aim to enhance?",
-    "options": [
-      "Historical data archiving",
-      "City responsiveness and efficiency",
-      "Cybersecurity protocols only",
-      "Long-term urban planning forecasts"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 263,
-    "type": "truefalse",
-    "question": "SmartCityX's Secure Infrastructure ensures integration with robust cybersecurity.",
-    "correctAnswer": true
-  },
-  {
-    "id": 264,
-    "type": "multiple",
-    "question": "The SmartCityX platform is described as being AI-Powered and designed to optimize which three main areas seamlessly?",
-    "options": [
-      "Retail, entertainment, and sports",
-      "Agriculture, manufacturing, and mining",
-      "Urban services, transportation, and healthcare",
-      "Education, finance, and tourism"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 265,
-    "type": "multiple",
-    "question": "How much can smart waste management cut collection costs through route optimization, according to SmartCityX?",
-    "options": [
-      "10%",
-      "20%",
-      "50%",
-      "30%"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 266,
-    "type": "truefalse",
-    "question": "Predictive maintenance for infrastructure is projected by SmartCityX to reduce repair expenses by 40%.",
-    "correctAnswer": true
-  },
-  {
-    "id": 267,
-    "type": "multiple",
-    "question": "What is the expected reduction in energy consumption due to Intelligent Energy Grids with AI control, as per SmartCityX?",
-    "options": [
-      "15%",
-      "25%",
-      "5%",
-      "30%"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 268,
-    "type": "truefalse",
-    "question": "SmartCityX's water management aims to minimize leaks by 20% using predictive monitoring.",
-    "correctAnswer": true
-  },
-  {
-    "id": 269,
-    "type": "multiple",
-    "question": "By what percentage is emergency response time improved using AI alerts in public safety, according to SmartCityX?",
-    "options": [
-      "10%",
-      "25%",
-      "15%",
-      "30%"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 270,
-    "type": "multiple",
-    "question": "Adaptive traffic management using smart signals aims to reduce peak congestion by what percentage?",
-    "options": [
-      "10%",
-      "15%",
-      "20%",
-      "25%"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 271,
-    "type": "truefalse",
-    "question": "Autonomous public transport is expected by SmartCityX to improve ridership and routes by 15% via autonomous vehicles.",
-    "correctAnswer": false
-  },
-  {
-    "id": 272,
-    "type": "multiple",
-    "question": "What is the projected reduction in public transport downtime due to predictive maintenance with AI alerts?",
-    "options": [
-      "15%",
-      "25%",
-      "45%",
-      "35%"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 273,
-    "type": "truefalse",
-    "question": "Smart parking systems, according to SmartCityX, aim to decrease parking search times and emissions by 40%.",
-    "correctAnswer": true
-  },
-  {
-    "id": 274,
-    "type": "multiple",
-    "question": "How much can real-time AI monitoring lower accident rates for pedestrian safety, as stated in the presentation?",
-    "options": [
-      "15%",
-      "20%",
-      "10%",
-      "25%"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 275,
-    "type": "multiple",
-    "question": "According to SmartCityX, by how much earlier can diseases be detected using AI analysis in predictive diagnostics?",
-    "options": [
-      "10%",
-      "25% earlier",
-      "15% earlier",
-      "30% earlier"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 276,
-    "type": "truefalse",
-    "question": "Remote patient monitoring in SmartCityX aims to reduce hospital readmissions by 40%.",
-    "correctAnswer": true
-  },
-  {
-    "id": 277,
-    "type": "multiple",
-    "question": "What is the expected improvement in emergency response times due to optimized ambulance routing with AI, accordingc to SmartCityX?",
-    "options": [
-      "10%",
-      "15%",
-      "20%",
-      "25%"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 278,
-    "type": "truefalse",
-    "question": "AI-driven resource allocation in healthcare, as per SmartCityX, can increase bed and staff efficiency by 25%.",
-    "correctAnswer": false
-  },
-  {
-    "id": 279,
-    "type": "multiple",
-    "question": "Which of the following AI/ML algorithms are mentioned as part of SmartCityX's technology stack?",
-    "options": [
-      "Scikit-learn, Keras",
-      "Caffe, Theano",
-      "MATLAB, R",
-      "TensorFlow, PyTorch"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 280,
-    "type": "truefalse",
-    "question": "The IoT Sensor Network for SmartCityX consists of less than 500,000 connected devices.",
-    "correctAnswer": false
-  },
-  {
-    "id": 281,
-    "type": "multiple",
-    "question": "Which Big Data Analytics technologies are listed for SmartCityX?",
-    "options": [
-      "Hadoop, Spark",
-      "MongoDB, Cassandra",
-      "SQL, NoSQL",
-      "Tableau, PowerBI"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 282,
-    "type": "truefalse",
-    "question": "SmartCityX's cloud infrastructure exclusively uses AWS.",
-    "correctAnswer": false
-  },
-  {
-    "id": 283,
-    "type": "multiple",
-    "question": "What cybersecurity measures are mentioned for SmartCityX?",
-    "options": [
-      "Basic password protection only",
-      "End-to-end encryption, multi-factor authentication",
-      "Periodic software updates",
-      "Physical security of data centers"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 284,
-    "type": "multiple",
-    "question": "In the Metropolis, USA case study, what was the citywide efficiency gain achieved in 18 months with SmartCityX?",
-    "options": [
-      "10%",
-      "20%",
-      "30%",
-      "40%"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 285,
-    "type": "truefalse",
-    "question": "The annual operational savings in Metropolis, USA, through AI optimization amounted to $25M.",
-    "correctAnswer": false
-  },
-  {
-    "id": 286,
-    "type": "multiple",
-    "question": "What was the percentage reduction in the city's carbon footprint in Metropolis, USA, due to SmartCityX?",
-    "options": [
-      "10%",
-      "30%",
-      "15%",
-      "20%"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 287,
-    "type": "truefalse",
-    "question": "Citizen satisfaction scores in Metropolis, USA, improved by 15% due to SmartCityX implementation.",
-    "correctAnswer": true
-  },
-  {
-    "id": 288,
-    "type": "multiple",
-    "question": "How long did it take for Metropolis, USA to see a citywide improvement in efficiency using SmartCityX?",
-    "options": [
-      "18 months",
-      "6 months",
-      "12 months",
-      "24 months"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 289,
-    "type": "multiple",
-    "question": "Which technology is SmartCityX planning to use for \"Engaging urban experiences beyond reality\" in the future?",
-    "options": [
-      "Traditional 2D displays",
-      "Immersive AR/VR",
-      "Radio broadcasts",
-      "Printed guidebooks"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 290,
-    "type": "truefalse",
-    "question": "Blockchain security in SmartCityX aims for centralized data management.",
-    "correctAnswer": false
-  },
-  {
-    "id": 291,
-    "type": "multiple",
-    "question": "Which of these is NOT listed as a new sector for future SmartCityX integration?",
-    "options": [
-      "Education",
-      "Tourism",
-      "Aerospace Engineering",
-      "Public safety"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 292,
-    "type": "truefalse",
-    "question": "SmartCityX plans to scale its solutions worldwide through global partnerships.",
-    "correctAnswer": true
-  },
-  {
-    "id": 293,
-    "type": "multiple",
-    "question": "What is the focus of SmartCityX's sustainable development goals?",
-    "options": [
-      "Exclusively on economic growth",
-      "Prioritizing technological advancement over social impact",
-      "Short-term environmental fixes",
-      "Focusing on equity and long-term urban wellbeing"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 294,
-    "type": "multiple",
-    "question": "According to the conclusion, what does SmartCityX deliver to transform urban environments?",
-    "options": [
-      "Efficiency and sustainability through AI solutions",
-      "Increased manual labor opportunities",
-      "A return to traditional urban management",
-      "Primarily entertainment services"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 295,
-    "type": "truefalse",
-    "question": "A key tangible result of SmartCityX is an improved quality of life for city residents.",
-    "correctAnswer": true
-  },
-  {
-    "id": 296,
-    "type": "multiple",
-    "question": "What does the presentation encourage for investing in the future with SmartCityX?",
-    "options": [
-      "Focusing solely on individual technological solutions",
-      "Partnering to revolutionize urban living",
-      "Waiting for technology to mature further",
-      "Investing only in transportation infrastructure"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 297,
-    "type": "truefalse",
-    "question": "The final call to action in the presentation is to wait for future developments before implementing smart city solutions.",
-    "correctAnswer": false
-  },
-  {
-    "id": 298,
-    "type": "multiple",
-    "question": "What is the overarching goal of SmartCityX as stated in the conclusion?",
-    "options": [
-      "To increase government surveillance capabilities",
-      "To automate all human jobs within cities",
-      "To build smarter, more livable cities by delivering efficiency and sustainability.",
-      "To develop AI for purely academic research"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 299,
-    "type": "truefalse",
-    "question": "The SmartCityX presentation was made using Microsoft PowerPoint.",
-    "correctAnswer": false
-  },
-  {
-    "id": 300,
-    "type": "multiple",
-    "question": "What is the stated purpose of SmartCityX in the initial slides?",
-    "options": [
-      "To document historical urban development",
-      "To promote a specific brand of consumer electronics",
-      "Addressing critical challenges in urban environments",
-      "To offer financial investment advice for cities"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 301,
-    "type": "truefalse",
-    "question": "In efficient resource use in cities leads to an annual loss of $100 billion, according to the presentation.",
-    "correctAnswer": false
-  },
-  {
-    "id": 302,
-    "type": "multiple",
-    "question": "What specific problem causes commuters to lose over 50 hours yearly, according to the presentation?",
-    "options": [
-      "Traffic Congestion",
-      "Public transport unreliability",
-      "Lack of pedestrian walkways",
-      "Frequent road construction"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 303,
-    "type": "truefalse",
-    "question": "SmartCityX aims to optimize urban services, transportation, and industrial manufacturing seamlessly.",
-    "correctAnswer": false
-  },
-  {
-    "id": 304,
-    "type": "multiple",
-    "question": "What is the role of \"Data-Driven Decisions\" in SmartCityX's approach?",
-    "options": [
-      "To replace human decision-makers entirely",
-      "Empowering sustainable, efficient urban management strategies",
-      "To collect data for sale to third parties",
-      "To focus solely on traffic management data"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 305,
-    "type": "truefalse",
-    "question": "SmartCityX's predictive maintenance for infrastructure aims to cut repair expenses by 30%.",
-    "correctAnswer": false
-  },
-  {
-    "id": 306,
-    "type": "multiple",
-    "question": "Which AI-powered urban service optimization by SmartCityX aims to lower energy consumption by 15%?",
-    "options": [
-      "Smart Waste Management",
-      "Water Management",
-      "Intelligent Energy Grids",
-      "Public Safety"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 307,
-    "type": "truefalse",
-    "question": "AI-driven adaptive traffic management is expected by SmartCityX to reduce peak congestion by 25%.",
-    "correctAnswer": false
-  },
-  {
-    "id": 308,
-    "type": "multiple",
-    "question": "Smart parking systems, as part of SmartCityX, contribute to reducing which of the following?",
-    "options": [
-      "The number of available parking spots",
-      "The cost of parking significantly",
-      "Public transport usage",
-      "Parking search times and emissions"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 309,
-    "type": "truefalse",
-    "question": "Optimized ambulance routing by SmartCityX aims to improve emergency response times by 15%.",
-    "correctAnswer": false
-  },
-  {
-    "id": 310,
-    "type": "multiple",
-    "question": "What is the benefit of remote patient monitoring in SmartCityX's healthcare services?",
-    "options": [
-      "Reducing hospital readmissions by 40%",
-      "Eliminating the need for in-person doctor visits entirely",
-      "Increasing the number of hospital beds available",
-      "Lowering the cost of medical equipment"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 311,
-    "type": "truefalse",
-    "question": "SmartCityX uses only TensorFlow for its AI/ML algorithms.",
-    "correctAnswer": false
-  },
-  {
-    "id": 312,
-    "type": "multiple",
-    "question": "How many connected devices are part of SmartCityX's IoT Sensor Network?",
-    "options": [
-      "Approximately 500,000",
-      "Over 1 million",
-      "Less than 100,000",
-      "Exactly 750,000"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 313,
-    "type": "truefalse",
-    "question": "The Metropolis, USA case study showed a 30% reduction in the city's carbon footprint.",
-    "correctAnswer": false
-  },
-  {
-    "id": 314,
-    "type": "multiple",
-    "question": "What was the reported improvement in citizen satisfaction scores in the Metropolis, USA case study after SmartCityX implementation?",
-    "options": [
-      "5%",
-      "10%",
-      "15%",
-      "25%"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 315,
-    "type": "truefalse",
-    "question": "One of the future expansions for SmartCityX includes integration into agricultural management.",
-    "correctAnswer": false
-  },
-  {
-    "id": 316,
-    "type": "multiple",
-    "question": "What is a key characteristic of data management using Blockchain Security in the future of SmartCityX?",
-    "options": [
-      "Data is stored in a single, centralized server for easy access",
-      "Data management is controlled by a single administrator",
-      "Limited transparency to protect sensitive information",
-      "Secure, transparent data management with distributed ledger"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 317,
-    "type": "truefalse",
-    "question": "The title \"SmartCityX\" implies a focus solely on technological infrastructure without considering human elements like healthcare.",
-    "correctAnswer": false
-  },
-  {
-    "id": 318,
-    "type": "multiple",
-    "question": "Which challenge is NOT explicitly mentioned as one of the \"Growing Pains of Modern Cities\" on page 2 of the presentation?",
-    "options": [
-      "Political Instability",
-      "Infrastructure Strain",
-      "Wasted Resources",
-      "Healthcare Burden"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 319,
-    "type": "truefalse",
-    "question": "The \"AI-Powered Platform\" aspect of SmartCityX focuses only on transportation optimization.",
-    "correctAnswer": false
-  },
-  {
-    "id": 320,
-    "type": "multiple",
-    "question": "What percentage of leak minimization is targeted by SmartCityX's water management systems through predictive monitoring?",
-    "options": [
-      "10%",
-      "20%",
-      "30%",
-      "15%"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 321,
-    "type": "truefalse",
-    "question": "SmartCityX's AI-driven transportation solutions include improvements to pedestrian accident rates.",
-    "correctAnswer": true
-  },
-  {
-    "id": 322,
-    "type": "multiple",
-    "question": "What is the stated improvement in bed and staff efficiency in healthcare through SmartCityX's AI-based resource allocation?",
-    "options": [
-      "10%",
-      "20%",
-      "15%",
-      "25%"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 323,
-    "type": "truefalse",
-    "question": "The SmartCityX technology stack uses Hadoop and Spark for its AI/ML algorithms.",
-    "correctAnswer": false
-  },
-  {
-    "id": 324,
-    "type": "multiple",
-    "question": "Which cloud infrastructure provider is NOT listed in SmartCityX's technology stack?",
-    "options": [
-      "AWS",
-      "Azure",
-      "Google Cloud",
-      "IBM Cloud"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 325,
-    "type": "truefalse",
-    "question": "The Metropolis, USA case study highlighted a $50 million annual increase in city expenditure due to AI.",
-    "correctAnswer": false
-  },
-  {
-    "id": 326,
-    "type": "multiple",
-    "question": "What is one of the future focuses of SmartCityX under \"Sustainable Development\"?",
-    "options": [
-      "Focusing on equity and long-term urban wellbeing",
-      "Maximizing resource exploitation",
-      "Prioritizing economic gains over environmental concerns",
-      "Expanding urban sprawl without limits"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 327,
-    "type": "truefalse",
-    "question": "The conclusion of the presentation suggests that SmartCityX has already achieved all its goals globally.",
-    "correctAnswer": false
-  },
-  {
-    "id": 328,
-    "type": "multiple",
-    "question": "What is the primary message of the \"Act Now\" call to action in the SmartCityX presentation?",
-    "options": [
-      "To conduct further research before any implementation.",
-      "To begin building the cities of tomorrow, starting today.",
-      "To wait for governmental regulations to be established.",
-      "To focus investment solely on traditional infrastructure."
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 329,
-    "type": "multiple",
-    "question": "What is the core aim of \"Predictive Analytics\" within the SmartCityX platform?",
-    "options": [
-      "To review past city performance for annual reports",
-      "To offer citizens personalized daily horoscopes",
-      "To proactively manage resources to prevent issues early",
-      "To predict stock market fluctuations based on urban data"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 330,
-    "type": "multiple",
-    "question": "Smart waste management under SmartCityX primarily achieves its 30% cut in collection costs through:",
-    "options": [
-      "Increasing landfill capacity",
-      "Implementing new waste disposal taxes",
-      "Public awareness campaigns for waste reduction",
-      "Route optimization"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 331,
-    "type": "truefalse",
-    "question": "The image on Page 1 of the presentation depicts a rural landscape with minimal infrastructure.",
-    "correctAnswer": false
-  },
-  {
-    "id": 332,
-    "type": "multiple",
-    "question": "The statistic \"$160B lost annually\" presented as an urban challenge is attributed to what?",
-    "options": [
-      "Damage from natural disasters",
-      "Inefficient resource use",
-      "Costs of public healthcare",
-      "Unpaid city taxes"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 333,
-    "type": "truefalse",
-    "question": "According to the presentation, \"Adaptive control\" enhancing city responsiveness and efficiency is a key benefit of SmartCityX's Data-Driven Decisions feature.",
-    "correctAnswer": false
-  },
-  {
-    "id": 334,
-    "type": "multiple",
-    "question": "Reducing infrastructure repair expenses by 40% is an objective of which SmartCityX urban service optimization?",
-    "options": [
-      "Intelligent Energy Grids",
-      "Predictive Maintenance",
-      "Smart Waste Management",
-      "Water Management"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 335,
-    "type": "truefalse",
-    "question": "SmartCityX's AI-driven transportation solutions aim to cut public transport downtime by 50%.",
-    "correctAnswer": false
-  },
-  {
-    "id": 336,
-    "type": "multiple",
-    "question": "The use of AI analysis for detecting diseases 25% earlier falls under which specific AI-Enhanced Healthcare Service offered by SmartCityX?",
-    "options": [
-      "Remote Patient Monitoring",
-      "Resource Allocation",
-      "Predictive Diagnostics",
-      "Optimized Ambulance Routing"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 337,
-    "type": "multiple",
-    "question": "What is the primary benefit of AI-powered traffic management systems in smart cities?",
-    "options": [
-      "Increasing fuel consumption",
-      "Optimizing traffic signal timing and reducing congestion",
-      "Eliminating the need for traffic lights",
-      "Encouraging more road construction"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 338,
-    "type": "multiple",
-    "question": "How does AI contribute to predictive maintenance in transportation infrastructure?",
-    "options": [
-      "By monitoring infrastructure conditions and predicting potential failures",
-      "By manually repairing roads and bridges",
-      "By constructing new roads automatically",
-      "By replacing human engineers"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 339,
-    "type": "multiple",
-    "question": "How do AI-driven automation systems improve energy efficiency in buildings?",
-    "options": [
-      "By randomly turning off electrical devices",
-      "By optimizing HVAC systems based on occupancy patterns and weather data",
-      "By eliminating the need for electricity",
-      "By making buildings operate without any human intervention"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 340,
-    "type": "multiple",
-    "question": "What is a key advantage of AI in predictive maintenance for building systems?",
-    "options": [
-      "Increasing downtime and operational costs",
-      "Reducing system reliability",
-      "Scheduling preventive maintenance and improving system lifespan",
-      "Eliminating maintenance requirements"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 341,
-    "type": "multiple",
-    "question": "How do AI-powered surveillance systems enhance security in smart cities?",
-    "options": [
-      "By storing large amounts of video data without analysis",
-      "By analyzing video feeds in real time to detect threats",
-      "By reducing the number of security personnel",
-      "By eliminating crime completely"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 342,
-    "type": "multiple",
-    "question": "What is the role of AI in predictive policing?",
-    "options": [
-      "Replacing law enforcement officers",
-      "Identifying crime patterns and predicting high-risk areas",
-      "Increasing the number of police patrols everywhere",
-      "Preventing all crimes before they happen"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 343,
-    "type": "multiple",
-    "question": "What is one way AI improves waste collection in smart cities?",
-    "options": [
-      "By optimizing collection routes to reduce fuel consumption",
-      "By eliminating the need for waste bins",
-      "By increasing the number of waste trucks on the road",
-      "By allowing waste to accumulate longer before collection"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 344,
-    "type": "multiple",
-    "question": "How do AI-driven waste sorting systems improve recycling?",
-    "options": [
-      "By manually sorting waste at collection centers",
-      "By identifying and separating different types of waste automatically",
-      "By reducing the need for waste processing",
-      "By sending all waste to landfills"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 345,
-    "type": "multiple",
-    "question": "How does AI enhance public transportation efficiency?",
-    "options": [
-      "By increasing wait times for passengers",
-      "By optimizing bus schedules and reducing delays",
-      "By making public transportation slower",
-      "By eliminating the need for buses and trains"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 346,
-    "type": "multiple",
-    "question": "What is a key benefit of AI-powered ticketing systems?",
-    "options": [
-      "Increasing waiting times for passengers",
-      "Providing seamless and convenient payment options",
-      "Making ticketing more expensive",
-      "Reducing the number of public transportation users"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 347,
-    "type": "multiple",
-    "question": "What role does AI play in air quality monitoring?",
-    "options": [
-      "Ignoring pollution levels",
-      "Monitoring air pollution levels and predicting pollution trends",
-      "Reducing the number of monitoring stations",
-      "Increasing air pollution deliberately"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 348,
-    "type": "multiple",
-    "question": "Why is AI important for water quality monitoring in smart cities?",
-    "options": [
-      "It manually purifies water",
-      "It analyzes and detects contaminants in water supplies",
-      "It replaces traditional water filtration systems",
-      "It eliminates the need for water testing"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 349,
-    "type": "multiple",
-    "question": "How do AI-powered citizen feedback platforms benefit smart cities?",
-    "options": [
-      "By collecting and analyzing citizen feedback to improve city services",
-      "By replacing city officials",
-      "By ignoring citizens' complaints",
-      "By making city services less efficient"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 350,
-    "type": "multiple",
-    "question": "What is a key advantage of AI-powered interactive city maps?",
-    "options": [
-      "Providing real-time traffic and transportation information",
-      "Making city navigation harder",
-      "Removing street names from maps",
-      "Increasing traffic congestion"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 351,
-    "type": "multiple",
-    "question": "What is a major future goal of AI in smart cities?",
-    "options": [
-      "Creating more traffic congestion",
-      "Reducing efficiency in urban planning",
-      "Enhancing urban sustainability and citizen well-being",
-      "Eliminating AI technology from city management"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 352,
-    "type": "multiple",
-    "question": "What is one advantage of AI-powered interactive city maps?",
-    "options": [
-      "They provide real-time information on traffic, events, and public transport",
-      "They restrict navigation to specific locations",
-      "They only show historical city data",
-      "They do not update regularly"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 353,
-    "type": "multiple",
-    "question": "What do activity diagrams primarily model?",
-    "options": [
-      "System architecture",
-      "System processes",
-      "Data storage",
-      "Network security"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 354,
-    "type": "multiple",
-    "question": "Which element in an activity diagram represents a specific task or operation?",
-    "options": [
-      "Decision",
-      "Flow",
-      "Action",
-      "Component"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 355,
-    "type": "multiple",
-    "question": "What does a decision node in an activity diagram represent?",
-    "options": [
-      "A functional unit",
-      "Branching based on conditions",
-      "Data processing",
-      "Component interaction"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 356,
-    "type": "multiple",
-    "question": "What do flows indicate in an activity diagram?",
-    "options": [
-      "System architecture",
-      "The sequence of activities",
-      "Component structure",
-      "Data transformation"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 357,
-    "type": "multiple",
-    "question": "What do block diagrams primarily define?",
-    "options": [
-      "System processes",
-      "System architecture",
-      "User interface",
-      "Data flow"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 358,
-    "type": "multiple",
-    "question": "Which of the following represents a functional unit in a block diagram?",
-    "options": [
-      "Component",
-      "Action",
-      "Flow",
-      "Decision"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 359,
-    "type": "multiple",
-    "question": "What do interfaces in a block diagram define?",
-    "options": [
-      "System processes",
-      "Interaction points",
-      "Algorithm logic",
-      "Branching conditions"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 360,
-    "type": "multiple",
-    "question": "What is the purpose of connections in a block diagram?",
-    "options": [
-      "Represent decisions",
-      "Show relationships between components",
-      "Indicate process sequences",
-      "Define workflow"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 361,
-    "type": "multiple",
-    "question": "What do flowcharts primarily illustrate?",
-    "options": [
-      "Algorithm logic",
-      "Network security",
-      "System components",
-      "Database schema"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 362,
-    "type": "multiple",
-    "question": "Which visual tool is essential for understanding and communicating system design?",
-    "options": [
-      "Data structure diagrams",
-      "Flowcharts",
-      "Security models",
-      "Storage systems"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 363,
-    "type": "multiple",
-    "question": "What drives intelligent behavior in smart systems?",
-    "options": [
-      "User input",
-      "Algorithms",
-      "Manual processing",
-      "Random events"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 364,
-    "type": "multiple",
-    "question": "What is an example of an agent-based application?",
-    "options": [
-      "File storage management",
-      "Smart traffic management",
-      "Traditional telephone networks",
-      "Static website design"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 365,
-    "type": "multiple",
-    "question": "What is a future direction in smart system design?",
-    "options": [
-      "Reducing AI capabilities",
-      "Eliminating visualization tools",
-      "Using more advanced AI",
-      "Avoiding automation"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 366,
-    "type": "multiple",
-    "question": "What is one of the main benefits of AI-powered traffic management systems?",
-    "options": [
-      "Increasing fuel consumption",
-      "Reducing congestion and travel time",
-      "Creating more traffic signals",
-      "Limiting vehicle movement"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 367,
-    "type": "multiple",
-    "question": "How does AI contribute to predictive maintenance for transportation infrastructure?",
-    "options": [
-      "By delaying maintenance until failures occur",
-      "By monitoring infrastructure conditions and predicting failures",
-      "By replacing workers in maintenance teams",
-      "By manually inspecting roads and bridges"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 368,
-    "type": "multiple",
-    "question": "What is a major advantage of AI-driven smart building automation?",
-    "options": [
-      "Increased manual labor",
-      "Higher energy consumption",
-      "Optimized heating, ventilation, and air conditioning (HVAC) systems",
-      "Reduced occupancy"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 369,
-    "type": "multiple",
-    "question": "How does AI-powered predictive maintenance improve building systems?",
-    "options": [
-      "By repairing HVAC units after they break down",
-      "By predicting failures and scheduling preventive maintenance",
-      "By ignoring system malfunctions",
-      "By increasing downtime"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 370,
-    "type": "multiple",
-    "question": "How do AI-powered surveillance systems enhance public safety?",
-    "options": [
-      "By analyzing video feeds in real-time",
-      "By removing all security personnel",
-      "By storing footage for later viewing",
-      "By increasing criminal activity"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 371,
-    "type": "multiple",
-    "question": "What is the purpose of predictive policing?",
-    "options": [
-      "To eliminate law enforcement officers",
-      "To predict and prevent crimes using historical data",
-      "To manually track criminals",
-      "To increase surveillance without analysis"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 372,
-    "type": "multiple",
-    "question": "How does AI improve waste collection systems?",
-    "options": [
-      "By optimizing collection routes and reducing fuel consumption",
-      "By eliminating the need for waste collection",
-      "By ignoring full bins",
-      "By increasing the number of trucks"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 373,
-    "type": "multiple",
-    "question": "What is one way AI enhances waste sorting?",
-    "options": [
-      "By manually separating waste",
-      "By using AI to identify different types of waste for proper recycling",
-      "By increasing landfill waste",
-      "By ignoring recyclable materials"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 374,
-    "type": "multiple",
-    "question": "How does AI personalize public transportation?",
-    "options": [
-      "By analyzing user travel patterns and optimizing schedules",
-      "By reducing the number of available buses",
-      "By increasing passenger wait times",
-      "By limiting routes"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 375,
-    "type": "multiple",
-    "question": "What is a key feature of AI-powered ticketing systems?",
-    "options": [
-      "Making payments more complicated",
-      "Providing seamless and convenient payment options",
-      "Increasing ticket prices",
-      "Removing automated ticketing"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 376,
-    "type": "multiple",
-    "question": "How do AI-powered sensors help monitor air quality?",
-    "options": [
-      "By predicting weather patterns",
-      "By identifying pollutants in real-time",
-      "By storing air quality data without analysis",
-      "By reducing the need for monitoring"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 377,
-    "type": "multiple",
-    "question": "What role does AI play in water quality monitoring?",
-    "options": [
-      "Detecting pollutants in water sources",
-      "Increasing water contamination",
-      "Removing human involvement in water safety",
-      "Ignoring changes in water quality"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 378,
-    "type": "multiple",
-    "question": "How does AI contribute to environmental impact assessments?",
-    "options": [
-      "By analyzing data from various sources",
-      "By ignoring pollution levels",
-      "By focusing only on traffic conditions",
-      "By delaying urban development"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 379,
-    "type": "multiple",
-    "question": "What is an example of AI fostering citizen engagement?",
-    "options": [
-      "Removing communication channels",
-      "Using AI-powered platforms to collect and analyze citizen feedback",
-      "Reducing interactive city maps",
-      "Eliminating notifications"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 380,
-    "type": "multiple",
-    "question": "What does the future of AI in smart cities aim to achieve?",
-    "options": [
-      "Creating inefficient urban systems",
-      "Advancing infrastructure management, sustainability, and citizen engagement",
-      "Increasing energy consumption",
-      "Limiting AI applications in cities"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 381,
-    "type": "multiple",
-    "question": "What is the primary purpose of an activity diagram?",
-    "options": [
-      "To show software code",
-      "To model system processes and workflows",
-      "To define hardware specifications",
-      "To illustrate data storage"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 382,
-    "type": "multiple",
-    "question": "In an activity diagram, what do decision nodes represent?",
-    "options": [
-      "Specific tasks or operations",
-      "Conditional branching based on conditions",
-      "The sequence of activities",
-      "The end of an algorithm"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 383,
-    "type": "multiple",
-    "question": "What do block diagrams primarily illustrate?",
-    "options": [
-      "Programming languages",
-      "System architecture and component interactions",
-      "User interfaces",
-      "Data encryption methods"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 384,
-    "type": "multiple",
-    "question": "What is the function of a flowchart in smart system design?",
-    "options": [
-      "Illustrating algorithm logic",
-      "Increasing system complexity",
-      "Replacing system documentation",
-      "Generating machine code"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 385,
-    "type": "multiple",
-    "question": "Which of the following is NOT a key element of a flowchart?",
-    "options": [
-      "Start and End nodes",
-      "Process actions",
-      "Decision branches",
-      "Physical circuit components"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 386,
-    "type": "multiple",
-    "question": "What is a key function of algorithms in agent-based applications?",
-    "options": [
-      "Ensuring random decision-making",
-      "Driving agent behavior through planning and execution",
-      "Reducing system efficiency",
-      "Preventing real-time adjustments"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 387,
-    "type": "multiple",
-    "question": "In smart traffic management, what role do signal agents play?",
-    "options": [
-      "Managing individual vehicles",
-      "Controlling traffic lights and optimizing flow",
-      "Disrupting traffic movement",
-      "Removing vehicle congestion automatically"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 388,
-    "type": "multiple",
-    "question": "What is one major challenge in smart system design?",
-    "options": [
-      "Decreasing complexity",
-      "Ensuring adaptability to unknown conditions",
-      "Eliminating AI involvement",
-      "Reducing system validation requirements"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 389,
-    "type": "multiple",
-    "question": "Which type of diagram is most useful for defining system architecture?",
-    "options": [
-      "Activity diagram",
-      "Block diagram",
-      "Pie chart",
-      "Entity-relationship diagram"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 390,
-    "type": "multiple",
-    "question": "What is a key future direction in smart system design?",
-    "options": [
-      "Eliminating the use of AI",
-      "Enhancing AI integration and visual tools",
-      "Reducing automation in traffic management",
-      "Removing flowchart-based algorithms"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 391,
-    "type": "multiple",
-    "question": "What is one key characteristic of smart cities?",
-    "options": [
-      "Heavy reliance on fossil fuels",
-      "Use of technology to optimize urban infrastructure",
-      "Lack of public transportation",
-      "Disregard for environmental sustainability"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 392,
-    "type": "multiple",
-    "question": "How does climate change affect smart cities?",
-    "options": [
-      "Reducing the need for energy-efficient buildings",
-      "Increasing extreme weather events, heatwaves, and rising sea levels",
-      "Eliminating the need for renewable energy",
-      "Improving air quality automatically"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 393,
-    "type": "multiple",
-    "question": "What is the role of smart cities in sustainable urban planning?",
-    "options": [
-      "Increasing traffic congestion",
-      "Promoting green spaces, sustainable transportation, and energy-efficient buildings",
-      "Reducing renewable energy usage",
-      "Encouraging urban expansion without environmental consideration"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 394,
-    "type": "multiple",
-    "question": "Why are renewable energy solutions important for smart cities?",
-    "options": [
-      "To maintain dependency on fossil fuels",
-      "To transition to 100% renewable energy and reduce emissions",
-      "To increase electricity costs",
-      "To eliminate the use of energy-saving technologies"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 395,
-    "type": "multiple",
-    "question": "How do smart cities adapt to extreme weather conditions?",
-    "options": [
-      "By building flood-resistant infrastructure and early warning systems",
-      "By avoiding climate adaptation policies",
-      "By removing drainage systems",
-      "By discouraging emergency evacuations"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 396,
-    "type": "multiple",
-    "question": "What is the purpose of green infrastructure and urban forests?",
-    "options": [
-      "To increase urban heat island effects",
-      "To mitigate heat, improve air quality, and enhance biodiversity",
-      "To prevent rainwater absorption",
-      "To replace renewable energy sources"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 397,
-    "type": "multiple",
-    "question": "How do mobile apps contribute to climate action in smart cities?",
-    "options": [
-      "By providing real-time information on air quality and energy consumption",
-      "By discouraging citizen participation",
-      "By increasing reliance on private vehicles",
-      "By reducing public awareness of climate change"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 398,
-    "type": "multiple",
-    "question": "What are some ways citizens can engage in climate action?",
-    "options": [
-      "By ignoring environmental policies",
-      "By participating in community forums, surveys, and citizen science projects",
-      "By increasing greenhouse gas emissions",
-      "By avoiding renewable energy use"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 399,
-    "type": "multiple",
-    "question": "What is one major goal of climate-resilient smart cities?",
-    "options": [
-      "To embrace fossil fuel-based energy solutions",
-      "To build a sustainable and livable future",
-      "To increase environmental degradation",
-      "To reduce the implementation of smart technologies"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 400,
-    "type": "multiple",
-    "question": "How can cities manage storm water and reduce flooding?",
-    "options": [
-      "By planting more trees and developing green infrastructure",
-      "By removing urban forests",
-      "By eliminating drainage systems",
-      "By increasing non-permeable surfaces"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 401,
-    "type": "multiple",
-    "question": "What is a primary goal of AI in smart buildings?",
-    "options": [
-      "Increasing energy waste",
-      "Optimizing energy consumption and reducing costs",
-      "Eliminating the need for HVAC systems",
-      "Avoiding automation in buildings"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 402,
-    "type": "multiple",
-    "question": "How does machine learning contribute to energy management?",
-    "options": [
-      "By manually adjusting energy settings",
-      "By using predictive models for energy consumption forecasting",
-      "By increasing reliance on fossil fuels",
-      "By reducing automation in smart buildings"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 403,
-    "type": "multiple",
-    "question": "What is the role of IoT in AI-driven energy optimization?",
-    "options": [
-      "Collecting real-time data using smart sensors",
-      "Replacing AI in smart buildings",
-      "Increasing energy consumption",
-      "Avoiding cloud-based solutions"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 404,
-    "type": "multiple",
-    "question": "Which AI technique is used for detecting inefficiencies in energy usage?",
-    "options": [
-      "Randomized algorithms",
-      "Autoencoders",
-      "Manual inspections",
-      "Simple rule-based systems"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 405,
-    "type": "multiple",
-    "question": "How do predictive energy analytics improve energy efficiency?",
-    "options": [
-      "By ignoring occupancy data",
-      "By forecasting energy demand using weather and occupancy-based data",
-      "By limiting the use of renewable energy",
-      "By removing data analysis from energy management"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 406,
-    "type": "multiple",
-    "question": "What is one benefit of AI-powered HVAC systems?",
-    "options": [
-      "Increasing energy consumption",
-      "Dynamically adjusting temperature and ventilation for efficiency",
-      "Avoiding automation in heating and cooling",
-      "Reducing the lifespan of building infrastructure"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 407,
-    "type": "multiple",
-    "question": "How does AI help in renewable energy integration?",
-    "options": [
-      "By forecasting solar and wind energy generation",
-      "By preventing the use of renewable sources",
-      "By reducing energy storage management",
-      "By limiting the use of smart grids"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 408,
-    "type": "multiple",
-    "question": "What is a key challenge in implementing AI in energy management?",
-    "options": [
-      "Lack of available AI models",
-      "Data privacy and security concerns",
-      "Increasing manual interventions",
-      "Decreasing building automation"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 409,
-    "type": "multiple",
-    "question": "What was a major outcome of Google DeepMind’s AI implementation in data centers?",
-    "options": [
-      "40% reduction in cooling costs",
-      "Increase in energy consumption",
-      "Elimination of HVAC systems",
-      "50% reduction in total electricity use"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 410,
-    "type": "multiple",
-    "question": "What is a future trend in AI-driven smart building management?",
-    "options": [
-      "Eliminating AI in building systems",
-      "Enhancing prediction and autonomous energy management",
-      "Increasing reliance on non-renewable energy",
-      "Reducing the role of IoT sensors"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 411,
-    "type": "multiple",
-    "question": "What is a major challenge in solar battery power consumption?",
-    "options": [
-      "Unlimited battery lifespan",
-      "Energy losses from improper charging and discharging",
-      "Overproduction of solar energy",
-      "Elimination of smart optimization strategies"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 412,
-    "type": "multiple",
-    "question": "What principle is the Archimedes Algorithm inspired by?",
-    "options": [
-      "Newton’s Laws of Motion",
-      "Buoyancy principles",
-      "Thermodynamics",
-      "Quantum mechanics"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 413,
-    "type": "multiple",
-    "question": "How does temperature affect solar battery efficiency?",
-    "options": [
-      "No effect on battery performance",
-      "High or low temperatures impact battery capacity and lifespan",
-      "Increases energy storage capacity",
-      "Improves charge and discharge efficiency"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 414,
-    "type": "multiple",
-    "question": "What is the primary objective of the Archimedes Algorithm in energy management?",
-    "options": [
-      "Maximizing energy losses",
-      "Enhancing energy utilization and reducing waste",
-      "Reducing battery lifespan",
-      "Avoiding smart optimization"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 415,
-    "type": "multiple",
-    "question": "What data does the Archimedes Algorithm analyze to optimize power consumption?",
-    "options": [
-      "Only temperature",
-      "Only voltage",
-      "Environmental and operational data",
-      "Only solar radiation"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 416,
-    "type": "multiple",
-    "question": "What is the function of the buoyant force in the Archimedes Algorithm analogy?",
-    "options": [
-      "Represents the remaining battery capacity",
-      "Measures solar panel efficiency",
-      "Determines weather conditions",
-      "Identifies battery temperature variations"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 417,
-    "type": "multiple",
-    "question": "What is a key step in the Archimedes Algorithm process?",
-    "options": [
-      "Ignoring performance monitoring",
-      "Applying buoyancy equations to predict optimal energy distribution",
-      "Disabling smart sensors",
-      "Eliminating real-time adjustments"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 418,
-    "type": "multiple",
-    "question": "What advantage does the Archimedes Algorithm provide compared to other optimization techniques?",
-    "options": [
-      "Increased computational cost",
-      "Less energy efficiency",
-      "Better energy savings with manageable computational cost",
-      "No significant difference"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 419,
-    "type": "multiple",
-    "question": "What was a key result of implementing the Archimedes Algorithm?",
-    "options": [
-      "15-20% increase in energy efficiency",
-      "Increased energy wastage",
-      "No impact on battery lifespan",
-      "Elimination of renewable energy sources"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 420,
-    "type": "multiple",
-    "question": "What is a recommended next step for further improving the Archimedes Algorithm?",
-    "options": [
-      "Eliminating AI integration",
-      "Conducting field testing and real-world implementation",
-      "Avoiding optimization techniques",
-      "Increasing manual battery management"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 421,
-    "type": "multiple",
-    "question": "Which of the following best defines software project management?",
-    "options": [
-      "Selling hardware components",
-      "Overseeing software development tasks and deadlines",
-      "Writing code without planning",
-      "Developing video games only"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 422,
-    "type": "multiple",
-    "question": "Which of the following is a key component of practice management?",
-    "options": [
-      "Marketing Strategies",
-      "All of the mention",
-      "Financial Management",
-      "Client Engagement"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 423,
-    "type": "multiple",
-    "question": "Which of the following is NOT a key component of professional competency in computing?",
-    "options": [
-      "Physical strength",
-      "Ethical awareness",
-      "Problem-solving abilities",
-      "Technical skills"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 424,
-    "type": "truefalse",
-    "question": "Confidentiality requires protecting user data and respecting privacy.",
-    "correctAnswer": true
-  },
-  {
-    "id": 425,
-    "type": "truefalse",
-    "question": "Ethical AI systems should prioritize profits over user rights.",
-    "correctAnswer": false
-  },
-  {
-    "id": 426,
-    "type": "truefalse",
-    "question": "Cybersecurity focuses on protecting systems from cyber threats.",
-    "correctAnswer": true
-  },
-  {
-    "id": 427,
-    "type": "multiple",
-    "question": "What is a potential risk of \"black box\" AI systems?",
-    "options": [
-      "Opaque decision-making",
-      "Reduced profitability",
-      "Lack of operational speed",
-      "Increased user trust"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 428,
-    "type": "multiple",
-    "question": "Economic uncertainty affects practice management by:",
-    "options": [
-      "Ensuring higher profits",
-      "Simplifying decision-making",
-      "Introducing financial instability",
-      "Reducing project costs"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 429,
-    "type": "multiple",
-    "question": "Which of the following is NOT a challenge in practice management?",
-    "options": [
-      "Rapid technological advancements",
-      "Economic uncertainty",
-      "Increasing project opportunities",
-      "Talent retention"
-    ],
     "correctAnswer": 2
-  },
-  {
-    "id": 430,
-    "type": "multiple",
-    "question": "What distinguishes a professional from a non-professional?",
-    "options": [
-      "Strict working hours",
-      "Casual approach to work",
-      "Higher salary",
-      "Competence, skill, and ethical behavior"
-    ],
-    "correctAnswer": 3
-  },
-  {
-    "id": 431,
-    "type": "multiple",
-    "question": "What is an example of a technical skill required for professional competency in computing?",
-    "options": [
-      "Proficiency in Python",
-      "Public speaking",
-      "Negotiation skills",
-      "Writing reports"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 432,
-    "type": "multiple",
-    "question": "A system that respects user autonomy will:",
-    "options": [
-      "Provide users with decision-making control",
-      "None of the mention",
-      "Prioritize profits over user interests",
-      "Avoid seeking user consent"
-    ],
-    "correctAnswer": 0
-  },
-  {
-    "id": 433,
-    "type": "multiple",
-    "question": "What is professional competency in computing?",
-    "options": [
-      "Only having soft skills",
-      "A combination of technical skills, soft skills, and ethical awareness",
-      "Only being able to code in multiple programming languages",
-      "Only having technical skills"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 434,
-    "type": "truefalse",
-    "question": "An increase in the debt-to-equity ratio generally indicates higher financial risk.",
-    "correctAnswer": true
-  },
-  {
-    "id": 435,
-    "type": "multiple",
-    "question": "Which of the following is an example of a network administration task?",
-    "options": [
-      "Baking a cake",
-      "Managing and maintaining computer networks",
-      "Conducting a medical diagnosis",
-      "Writing a novel"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 436,
-    "type": "truefalse",
-    "question": "Financial management focuses only on long-term financial goals.",
-    "correctAnswer": false
-  },
-  {
-    "id": 437,
-    "type": "multiple",
-    "question": "Which of the following best defines a profession?",
-    "options": [
-      "A temporary job requiring no skill",
-      "A hobby that requires formal education",
-      "A specialized field requiring training and adherence to standards",
-      "A personal interest in a specific subject"
-    ],
-    "correctAnswer": 2
-  },
-  {
-    "id": 438,
-    "type": "multiple",
-    "question": "Which of the following is NOT a key component of professional competency?",
-    "options": [
-      "Problem-solving abilities",
-      "Ability to ignore industry standards",
-      "Ethical awareness",
-      "Technical skills"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 439,
-    "type": "multiple",
-    "question": "Software engineering applies which principles?",
-    "options": [
-      "Scientific methods only",
-      "Engineering principles to software design, development, and maintenance",
-      "Random development techniques",
-      "Marketing principles"
-    ],
-    "correctAnswer": 1
-  },
-  {
-    "id": 440,
-    "type": "truefalse",
-    "question": "Explainable AI (XAI) improves transparency in decision-making.",
-    "correctAnswer": true
-  },
-  {
-    "id": 441,
-    "type": "truefalse",
-    "question": "Confidentiality requires protecting user data and respecting privacy.",
-    "correctAnswer": true
-  },
-  {
-    "id": 442,
-    "type": "truefalse",
-    "question": "Ethical AI systems should prioritize profits over user rights.",
-    "correctAnswer": false
-  },
-  {
-    "id": 443,
-    "type": "truefalse",
-    "question": "Cybersecurity focuses on protecting systems from cyber threats.",
-    "correctAnswer": true
-  },
-  {
-    "id": 444,
-    "type": "truefalse",
-    "question": "An increase in the debt-to-equity ratio generally indicates higher financial risk.",
-    "correctAnswer": true
-  },
-  {
-    "id": 445,
-    "type": "truefalse",
-    "question": "Financial management focuses only on long-term financial goals.",
-    "correctAnswer": false
-  },
-  {
-    "id": 446,
-    "type": "truefalse",
-    "question": "Explainable AI (XAI) improves transparency in decision-making.",
-    "correctAnswer": true
-  },
-      {
-    "id": 447,
-    "type": "truefalse",
-    "question": "Al-powered traffic management systems help reduce congestion and fuel consumption. [cite: 296]",
-    "correctAnswer": true
-  },
-  {
-    "id": 448,
-    "type": "truefalse",
-    "question": "Predictive policing using Al completely eliminates the need for law enforcement officers. [cite: 297]",
-    "correctAnswer": false
-  },
-  {
-    "id": 449,
-    "type": "truefalse",
-    "question": "Al-driven automation in buildings increases energy consumption. [cite: 298]",
-    "correctAnswer": false
-  },
-  {
-    "id": 450,
-    "type": "truefalse",
-    "question": "Al can help monitor air and water quality in real-time, identifying pollutants. [cite: 299]",
-    "correctAnswer": true
-  },
-  {
-    "id": 451,
-    "type": "truefalse",
-    "question": "Al-powered waste management systems reduce efficiency and increase environmental impact. [cite: 300]",
-    "correctAnswer": false
-  },
-  {
-    "id": 452,
-    "type": "truefalse",
-    "question": "Activity diagrams help visualize workflows and system behavior. [cite: 301]",
-    "correctAnswer": true
-  },
-  {
-    "id": 453,
-    "type": "truefalse",
-    "question": "Block diagrams focus on representing data storage rather than system components. [cite: 302]",
-    "correctAnswer": false
-  },
-  {
-    "id": 454,
-    "type": "truefalse",
-    "question": "Flowcharts are used to illustrate algorithm logic, helping in debugging and optimization. [cite: 303]",
-    "correctAnswer": true
-  },
-  {
-    "id": 455,
-    "type": "truefalse",
-    "question": "Agent-based applications in smart traffic management only control vehicles, not traffic signals. [cite: 304]",
-    "correctAnswer": false
-  },
-  {
-    "id": 456,
-    "type": "truefalse",
-    "question": "Future advancements in smart system design will focus on reducing AI integration. [cite: 306]",
-    "correctAnswer": false
-  },
-  {
-    "id": 457,
-    "type": "truefalse",
-    "question": "Smart cities use technology to optimize urban infrastructure and improve resource management. [cite: 307]",
-    "correctAnswer": true
-  },
-  {
-    "id": 458,
-    "type": "truefalse",
-    "question": "Climate change has no significant impact on urban infrastructure. [cite: 308]",
-    "correctAnswer": false
-  },
-  {
-    "id": 459,
-    "type": "truefalse",
-    "question": "Renewable energy solutions in smart cities aim to transition to 100% renewable energy by 2050. [cite: 309]",
-    "correctAnswer": true
-  },
-  {
-    "id": 460,
-    "type": "truefalse",
-    "question": "Green infrastructure, such as urban forests and permeable pavements, increases urban heat island effects. [cite: 310]",
-    "correctAnswer": false
-  },
-  {
-    "id": 461,
-    "type": "truefalse",
-    "question": "Citizen engagement plays a key role in climate action by promoting public participation in sustainability efforts. [cite: 311]",
-    "correctAnswer": true
-  },
-  {
-    "id": 462,
-    "type": "truefalse",
-    "question": "AI in smart buildings helps optimize energy consumption and reduce costs. [cite: 312]",
-    "correctAnswer": true
-  },
-  {
-    "id": 463,
-    "type": "truefalse",
-    "question": "Machine learning algorithms have no role in predicting energy consumption patterns. [cite: 313]",
-    "correctAnswer": false
-  },
-  {
-    "id": 464,
-    "type": "truefalse",
-    "question": "AI-powered HVAC systems can dynamically adjust temperature and ventilation for better efficiency. [cite: 314]",
-    "correctAnswer": true
-  },
-  {
-    "id": 465,
-    "type": "truefalse",
-    "question": "IoT sensors in smart buildings decrease real-time energy monitoring capabilities. [cite: 315]",
-    "correctAnswer": false
-  },
-  {
-    "id": 466,
-    "type": "truefalse",
-    "question": "A major challenge in AI-driven energy optimization is data privacy and security concerns. [cite: 316]",
-    "correctAnswer": true
-  },
-  {
-    "id": 467,
-    "type": "truefalse",
-    "question": "The Archimedes Algorithm is inspired by buoyancy principles to optimize solar battery power consumption. [cite: 317]",
-    "correctAnswer": true
-  },
-  {
-    "id": 468,
-    "type": "truefalse",
-    "question": "Temperature has no impact on solar battery efficiency. [cite: 288]",
-    "correctAnswer": false
-  },
-  {
-    "id": 469,
-    "type": "truefalse",
-    "question": "The Archimedes Algorithm ignores environmental and operational data in its calculations. [cite: 318]",
-    "correctAnswer": false
-  },
-  {
-    "id": 470,
-    "type": "truefalse",
-    "question": "Implementing the Archimedes Algorithm can improve battery lifespan and reduce energy waste. [cite: 319]",
-    "correctAnswer": true
-  },
-  {
-    "id": 471,
-    "type": "truefalse",
-    "question": "The primary goal of the Archimedes Algorithm is to increase energy losses in solar batteries. [cite: 320]",
-    "correctAnswer": false
   }
     ];
 
     const lectureRanges = [
-      { name: "Lecture 1", from: 1, to: 57 },
-      { name: "Lecture 2", from: 58, to: 114 },
-      { name: "Lecture 3", from: 115, to: 154 },
-      { name: "Lecture 4", from: 155, to: 209 },
-      { name: "Lecture 5", from: 210, to: 250 },
-      { name: "Lecture 6", from: 251, to: 336 },
-      { name: "MID & MORE", from: 337, to: 471 },
-      { name: "All the questions", from: 1, to: 1000 }
+      { name: "Sample Set 1 (1-57)", from: 1, to: 57 },
+      { name: "Sample Set 2 (58-108)", from: 58, to: 108 },
+      { name: "Practice Mgt (109-113)", from: 109, to: 113},
+      { name: "All Questions", from: 1, to: 1000 }
     ];
 
-    const quizContainer = document.getElementById("quiz-container");
-    const buttonsContainer = document.getElementById("lecture-buttons");
-
-    function toggleLectures() {
-      buttonsContainer.classList.toggle("show");
-    }
-
-    function shuffleArray(array) {
-      return array
-        .map(value => ({ value, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value);
-    }
-
-    function renderQuiz(questions) {
+    // Quiz Rendering Logic
+    function renderQuiz(questionsToRender) {
       quizContainer.innerHTML = "";
-
-      questions.forEach((q, index) => {
+      questionsToRender.forEach((q) => {
         const card = document.createElement("div");
         card.className = "question-card";
 
         const questionText = document.createElement("div");
         questionText.className = "question-text";
-        questionText.textContent = `Q${index + 1}: ${q.question}`;
+        questionText.textContent = `Q${q.id}: ${q.question}`;
         card.appendChild(questionText);
+
+        const optionsContainer = document.createElement("div"); // Container for options
+        card.appendChild(optionsContainer);
 
         const feedback = document.createElement("div");
         feedback.className = "feedback";
-        card.appendChild(feedback);
+        card.appendChild(feedback); // Append feedback after options container
+
+        let answerSubmitted = false; // Flag to prevent multiple submissions
 
         if (q.type === "multiple") {
-          const optionObjects = q.options.map((opt, i) => ({
+          const optionsWithIndex = q.options.map((opt, originalIndex) => ({
             text: opt,
-            isCorrect: i === q.correctAnswer
+            originalIndex: originalIndex
           }));
-          const shuffledOptions = shuffleArray(optionObjects);
+          const shuffledOptions = optionsWithIndex.sort(() => 0.5 - Math.random());
 
-          shuffledOptions.forEach(option => {
+          shuffledOptions.forEach(optionData => {
             const label = document.createElement("label");
             label.className = "option-label";
-            label.textContent = option.text;
-
+            label.textContent = optionData.text;
             label.onclick = () => {
-              const labels = card.querySelectorAll(".option-label");
-              labels.forEach(l => l.classList.remove("selected", "correct", "incorrect"));
+              if (answerSubmitted) return; // Don't process if already answered
+
+              const allOptionLabels = optionsContainer.querySelectorAll(".option-label");
+              allOptionLabels.forEach(l => l.classList.remove("selected"));
               label.classList.add("selected");
 
-              if (option.isCorrect) {
+              if (optionData.originalIndex === q.correctAnswer) {
                 label.classList.add("correct");
-                feedback.textContent = "Correct!";
+                feedback.textContent = "Correct! ✔️";
                 feedback.className = "feedback correct";
               } else {
-                label.classList.add("incorrect");
-                feedback.textContent = "Incorrect.";
+                label.classList.add("incorrect", "selected"); // Mark selected incorrect
+                feedback.textContent = "Incorrect. ❌";
                 feedback.className = "feedback incorrect";
-                labels.forEach(l => {
-                  if (l.textContent === shuffledOptions.find(o => o.isCorrect).text) {
-                    l.classList.add("correct");
+                // Highlight the correct answer
+                allOptionLabels.forEach(l => {
+                  const correctOptionText = q.options[q.correctAnswer];
+                  if (l.textContent === correctOptionText) {
+                    l.classList.add("correct"); // Just add 'correct' to show, don't make it look selected
                   }
                 });
               }
+              answerSubmitted = true;
+               allOptionLabels.forEach(l => l.style.pointerEvents = 'none'); // Disable further clicks
             };
-
-            card.appendChild(label);
+            optionsContainer.appendChild(label);
           });
-
-        } else {
-          ["True", "False"].forEach(option => {
+        } else if (q.type === "truefalse") {
+          const trueFalseUiOptions = [
+            { text: "True", value: 1 },
+            { text: "False", value: 0 }
+          ];
+          trueFalseUiOptions.forEach(uiOption => {
             const label = document.createElement("label");
             label.className = "option-label";
-            label.textContent = option;
-
+            label.textContent = uiOption.text;
             label.onclick = () => {
-              const labels = card.querySelectorAll(".option-label");
-              labels.forEach(l => l.classList.remove("selected", "correct", "incorrect"));
+              if (answerSubmitted) return;
+
+              const allOptionLabels = optionsContainer.querySelectorAll(".option-label");
+              allOptionLabels.forEach(l => l.classList.remove("selected"));
               label.classList.add("selected");
 
-              const userAnswer = option === "True";
-              if (userAnswer === q.correctAnswer) {
+              if (uiOption.value === q.correctAnswer) {
                 label.classList.add("correct");
-                feedback.textContent = "Correct!";
+                feedback.textContent = "Correct! ✔️";
                 feedback.className = "feedback correct";
               } else {
-                label.classList.add("incorrect");
-                feedback.textContent = "Incorrect.";
+                label.classList.add("incorrect", "selected");
+                feedback.textContent = "Incorrect. ❌";
                 feedback.className = "feedback incorrect";
-
-                labels.forEach(l => {
-                  if ((l.textContent === "True" && q.correctAnswer === true) ||
-                      (l.textContent === "False" && q.correctAnswer === false)) {
+                 allOptionLabels.forEach(l => { // Highlight correct for T/F
+                  const optValueForHighlight = l.textContent === "True" ? 1 : 0;
+                  if (optValueForHighlight === q.correctAnswer) {
                     l.classList.add("correct");
                   }
                 });
               }
+              answerSubmitted = true;
+              allOptionLabels.forEach(l => l.style.pointerEvents = 'none'); // Disable further clicks
             };
-
-            card.appendChild(label);
+            optionsContainer.appendChild(label);
           });
         }
-
         quizContainer.appendChild(card);
       });
     }
 
+    // Populate Lecture Buttons
     lectureRanges.forEach(range => {
       const btn = document.createElement("button");
       btn.textContent = range.name;
       btn.onclick = () => {
-        const filtered = originalQuestions.filter(q => q.id >= range.from && q.id <= range.to);
-        renderQuiz(filtered);
-        buttonsContainer.classList.remove("show");
+        const filteredQuestions = originalQuestions.filter(q => q.id >= range.from && q.id <= range.to);
+        renderQuiz(filteredQuestions);
+        lectureButtonsContainer.classList.remove("show");
       };
-      buttonsContainer.appendChild(btn);
+      lectureButtonsContainer.appendChild(btn);
     });
 
-    // Load default
-    renderQuiz(originalQuestions);
+    // Initial Load
+    window.onload = () => {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem('theme');
+      let initialThemeIsDark;
+
+      if (savedTheme === 'dark') {
+          initialThemeIsDark = true;
+      } else if (savedTheme === 'light') {
+          initialThemeIsDark = false;
+      } else {
+          initialThemeIsDark = prefersDark; // Default to OS preference if no saved theme
+      }
+      
+      applyTheme(initialThemeIsDark);
+
+      if(lectureRanges.length > 0 && originalQuestions.length > 0){
+          const firstLectureRange = lectureRanges[0];
+          const initialQuestions = originalQuestions.filter(q => q.id >= firstLectureRange.from && q.id <= firstLectureRange.to);
+          renderQuiz(initialQuestions.length > 0 ? initialQuestions : originalQuestions); // Fallback to all if filter is empty
+      } else {
+          renderQuiz(originalQuestions);
+      }
+    };
+
+    // Window Resize Handler
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
   </script>
 </body>
 </html>
